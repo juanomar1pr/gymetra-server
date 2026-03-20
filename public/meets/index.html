@@ -155,7 +155,7 @@ background: var(--border);
 <script>
 let ALL_MEETS = []
 
-fetch("/api/meets-list")
+fetch("/meets-list")
 .then(r => r.json())
 .then(slugs => {
     const promises = slugs.map(slug =>
