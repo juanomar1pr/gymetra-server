@@ -1,3 +1,9 @@
 {
-  "test": "nuni final ahora si"
+  "meet": {
+    "name": "Sensational 1",
+    "location": "City, State",
+    "hostGym": "Gym Name",
+    "startDate": "2024-03-20"
+  },
+  "scores": []
 }
