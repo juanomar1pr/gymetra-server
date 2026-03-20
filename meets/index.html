@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="icon" href="/fa.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="fa.png">
+<link rel="mask-icon" href="fa.png" color="#0A84FF">
+<title>Gymetra Meets</title>
+<script>
+const savedTheme = localStorage.getItem("theme") || "light";
+document.documentElement.setAttribute("data-theme", savedTheme);
+</script>
+<style>
+:root {
+    --bg: #000;
+    --row-bg: rgba(28,28,30,0.6);
+    --border: rgba(255,255,255,0.08);
+    --text: #fff;
+    --sub: #8e8e93;
+    --accent: #8b5cf6; /* 🔥 violeta */
+}
+[data-theme="light"] {
+    --bg: #f2f2f7;
+    --row-bg: #ffffff;
+    --border: #e5e5ea;
+    --text: #000;
+    --sub: #636366;
+    --accent: #7c3aed; /* violeta ajustado */
+}
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+    background: var(--bg);
+
+    color: var(--text);
+}
+
+/* HEADER */
+.hero {
+    text-align: center;
+    padding: 60px 20px 20px;
+}
+
+.hero h1 {
+    font-size: 34px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.hero p {
+    color: var(--sub);
+    margin-top: 6px;
+}
+
+/* SEARCH */
+.controls {
+    display: flex;
+    justify-content: center;
+    padding: 10px 20px 20px;
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+ background: var(--row-bg);
+    color: var(--text);
+    font-size: 16px;
+}
+
+/* 🔥 LISTA TIPO APPLE */
+.list {
+    max-width: 700px;
+    margin: 0 auto;
+    padding-bottom: 80px;
+
+    /* 🔥 SCROLL SUAVE */
+    overflow-y: auto;
+}
+
+/* 🔥 FILA ESTILO iOS */
+.row {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.row:hover {
+background: var(--border);
+}
+
+/* 🔥 TEXTO EN UNA LÍNEA */
+.row-content {
+    display: flex;
+    flex: 1;
+    gap: 10px;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* NOMBRE */
+.name {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* SEPARADOR */
+.dot {
+    color: var(--sub);
+}
+
+/* META INLINE */
+.meta {
+    color: var(--sub);
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+/* ARROW */
+.arrow {
+    color: var(--sub);
+    margin-left: 10px;
+}
+
+/* LOADING */
+.loading, .empty {
+    text-align: center;
+    padding: 40px;
+    color: var(--sub);
+}
+</style>
+</head>
+
+<body>
+
+<div class="hero">
+    <h1>Gymetra</h1>
+    <p>Live scoring</p>
+</div>
+
+<div class="controls">
+    <input id="search" placeholder="Search meet, club, location">
+</div>
+
+<div class="list" id="list">
+    <div class="loading">Loading...</div>
+</div>
+
+<script>
+let ALL_MEETS = []
+
+fetch("https://api.github.com/repos/juanomar1pr/gymetra-server/contents/public/meets")
+.then(r => r.json())
+.then(items => {
+
+    const slugs = items
+        .filter(i => i.type === "dir")
+        .map(i => i.name)
+    const promises = slugs.map(slug =>
+        fetch(`/meets/${slug}/results.json?t=` + Date.now())
+        .then(r => r.json())
+        .then(data => ({
+            slug: slug,
+            name: data.meet?.name || slug,
+            location: data.meet?.location || "",
+            host: data.meet?.hostGym || "",
+            date: data.meet?.startDate || ""
+        }))
+        .catch(() => ({
+            slug: slug,
+            name: slug,
+            location: "",
+            host: "",
+            date: ""
+        }))
+    )
+
+    Promise.all(promises).then(results => {
+        ALL_MEETS = results
+        render()
+    })
+})
+
+function formatDate(d) {
+    if (!d) return ""
+    return new Date(d).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric"
+    })
+}
+
+function render() {
+    const search = document.getElementById("search").value.toLowerCase()
+    const list = document.getElementById("list")
+    list.innerHTML = ""
+
+    const filtered = ALL_MEETS.filter(m =>
+        (m.name + m.location + m.host).toLowerCase().includes(search)
+    )
+
+    if (filtered.length === 0) {
+        list.innerHTML = `<div class="empty">No results</div>`
+        return
+    }
+
+    filtered.forEach(m => {
+        const div = document.createElement("div")
+        div.className = "row"
+
+        div.innerHTML = `
+            <div class="row-content">
+                <span class="name">${m.name}</span>
+                ${m.host ? `<span class="dot">•</span><span class="meta">${m.host}</span>` : ""}
+                ${m.location ? `<span class="dot">•</span><span class="meta">${m.location}</span>` : ""}
+                ${m.date ? `<span class="dot">•</span><span class="meta">${formatDate(m.date)}</span>` : ""}
+            </div>
+            <div class="arrow">›</div>
+        `
+
+        div.onclick = () => {
+            window.location.href = `/meets/view.html?slug=${m.slug}`
+        }
+
+        list.appendChild(div)
+    })
+}
+
+document.getElementById("search").oninput = render
+</script>
+
+</body>
+</html>
