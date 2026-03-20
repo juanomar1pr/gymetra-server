@@ -155,9 +155,13 @@ background: var(--border);
 <script>
 let ALL_MEETS = []
 
-fetch("/meets-list")
+fetch("https://api.github.com/repos/juanomar1pr/gymetra-server/contents/public/meets")
 .then(r => r.json())
-.then(slugs => {
+.then(items => {
+
+    const slugs = items
+        .filter(i => i.type === "dir")
+        .map(i => i.name)
     const promises = slugs.map(slug =>
         fetch(`/meets/${slug}/results.json?t=` + Date.now())
         .then(r => r.json())
