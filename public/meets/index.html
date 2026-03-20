@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link rel="icon" href="/fa.ico">
-<link rel="apple-touch-icon" sizes="180x180" href="fa.png">
-<link rel="mask-icon" href="fa.png" color="#0A84FF">
+<link rel="apple-touch-icon" sizes="180x180" href="public/fa.png">
+<link rel="mask-icon" href="public/fa.png" color="#0A84FF">
 <title>Gymetra Meets</title>
 <script>
 const savedTheme = localStorage.getItem("theme") || "light";
@@ -224,7 +224,7 @@ function render() {
         `
 
         div.onclick = () => {
-            window.location.href = `/meets/view.html?slug=${m.slug}`
+            window.location.href = `public/meets/view.html?slug=${m.slug}`
         }
 
         list.appendChild(div)
