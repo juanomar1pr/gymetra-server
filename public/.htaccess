@@ -1,0 +1,11 @@
+RewriteEngine On
+
+# Si no existe archivo o carpeta → manda a home
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ /index.html [L]
+RewriteEngine On
+
+# Bloquear acceso directo a /admin
+RewriteCond %{HTTP_HOST} !^admin\.gymetra\.net$ [NC]
+RewriteRule ^admin - [F]
