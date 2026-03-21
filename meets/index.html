@@ -173,13 +173,21 @@ async function loadAllMeets() {
         
         const data = await response.json();
         
-        ALL_MEETS = data.map(item => ({
-            slug: item.slug,
-            name: item.data?.meet?.name || item.slug,
-            host: item.data?.meet?.hostGym || "",
-            location: item.data?.meet?.location || "",
-            date: item.data?.meet?.startDate || ""
-        }));
+      // Formatear los datos buscando en todas las rutas posibles
+        ALL_MEETS = data.map(item => {
+            const d = item.data || {};
+            const meetInfo = d.meet || {}; // Buscamos dentro de 'meet'
+            
+            return {
+                slug: item.slug,
+                // Si no hay name en meet, usa el slug
+                name: meetInfo.name || d.name || item.slug, 
+                // Buscamos el club/host en las variantes de la App
+                host: meetInfo.hostGym || meetInfo.club || d.host || "", 
+                location: meetInfo.location || d.location || "",
+                date: meetInfo.startDate || d.date || ""
+            };
+        });
 
         render();
 
