@@ -155,14 +155,17 @@ background: var(--border);
 <script>
 let ALL_MEETS = []
 
-fetch("[https://api.github.com/repos/juanomar1pr/gymetra-server/contents/meets](https://api.github.com/repos/juanomar1pr/gymetra-server/contents/meets)")
+// 1. URL corregida para la nueva estructura sin /public/
+fetch("https://api.github.com/repos/juanomar1pr/gymetra-server/contents/meets")
 .then(r => r.json())
 .then(items => {
-
+    // Solo tomamos las carpetas (que son los meets)
     const slugs = items
         .filter(i => i.type === "dir")
         .map(i => i.name)
+
     const promises = slugs.map(slug =>
+        // Buscamos el JSON dentro de cada carpeta en /meets/
         fetch(`/meets/${slug}/results.json?t=` + Date.now())
         .then(r => r.json())
         .then(data => ({
@@ -173,11 +176,7 @@ fetch("[https://api.github.com/repos/juanomar1pr/gymetra-server/contents/meets](
             date: data.meet?.startDate || ""
         }))
         .catch(() => ({
-            slug: slug,
-            name: slug,
-            location: "",
-            host: "",
-            date: ""
+            slug: slug, name: slug, location: "", host: "", date: ""
         }))
     )
 
@@ -190,8 +189,7 @@ fetch("[https://api.github.com/repos/juanomar1pr/gymetra-server/contents/meets](
 function formatDate(d) {
     if (!d) return ""
     return new Date(d).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric"
+        month: "short", day: "numeric"
     })
 }
 
@@ -212,7 +210,6 @@ function render() {
     filtered.forEach(m => {
         const div = document.createElement("div")
         div.className = "row"
-
         div.innerHTML = `
             <div class="row-content">
                 <span class="name">${m.name}</span>
@@ -224,7 +221,8 @@ function render() {
         `
 
         div.onclick = () => {
-            window.location.href = `/meets/view.html?slug=${m.slug}`
+            // 2. Ruta corregida hacia view.html en la raíz
+            window.location.href = `/view.html?slug=${m.slug}`;
         }
 
         list.appendChild(div)
