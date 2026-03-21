@@ -180,37 +180,37 @@ body {
 
 <script>
 // --- CONFIGURACIÓN ---
-const SB_URL = "https://ulexxpaatpjtpgkancew.supabase.co/rest/v1/meets";
+// Importante: La URL base NO debe llevar /rest/v1 al final aquí, se lo sumamos abajo
+const SB_BASE_URL = "https://ulexxpaatpjtpgkancew.supabase.co/rest/v1";
 window.ADMIN_KEY = null; 
 
 function login() {
     const password = document.getElementById("password").value.trim();
     const errorEl = document.getElementById("loginError");
     
-    // Guardamos la llave que pusiste en el input
     window.ADMIN_KEY = password; 
 
-    // Prueba de conexión rápida
-    fetch(`${SB_URL}?select=slug&limit=1`, {
+    // Prueba de conexión: Apuntamos directo a la tabla 'meets'
+    fetch(`${SB_BASE_URL}/meets?select=slug&limit=1`, {
         method: "GET",
         headers: { 
             "apikey": window.ADMIN_KEY, 
-            "Authorization": `Bearer ${window.ADMIN_KEY}`,
-            "Content-Profile": "public"
+            "Authorization": `Bearer ${window.ADMIN_KEY}`
         }
     })
     .then(r => {
-        if (!r.ok) throw new Error();
+        if (!r.ok) throw new Error("Status: " + r.status);
         showApp();
         load();
     })
-    .catch(() => {
-        errorEl.textContent = "Llave inválida o sin permisos de Admin.";
+    .catch((err) => {
+        console.error("Error de login:", err);
+        errorEl.textContent = "Llave inválida o error de conexión.";
     });
 }
 
 function load() {
-    fetch(`${SB_URL}?select=slug`, {
+    fetch(`${SB_BASE_URL}/meets?select=slug`, {
         headers: { 
             "apikey": window.ADMIN_KEY, 
             "Authorization": `Bearer ${window.ADMIN_KEY}` 
@@ -244,9 +244,9 @@ function load() {
 }
 
 function deleteMeet(slug) {
-    if (!confirm(`¿Borrar "${slug}"? Esta acción no se puede deshacer.`)) return;
+    if (!confirm(`¿Borrar "${slug}"?`)) return;
 
-    fetch(`${SB_URL}?slug=eq.${slug}`, {
+    fetch(`${SB_BASE_URL}/meets?slug=eq.${slug}`, {
         method: "DELETE",
         headers: { 
             "apikey": window.ADMIN_KEY, 
@@ -255,10 +255,10 @@ function deleteMeet(slug) {
         }
     })
     .then(r => {
-        if (!r.ok) throw new Error("Fallo al borrar");
-        load(); // Recargar lista
+        if (!r.ok) throw new Error("Error " + r.status);
+        load(); 
     })
-    .catch(err => alert("Error: No se pudo borrar. Asegúrate de usar la 'service_role key'."));
+    .catch(err => alert("No se pudo borrar. Verifica la consola (F12)."));
 }
 </script>
 
