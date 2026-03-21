@@ -180,19 +180,24 @@ body {
 
 <script>
 // --- CONFIGURACIÓN ---
-const SB_URL = "https://ulexxpaatpjtpgkancew.supabase.co";
-let SB_KEY = null; // No la ponemos aquí por seguridad
+const SB_URL = "https://ulexxpaatpjtpgkancew.supabase.co/rest/v1/meets";
+window.ADMIN_KEY = null; 
 
 function login() {
-    const password = document.getElementById("password").value;
+    const password = document.getElementById("password").value.trim();
     const errorEl = document.getElementById("loginError");
     
-    // Aquí usamos la "password" como si fuera la Service Role Key de Supabase
-    // Si la llave es válida, cargará los datos; si no, fallará.
-    SB_KEY = password; 
+    // Guardamos la llave que pusiste en el input
+    window.ADMIN_KEY = password; 
 
-    fetch(`${SB_URL}/rest/v1/meets?select=slug`, {
-        headers: { "apikey": SB_KEY, "Authorization": `Bearer ${SB_KEY}` }
+    // Prueba de conexión rápida
+    fetch(`${SB_URL}?select=slug&limit=1`, {
+        method: "GET",
+        headers: { 
+            "apikey": window.ADMIN_KEY, 
+            "Authorization": `Bearer ${window.ADMIN_KEY}`,
+            "Content-Profile": "public"
+        }
     })
     .then(r => {
         if (!r.ok) throw new Error();
@@ -200,52 +205,60 @@ function login() {
         load();
     })
     .catch(() => {
-        errorEl.textContent = "Llave inválida. Acceso denegado.";
+        errorEl.textContent = "Llave inválida o sin permisos de Admin.";
     });
 }
 
 function load() {
-    fetch(`${SB_URL}/rest/v1/meets?select=slug`, {
-        headers: { "apikey": SB_KEY, "Authorization": `Bearer ${SB_KEY}` }
+    fetch(`${SB_URL}?select=slug`, {
+        headers: { 
+            "apikey": window.ADMIN_KEY, 
+            "Authorization": `Bearer ${window.ADMIN_KEY}` 
+        }
     })
     .then(r => r.json())
     .then(data => {
         const container = document.getElementById("list");
-        container.innerHTML = data.length === 0 ? '<div style="color:var(--text-secondary); padding: 20px;">No meets found.</div>' : "";
+        container.innerHTML = "";
+
+        if (!data || data.length === 0) {
+            container.innerHTML = '<div style="color:var(--text-secondary); padding: 20px;">No hay competencias.</div>';
+            return;
+        }
 
         data.forEach(item => {
-            const slug = item.slug;
             const div = document.createElement("div");
             div.className = "card-item";
             div.innerHTML = `
                 <div class="card-left">
-                    <div class="slug-name">${slug}</div>
+                    <div class="slug-name">${item.slug}</div>
                 </div>
                 <div class="actions">
-                    <button class="btn btn-danger" onclick="deleteMeet('${slug}')">Borrar</button>
+                    <button class="btn btn-danger" onclick="deleteMeet('${item.slug}')">Borrar</button>
                 </div>
             `;
             container.appendChild(div);
         });
-    });
+    })
+    .catch(err => console.error("Error cargando lista:", err));
 }
 
 function deleteMeet(slug) {
-    if (!confirm(`¿Borrar permanentemente "${slug}"?`)) return;
+    if (!confirm(`¿Borrar "${slug}"? Esta acción no se puede deshacer.`)) return;
 
-    fetch(`${SB_URL}/rest/v1/meets?slug=eq.${slug}`, {
+    fetch(`${SB_URL}?slug=eq.${slug}`, {
         method: "DELETE",
         headers: { 
-            "apikey": SB_KEY, 
-            "Authorization": `Bearer ${SB_KEY}`,
+            "apikey": window.ADMIN_KEY, 
+            "Authorization": `Bearer ${window.ADMIN_KEY}`,
             "Content-Type": "application/json"
         }
     })
     .then(r => {
-        if (!r.ok) throw new Error();
-        load();
+        if (!r.ok) throw new Error("Fallo al borrar");
+        load(); // Recargar lista
     })
-    .catch(err => alert("Error al borrar. Verifica que sea la Service Role Key."));
+    .catch(err => alert("Error: No se pudo borrar. Asegúrate de usar la 'service_role key'."));
 }
 </script>
 
