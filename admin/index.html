@@ -179,65 +179,50 @@ body {
 </div>
 
 <script>
-const API = "/api";
-let ADMIN_TOKEN = null;
-
-function showLogin() {
-    ADMIN_TOKEN = null;
-    document.getElementById("loginView").classList.remove("hidden");
-    document.getElementById("appView").classList.add("hidden");
-    document.getElementById("authBadge").classList.add("hidden");
-}
-
-function showApp() {
-    document.getElementById("loginView").classList.add("hidden");
-    document.getElementById("appView").classList.remove("hidden");
-    document.getElementById("authBadge").classList.remove("hidden");
-}
+// --- CONFIGURACIÓN ---
+const SB_URL = "https://ulexxpaatpjtpgkancew.supabase.co";
+let SB_KEY = null; // No la ponemos aquí por seguridad
 
 function login() {
     const password = document.getElementById("password").value;
     const errorEl = document.getElementById("loginError");
-    errorEl.textContent = "";
+    
+    // Aquí usamos la "password" como si fuera la Service Role Key de Supabase
+    // Si la llave es válida, cargará los datos; si no, fallará.
+    SB_KEY = password; 
 
-    fetch(`${API}/admin-login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password })
+    fetch(`${SB_URL}/rest/v1/meets?select=slug`, {
+        headers: { "apikey": SB_KEY, "Authorization": `Bearer ${SB_KEY}` }
     })
-    .then(async r => {
-        const data = await r.json().catch(() => ({}));
-        if (!r.ok || !data.success) throw new Error(data.error || "Authentication failed");
-        return data;
-    })
-    .then(data => {
-        ADMIN_TOKEN = data.token;
+    .then(r => {
+        if (!r.ok) throw new Error();
         showApp();
         load();
     })
-    .catch(err => {
-        errorEl.textContent = "Incorrect password. Access denied.";
+    .catch(() => {
+        errorEl.textContent = "Llave inválida. Acceso denegado.";
     });
 }
 
 function load() {
-    fetch(`${API}/meets-list`)
+    fetch(`${SB_URL}/rest/v1/meets?select=slug`, {
+        headers: { "apikey": SB_KEY, "Authorization": `Bearer ${SB_KEY}` }
+    })
     .then(r => r.json())
     .then(data => {
         const container = document.getElementById("list");
-        container.innerHTML = data.length === 0 ? '<div style="color:var(--text-secondary); padding: 20px;">No active meets found in database.</div>' : "";
+        container.innerHTML = data.length === 0 ? '<div style="color:var(--text-secondary); padding: 20px;">No meets found.</div>' : "";
 
-        data.forEach(slug => {
+        data.forEach(item => {
+            const slug = item.slug;
             const div = document.createElement("div");
             div.className = "card-item";
             div.innerHTML = `
                 <div class="card-left">
                     <div class="slug-name">${slug}</div>
-                    <div class="url-preview">/index.html?slug=${slug}</div>
                 </div>
                 <div class="actions">
-                    <button class="btn btn-secondary" onclick="openMeet('${slug}')">Open Live</button>
-                    <button class="btn btn-danger" onclick="deleteMeet('${slug}')">Delete</button>
+                    <button class="btn btn-danger" onclick="deleteMeet('${slug}')">Borrar</button>
                 </div>
             `;
             container.appendChild(div);
@@ -246,29 +231,22 @@ function load() {
 }
 
 function deleteMeet(slug) {
-    if (!confirm(`Permanently delete all data for "${slug}"? This cannot be undone.`)) return;
+    if (!confirm(`¿Borrar permanentemente "${slug}"?`)) return;
 
-    fetch(`${API}/delete-meet/${slug}`, {
+    fetch(`${SB_URL}/rest/v1/meets?slug=eq.${slug}`, {
         method: "DELETE",
-        headers: { "x-admin-token": ADMIN_TOKEN }
+        headers: { 
+            "apikey": SB_KEY, 
+            "Authorization": `Bearer ${SB_KEY}`,
+            "Content-Type": "application/json"
+        }
     })
     .then(r => {
-        if (!r.ok) throw new Error("Delete failed");
+        if (!r.ok) throw new Error();
         load();
     })
-    .catch(err => alert("Error: Could not delete meet. Check permissions."));
+    .catch(err => alert("Error al borrar. Verifica que sea la Service Role Key."));
 }
-
-function openMeet(slug) {
-    window.open(`https://gymetra.net/meets/view.html?slug=${slug}`, "_blank");
-}
-function logout() {
-    document.getElementById("password").value = "";
-    showLogin();
-}
-
-// Initial state
-showLogin();
 </script>
 
 </body>
