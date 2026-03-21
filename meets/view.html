@@ -59,41 +59,62 @@ let DATA = null;
 let curSession = "";
 let curSortEvent = "AA";
 
+// CONFIGURACIÓN DE TU PROYECTO SUPABASE
+const sbUrl = "https://ulexxpaatpjtpgkancew.supabase.co/rest/v1/meets";
+const sbKey = "sb_publishable_rF-UPEX2zhC5cZztSFeGaQ_-7bjyloC";
+
 function toggleTheme() {
     const next = (localStorage.getItem("theme") || "dark") === "dark" ? "light" : "dark";
     localStorage.setItem("theme", next);
     document.documentElement.setAttribute("data-theme", next);
 }
 
-// ESTA ES LA CORRECCIÓN CLAVE:
-// ./ busca la carpeta que tiene el nombre del meet dentro de la carpeta 'meets'
-fetch(`./${slug}/results.json?t=` + Date.now())
-.then(r => { if(!r.ok) throw new Error(); return r.json(); })
-.then(data => {
-    DATA = data;
-    document.getElementById("meet-title").innerHTML = `${data.meet.name} > <span id="sess-display">SESS 1</span>`;
-    const sessions = [...new Set(data.events.map(e => e.session || "Session 1"))];
-    curSession = sessions[0];
-    const sessCont = document.getElementById("session-filters");
-    sessions.forEach((s, i) => {
-        const div = document.createElement("div");
-        div.className = `chip ${i === 0 ? 'active' : ''}`;
-        div.innerText = s;
-        div.onclick = () => {
-            sessCont.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
-            div.classList.add("active");
-            curSession = s;
-            document.getElementById("sess-display").innerText = s;
-            updateEventChips();
-            render();
-        };
-        sessCont.appendChild(div);
-    });
-    updateEventChips();
-    render();
+// FETCH DESDE LA BASE DE DATOS
+fetch(`${sbUrl}?slug=eq.${slug}&select=data`, {
+    headers: {
+        "apikey": sbKey,
+        "Authorization": `Bearer ${sbKey}`
+    }
 })
-.catch(() => {
-    document.body.innerHTML = `<div style="text-align:center; padding:100px;"><h1>Meet Not Found</h1><p>Check if folder <b>${slug}</b> exists in /meets/</p><a href="/meets/" style="color:var(--accent)">Go Back</a></div>`;
+.then(r => r.json())
+.then(response => {
+    if (response && response.length > 0) {
+        DATA = response[0].data;
+        document.getElementById("meet-title").innerHTML = `${DATA.meet.name} > <span id="sess-display">SESS 1</span>`;
+        
+        const sessions = [...new Set(DATA.events.map(e => e.session || "Session 1"))];
+        curSession = sessions[0];
+        const sessCont = document.getElementById("session-filters");
+        
+        sessCont.innerHTML = "";
+        sessions.forEach((s, i) => {
+            const div = document.createElement("div");
+            div.className = `chip ${i === 0 ? 'active' : ''}`;
+            div.innerText = s;
+            div.onclick = () => {
+                sessCont.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+                div.classList.add("active");
+                curSession = s;
+                document.getElementById("sess-display").innerText = s;
+                updateEventChips();
+                render();
+            };
+            sessCont.appendChild(div);
+        });
+        
+        updateEventChips();
+        render();
+    } else {
+        throw new Error("No hay datos en Supabase para este slug.");
+    }
+})
+.catch((err) => {
+    console.error(err);
+    document.body.innerHTML = `<div style="text-align:center; padding:100px;">
+        <h1>No Live Results</h1>
+        <p style="color:var(--text-dim)">Todavía no hay datos para: <b>${slug}</b></p>
+        <a href="/meets/" style="color:var(--accent); text-decoration:none;">← Regresar</a>
+    </div>`;
 });
 
 function updateEventChips() {
