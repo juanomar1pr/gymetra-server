@@ -220,8 +220,8 @@ function render() {
             <div class="arrow">›</div>
         `
 
- div.onclick = () => {
-    // Sin la barra / al principio, porque view.html está en la misma carpeta (meets)
+div.onclick = () => {
+    // Al estar los dos en la misma carpeta 'meets', no pongas barra al inicio
     window.location.href = `view.html?slug=${m.slug}`;
 }
 
