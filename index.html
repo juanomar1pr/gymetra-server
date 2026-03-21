@@ -3,14 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- FAVICONS -->
-    <link rel="shortcut icon" href="/fa.ico?v=5" type="image/x-icon">
-    <link rel="icon" href="/fa.ico?v=5" type="image/x-icon">
-    <link rel="apple-touch-icon" href="/images/fa.png?v=5">
-    <link rel="icon" type="image/png" href="/images/fa.png?v=5">
-
-    <title>Gymetra | Gymnastics Scoring</title>
+    <link rel="shortcut icon" href="/fa.ico?v=4" type="image/x-icon">
+    <link rel="icon" href="/fa.ico?v=4" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/images/fa.png?v=4">
+    <link rel="icon" type="image/png" href="/images/fa.png?v=4">
 
     <style>
         :root {
@@ -19,9 +15,7 @@
             --apple-blue: #0071e3;
             --bg-white: #ffffff;
             --bg-secondary: #f5f5f7;
-            --skeleton: #e5e5e7;
         }
-
         body {
             margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
@@ -29,138 +23,149 @@
             color: var(--apple-black);
             -webkit-font-smoothing: antialiased;
         }
-
         .content-wrapper { max-width: 980px; margin: 0 auto; padding: 0 20px; }
-
-        /* HERO SECTION */
-        .hero { padding: 120px 0 100px; text-align: center; border-bottom: 1px solid var(--bg-secondary); }
-        .hero img { width: 120px; height: 120px; border-radius: 22%; background: #fff; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.08); margin-bottom: 40px; }
-        h1 { font-size: 80px; line-height: 1.05; font-weight: 700; letter-spacing: -0.015em; margin-bottom: 30px; }
+        .hero { padding-top: 120px; padding-bottom: 100px; text-align: center; border-bottom: 1px solid #f5f5f7; }
+        .hero img { width: 140px; margin-bottom: 40px; }
+        h1 { font-size: 80px; line-height: 1.05; font-weight: 700; letter-spacing: -0.015em; margin: 0 auto 30px; }
         .hero-lead { font-size: 32px; line-height: 1.125; font-weight: 600; color: var(--apple-gray); max-width: 700px; margin: 0 auto 40px; }
-
-        /* LOADING / SKELETON ANIMATION */
-        .meets-container { padding: 60px 0; }
-        .skeleton-card {
-            background: var(--bg-secondary);
-            height: 80px;
-            border-radius: 18px;
-            margin-bottom: 15px;
-            position: relative;
-            overflow: hidden;
+        .section { padding: 120px 0; border-bottom: 1px solid #f5f5f7; }
+        .section-label { font-size: 21px; font-weight: 600; color: var(--apple-black); display: block; margin-bottom: 15px; }
+        h2 { font-size: 48px; line-height: 1.1; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 25px 0; }
+        .section-p { font-size: 24px; line-height: 1.4; font-weight: 500; color: var(--apple-gray); max-width: 800px; margin: 0; }
+        .highlight { color: var(--apple-black); }
+        .closing { padding: 150px 0; text-align: center; }
+        .closing h2 { font-size: 64px; margin-bottom: 40px; }
+        .closing-list { font-size: 28px; font-weight: 600; list-style: none; padding: 0; margin-bottom: 60px; }
+        .closing-list li { margin: 10px 0; opacity: 0.4; transition: opacity 0.3s; }
+        .closing-list li:hover { opacity: 1; }
+        .cta-group { display: flex; gap: 30px; justify-content: center; margin-top: 50px; }
+        .btn-apple { background-color: var(--apple-blue); color: white; padding: 18px 32px; font-size: 19px; font-weight: 600; border-radius: 980px; text-decoration: none; transition: all 0.2s; }
+        .btn-apple:hover { background-color: #0077ed; transform: scale(1.02); }
+        .link-apple { font-size: 19px; font-weight: 500; color: var(--apple-blue); text-decoration: none; display: flex; align-items: center; gap: 5px; }
+        .link-apple:hover { text-decoration: underline; }
+        footer { padding: 60px 0; font-size: 14px; color: #86868b; text-align: center; background: #f5f5f7; }
+        img[alt="Gymetra Logo"] {
+            width: 120px; height: 120px; border-radius: 22%; background: #ffffff; padding: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: block; margin: 0 auto;
         }
         
-        .skeleton-card::after {
-            content: "";
-            position: absolute;
-            top: 0; right: 0; bottom: 0; left: 0;
+        /* --- ESTILOS SKELETON (NUEVOS) --- */
+        .meets-section { padding: 80px 0; background: #fafafa; border-radius: 30px; margin: 40px 0; text-align: center; }
+        .skeleton-loader { display: flex; flex-direction: column; gap: 15px; max-width: 600px; margin: 0 auto; }
+        .skeleton-row { height: 60px; background: #e5e5e7; border-radius: 14px; position: relative; overflow: hidden; }
+        .skeleton-row::after {
+            content: ""; position: absolute; top: 0; right: 0; bottom: 0; left: 0;
             transform: translateX(-100%);
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            animation: shimmer 1.6s infinite;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+            animation: shimmer 1.5s infinite;
         }
+        @keyframes shimmer { 100% { transform: translateX(100%); } }
+        .meet-item { background: white; padding: 20px; border-radius: 14px; border: 1px solid #e5e5e7; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; text-align: left; }
 
-        @keyframes shimmer {
-            100% { transform: translateX(100%); }
-        }
-
-        /* DATA CARDS */
-        .meet-card {
-            background: var(--bg-secondary);
-            padding: 24px;
-            border-radius: 18px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: transform 0.2s ease;
-        }
-        .meet-card:hover { transform: scale(1.01); }
-        .meet-info h3 { margin: 0; font-size: 20px; font-weight: 600; }
-        .meet-info p { margin: 4px 0 0; color: var(--apple-gray); font-size: 14px; }
-
-        /* BUTTONS */
-        .cta-group { display: flex; gap: 20px; justify-content: center; }
-        .btn-apple { background-color: var(--apple-blue); color: white; padding: 18px 32px; font-size: 19px; font-weight: 600; border-radius: 980px; text-decoration: none; transition: all 0.2s; }
-        .btn-apple:hover { opacity: 0.9; transform: scale(1.02); }
-
-        footer { padding: 60px 0; font-size: 14px; color: var(--apple-gray); text-align: center; }
-
-        @media (max-width: 734px) { h1 { font-size: 48px; } .hero-lead { font-size: 24px; } }
+        @media (max-width: 734px) { h1 { font-size: 48px; } h2 { font-size: 36px; } .hero-lead { font-size: 24px; } .section-p { font-size: 20px; } .closing h2 { font-size: 42px; } }
     </style>
 </head>
 <body>
 
-    <div class="content-wrapper">
-        <header class="hero">
-            <img src="/images/a.png" alt="Gymetra Logo">
-            <h1>This is Gymetra.</h1>
-            <p class="hero-lead">Professional gymnastics scoring for everyone.</p>
-            <div class="cta-group">
-                <a href="/meets/" class="btn-apple">View Live Meets</a>
-            </div>
-        </header>
+<div style="background: #fff3cd; color: #856404; padding: 12px 20px; text-align: center; font-size: 14px; font-weight: 500; border-bottom: 1px solid #ffeeba; width: 100%; box-sizing: border-box; position: relative; z-index: 2000;">
+    ⚠️ This application is currently in <strong>Beta version</strong>. Some features may be subject to change.
+</div>
 
-        <section class="meets-container">
-            <h2 style="font-size: 24px; margin-bottom: 30px;">Active Events</h2>
-            
-            <div id="meets-list">
-                <!-- SKELETON ROWS (Se borran al cargar) -->
-                <div class="skeleton-card"></div>
-                <div class="skeleton-card"></div>
-                <div class="skeleton-card"></div>
-            </div>
-        </section>
-    </div>
+<div class="content-wrapper">
+    <header class="hero">
+        <img src="/images/a.png" alt="Gymetra Logo">
+        <h1>This is Gymetra.</h1>
+        <p class="hero-lead">A simple and powerful way to run gymnastics scoring — from large competitions to small local events, and even at home.</p>
+        
+        <div class="cta-group">
+            <a href="https://testflight.apple.com/join/WnqNAtZ2/" class="btn-apple">Download</a>
+            <a href="#active-meets" class="link-apple" onclick="document.getElementById('active-meets').scrollIntoView({behavior:'smooth'})">View Meets</a>
+        </div>
+    </header>
 
-    <footer>
-        Copyright &copy; 2026 Gymetra Studio. All rights reserved.
-    </footer>
+    <section id="active-meets" class="meets-section">
+        <h2 style="font-size: 32px;">Active Events</h2>
+        <div id="meets-list" class="skeleton-loader">
+            <div class="skeleton-row"></div>
+            <div class="skeleton-row"></div>
+            <div class="skeleton-row"></div>
+        </div>
+    </section>
 
-    <script>
-        // Configuración de Supabase (Lectura Pública)
-        const SB_URL = "https://ulexxpaatpjtpgkancew.supabase.co/rest/v1/meets";
-        const SB_KEY = "TU_ANON_KEY_AQUI"; // Usa la 'anon public' key para la web principal
+    <section class="section">
+        <span class="section-label">For the Arena</span>
+        <h2>Competitions.</h2>
+        <p class="section-p">
+            Organize events, assign judges, and manage athletes in real time. 
+            <span class="highlight">Judges enter scores instantly</span>, and results update live across the entire system. 
+            Everything stays synchronized, clear, and professional.
+        </p>
+    </section>
 
-        async function fetchMeets() {
-            try {
-                const response = await fetch(`${SB_URL}?select=slug`, {
-                    headers: { "apikey": SB_KEY, "Authorization": `Bearer ${SB_KEY}` }
-                });
-                const data = await response.json();
-                renderMeets(data);
-            } catch (error) {
-                console.error("Error fetching meets:", error);
-                document.getElementById('meets-list').innerHTML = "<p>Unable to load events.</p>";
-            }
-        }
+    <section class="section">
+        <span class="section-label">At the Core</span>
+        <h2>Small Gyms.</h2>
+        <p class="section-p">
+            You don't need a huge budget or expensive hardware. Gymetra was built for everyone. 
+            Manage local club meets with the same tools used in large venues. 
+            <span class="highlight">Simplicity is our priority.</span>
+        </p>
+    </section>
 
-        function renderMeets(meets) {
+    <section class="closing">
+        <h2>Built for the entire gymnastics community.</h2>
+        <ul class="closing-list">
+            <li>From major events…</li>
+            <li>To small gyms…</li>
+            <li>To training at home.</li>
+        </ul>
+        <p class="section-p" style="margin: 0 auto; text-align: center;">Everyone is welcome here.</p>
+        <h2 style="font-size: 32px; margin-top: 40px; opacity: 0.9;">This is Gymetra.</h2>
+        <a href="/docs/" class="section-p" style="display: block; margin-top: 20px; text-decoration: none; color: var(--apple-blue);">Docs</a>
+    </section>
+</div>
+
+<footer>
+    Copyright &copy; 2026 Gymetra Studio. All rights reserved.
+</footer>
+
+<script>
+    // Configuración Supabase
+    const API_URL = "https://ulexxpaatpjtpgkancew.supabase.co/rest/v1/meets";
+    const API_KEY = "TU_ANON_KEY_AQUI"; // REEMPLAZA CON TU LLAVE ANON
+
+    async function loadMeets() {
+        try {
+            const r = await fetch(`${API_URL}?select=slug`, {
+                headers: { "apikey": API_KEY, "Authorization": `Bearer ${API_KEY}` }
+            });
+            const data = await r.json();
             const list = document.getElementById('meets-list');
             list.innerHTML = ""; // Borra los skeletons
 
-            if (meets.length === 0) {
-                list.innerHTML = "<p style='color: #86868b;'>No active events at the moment.</p>";
+            if(data.length === 0) {
+                list.innerHTML = "<p>No active meets found.</p>";
                 return;
             }
 
-            meets.forEach(meet => {
-                const card = document.createElement('div');
-                card.className = 'meet-card';
-                card.innerHTML = `
-                    <div class="meet-info">
-                        <h3>${meet.slug.toUpperCase()}</h3>
-                        <p>Live Competition</p>
-                    </div>
-                    <a href="/meets/view.html?slug=${meet.slug}" class="btn-apple" style="padding: 10px 20px; font-size: 14px;">View Results</a>
+            data.forEach(m => {
+                const div = document.createElement('div');
+                div.className = 'meet-item';
+                div.innerHTML = `
+                    <strong>${m.slug.toUpperCase()}</strong>
+                    <a href="/meets/view.html?slug=${m.slug}" class="link-apple" style="font-size: 14px;">View Live</a>
                 `;
-                list.appendChild(card);
+                list.appendChild(div);
             });
+        } catch(e) {
+            console.error(e);
         }
+    }
 
-        // Simular carga o ejecutar directamente
-        window.onload = () => {
-            // Un pequeño delay de 800ms para que se aprecie el Skeleton si la conexión es muy rápida
-            setTimeout(fetchMeets, 800);
-        };
-    </script>
+    // Cargar con delay de 1s para ver el efecto Shimmer
+    setTimeout(loadMeets, 1000);
+</script>
+
 </body>
 </html>
