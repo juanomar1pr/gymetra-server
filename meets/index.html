@@ -220,10 +220,10 @@ function render() {
             <div class="arrow">›</div>
         `
 
-        div.onclick = () => {
-            // 2. Ruta corregida hacia view.html en la raíz
-            window.location.href = `/view.html?slug=${m.slug}`;
-        }
+ div.onclick = () => {
+    // Sin la barra / al principio, porque view.html está en la misma carpeta (meets)
+    window.location.href = `view.html?slug=${m.slug}`;
+}
 
         list.appendChild(div)
     })
