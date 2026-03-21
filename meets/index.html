@@ -164,10 +164,10 @@ fetch("https://api.github.com/repos/juanomar1pr/gymetra-server/contents/meets")
         .filter(i => i.type === "dir")
         .map(i => i.name)
 
-    const promises = slugs.map(slug =>
-        // Buscamos el JSON dentro de cada carpeta en /meets/
-        fetch(`/meets/${slug}/results.json?t=` + Date.now())
-        .then(r => r.json())
+  const promises = slugs.map(slug =>
+    // Asegúrate de que la ruta sea relativa o empiece desde la raíz correctamente
+    fetch(`/meets/${slug}/results.json?t=` + Date.now()) 
+    .then(r => r.json())
         .then(data => ({
             slug: slug,
             name: data.meet?.name || slug,
