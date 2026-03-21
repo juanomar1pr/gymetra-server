@@ -77,7 +77,7 @@ function toggleTheme() {
 }
 
 /* FETCH CORREGIDO: Usando ruta absoluta desde la raíz */
-fetch(`/meets/${slug}/results.json?t=` + Date.now())
+fetch(/meets/${slug}/results.json?t= + Date.now())
 .then(r => {
     if (!r.ok) throw new Error("Meet not found");
     return r.json();
