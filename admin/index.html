@@ -179,8 +179,7 @@ body {
 </div>
 
 <script>
-// --- CONFIGURACIÓN ---
-// Importante: La URL base NO debe llevar /rest/v1 al final aquí, se lo sumamos abajo
+// --- CONFIGURATION ---
 const SB_BASE_URL = "https://ulexxpaatpjtpgkancew.supabase.co/rest/v1";
 window.ADMIN_KEY = null; 
 
@@ -190,7 +189,7 @@ function login() {
     
     window.ADMIN_KEY = password; 
 
-    // Prueba de conexión: Apuntamos directo a la tabla 'meets'
+    // Test connection
     fetch(`${SB_BASE_URL}/meets?select=slug&limit=1`, {
         method: "GET",
         headers: { 
@@ -204,8 +203,8 @@ function login() {
         load();
     })
     .catch((err) => {
-        console.error("Error de login:", err);
-        errorEl.textContent = "Llave inválida o error de conexión.";
+        console.error("Login error:", err);
+        errorEl.textContent = "Invalid key. Access denied.";
     });
 }
 
@@ -222,7 +221,7 @@ function load() {
         container.innerHTML = "";
 
         if (!data || data.length === 0) {
-            container.innerHTML = '<div style="color:var(--text-secondary); padding: 20px;">No hay competencias.</div>';
+            container.innerHTML = '<div style="color:var(--text-secondary); padding: 20px;">No active meets found.</div>';
             return;
         }
 
@@ -232,19 +231,21 @@ function load() {
             div.innerHTML = `
                 <div class="card-left">
                     <div class="slug-name">${item.slug}</div>
+                    <div class="url-preview">/view.html?slug=${item.slug}</div>
                 </div>
                 <div class="actions">
-                    <button class="btn btn-danger" onclick="deleteMeet('${item.slug}')">Borrar</button>
+                    <button class="btn btn-secondary" onclick="openMeet('${item.slug}')">Open</button>
+                    <button class="btn btn-danger" onclick="deleteMeet('${item.slug}')">Delete</button>
                 </div>
             `;
             container.appendChild(div);
         });
     })
-    .catch(err => console.error("Error cargando lista:", err));
+    .catch(err => console.error("Loading error:", err));
 }
 
 function deleteMeet(slug) {
-    if (!confirm(`¿Borrar "${slug}"?`)) return;
+    if (!confirm(`Permanently delete "${slug}"? This action cannot be undone.`)) return;
 
     fetch(`${SB_BASE_URL}/meets?slug=eq.${slug}`, {
         method: "DELETE",
@@ -258,7 +259,11 @@ function deleteMeet(slug) {
         if (!r.ok) throw new Error("Error " + r.status);
         load(); 
     })
-    .catch(err => alert("No se pudo borrar. Verifica la consola (F12)."));
+    .catch(err => alert("Delete failed. Please check your service_role key."));
+}
+
+function openMeet(slug) {
+    window.open(`https://gymetra.net/meets/view.html?slug=${slug}`, "_blank");
 }
 </script>
 
