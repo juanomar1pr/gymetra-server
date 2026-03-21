@@ -3,9 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- CORREGIDO: Rutas directas a la raíz -->
-<link rel="icon" href="fa.ico?v=2" type="image/x-icon">
-<link rel="apple-touch-icon" href="fa.png?v=2">
+ <!-- 1. El .ico está en la RAÍZ (fuera de images) -->
+<link rel="shortcut icon" href="/fa.ico?v=4" type="image/x-icon">
+<link rel="icon" href="/fa.ico?v=4" type="image/x-icon">
+
+<!-- 2. El .png para Apple está DENTRO de la carpeta images -->
+<link rel="apple-touch-icon" href="/images/fa.png?v=4">
+
+<!-- 3. Opcional: Icono PNG para navegadores modernos (también en images) -->
+<link rel="icon" type="image/png" href="/images/fa.png?v=4">
 
     <style>
         /* Tu CSS se queda igual, está perfecto */
