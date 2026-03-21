@@ -19,7 +19,7 @@ document.documentElement.setAttribute("data-theme", savedTheme);
     --border: rgba(255,255,255,0.08);
     --text: #fff;
     --sub: #8e8e93;
-    --accent: #8b5cf6; /* 🔥 violeta */
+    --accent: #8b5cf6;
 }
 [data-theme="light"] {
     --bg: #f2f2f7;
@@ -27,17 +27,15 @@ document.documentElement.setAttribute("data-theme", savedTheme);
     --border: #e5e5ea;
     --text: #000;
     --sub: #636366;
-    --accent: #7c3aed; /* violeta ajustado */
+    --accent: #7c3aed;
 }
 body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
     background: var(--bg);
-
     color: var(--text);
 }
 
-/* HEADER */
 .hero {
     text-align: center;
     padding: 60px 20px 20px;
@@ -54,7 +52,6 @@ body {
     margin-top: 6px;
 }
 
-/* SEARCH */
 .controls {
     display: flex;
     justify-content: center;
@@ -66,22 +63,18 @@ input {
     padding: 14px;
     border-radius: 12px;
     border: none;
- background: var(--row-bg);
+    background: var(--row-bg);
     color: var(--text);
     font-size: 16px;
 }
 
-/* 🔥 LISTA TIPO APPLE */
 .list {
     max-width: 700px;
     margin: 0 auto;
     padding-bottom: 80px;
-
-    /* 🔥 SCROLL SUAVE */
     overflow-y: auto;
 }
 
-/* 🔥 FILA ESTILO iOS */
 .row {
     display: flex;
     align-items: center;
@@ -92,10 +85,9 @@ input {
 }
 
 .row:hover {
-background: var(--border);
+    background: var(--border);
 }
 
-/* 🔥 TEXTO EN UNA LÍNEA */
 .row-content {
     display: flex;
     flex: 1;
@@ -104,31 +96,26 @@ background: var(--border);
     overflow: hidden;
 }
 
-/* NOMBRE */
 .name {
     font-weight: 600;
     white-space: nowrap;
 }
 
-/* SEPARADOR */
 .dot {
     color: var(--sub);
 }
 
-/* META INLINE */
 .meta {
     color: var(--sub);
     font-size: 13px;
     white-space: nowrap;
 }
 
-/* ARROW */
 .arrow {
     color: var(--sub);
     margin-left: 10px;
 }
 
-/* LOADING */
 .loading, .empty {
     text-align: center;
     padding: 40px;
@@ -145,7 +132,7 @@ background: var(--border);
 </div>
 
 <div class="controls">
-    <input id="search" placeholder="Search meet, club, location">
+    <input id="search" placeholder="Search meet, club, or location">
 </div>
 
 <div class="list" id="list">
@@ -155,7 +142,6 @@ background: var(--border);
 <script>
 let ALL_MEETS = [];
 
-// --- CONFIGURACIÓN ÚNICA (SUPABASE) ---
 const SUPABASE_URL = "https://ulexxpaatpjtpgkancew.supabase.co/rest/v1/meets";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVsZXh4cGFhdHBqdHBna2FuY2V3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTIyNDMsImV4cCI6MjA4OTYyODI0M30.gqKgykSN65QKxTWC7WwsjsUijrfNi0QviwyccZBrPkA";
 
@@ -169,20 +155,17 @@ async function loadAllMeets() {
             }
         });
         
-        if (!response.ok) throw new Error("Error en respuesta");
+        if (!response.ok) throw new Error("Connection Error");
         
         const data = await response.json();
         
-      // Formatear los datos buscando en todas las rutas posibles
         ALL_MEETS = data.map(item => {
             const d = item.data || {};
-            const meetInfo = d.meet || {}; // Buscamos dentro de 'meet'
+            const meetInfo = d.meet || {};
             
             return {
                 slug: item.slug,
-                // Si no hay name en meet, usa el slug
                 name: meetInfo.name || d.name || item.slug, 
-                // Buscamos el club/host en las variantes de la App
                 host: meetInfo.hostGym || meetInfo.club || d.host || "", 
                 location: meetInfo.location || d.location || "",
                 date: meetInfo.startDate || d.date || ""
@@ -193,7 +176,8 @@ async function loadAllMeets() {
 
     } catch (error) {
         console.error("Error:", error);
-        list.innerHTML = `<div class="empty">Error conectando con el servidor</div>`;
+        // CAMBIADO A INGLÉS
+        list.innerHTML = `<div class="empty">Unable to connect to server</div>`;
     }
 }
 
@@ -214,7 +198,8 @@ function render() {
     );
 
     if (filtered.length === 0) {
-        list.innerHTML = `<div class="empty">No hay competencias activas</div>`;
+        // CAMBIADO A INGLÉS
+        list.innerHTML = `<div class="empty">No active meets found</div>`;
         return;
     }
 
