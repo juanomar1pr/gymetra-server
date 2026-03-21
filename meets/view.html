@@ -3,221 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <link rel="icon" href="/fa.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/fa.png">
-<link rel="mask-icon" href="/fa.png" color="#0A84FF">
-
 <title>Gymetra | Pro Analytics</title>
 <script>
 const savedTheme = localStorage.getItem("theme") || "light";
 document.documentElement.setAttribute("data-theme", savedTheme);
 </script>
-
 <style>
-:root {
-    --bg: #000000;
-    --surface: #111111;
-    --row-alt: #161618;
-    --accent: #0A84FF;
-    --text: #ffffff;
-    --text-dim: #8e8e93;
-    --border: #2c2c2e;
-    --gold: #FFD700;
-}
-[data-theme="light"] {
-    --bg: #f2f2f7;
-    --surface: #ffffff;
-    --row-alt: #f9f9f9;
-    --accent: #007AFF;
-    --text: #000000;
-    --text-dim: #636366;
-    --border: #d1d1d6;
-    --gold: #c6a300;
-}
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    margin: 0;
-    font-size: 13px;
-    -webkit-font-smoothing: antialiased;
-}
-
-.sticky-top {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background: var(--bg);
-    border-bottom: 1px solid var(--border);
-}
-
-.header-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 15px 5px;
-}
-
-.breadcrumb {
-    font-weight: 800;
-    font-size: 10px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.breadcrumb span {
-    color: var(--accent);
-}
-
-.theme-toggle {
-    cursor: pointer;
-    font-size: 18px;
-}
-
-.filter-row {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding: 10px 15px;
-    scrollbar-width: none;
-}
-.filter-row::-webkit-scrollbar { display: none; }
-
-.chip {
-    padding: 6px 14px;
-    border-radius: 8px;
-    background: var(--surface);
-    color: var(--text-dim);
-    cursor: pointer;
-    border: 1px solid var(--border);
-    white-space: nowrap;
-    font-weight: 700;
-    font-size: 11px;
-    transition: all 0.2s;
-}
-
-.chip.active {
-    background: var(--accent);
-    color: white;
-    border-color: var(--accent);
-}
-
-.event-bar {
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-}
-
-.aa-chip {
-    border-color: var(--gold);
-    color: var(--gold);
-}
-
-.search-area {
-    padding: 10px 15px;
-}
-
-input {
-    width: 100%;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 10px 15px;
-    color: var(--text);
-    font-size: 14px;
-    box-sizing: border-box;
-}
-
-.table-wrapper {
-    width: 100%;
-    overflow-x: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 800px;
-}
-
-thead th {
-    background: var(--surface);
-    color: var(--text-dim);
-    text-align: left;
-    padding: 14px 10px;
-    font-size: 10px;
-    font-weight: 800;
-    text-transform: uppercase;
-    border-bottom: 2px solid var(--border);
-}
-
-tbody tr {
-    border-bottom: 1px solid var(--border);
-}
-
-tbody tr:nth-child(even) {
-    background: var(--row-alt);
-}
-
-td {
-    padding: 12px 10px;
-}
-
-.col-rank {
-    width: 40px;
-    text-align: center;
-    font-weight: 900;
-    font-size: 14px;
-    color: var(--text-dim);
-}
-
-.rank-1 { color: var(--gold); }
-
-.col-name {
-    font-weight: 700;
-    color: var(--text);
-}
-
-.col-team {
-    color: var(--text-dim);
-    font-size: 11px;
-}
-
-.score-cell {
-    text-align: center;
-    font-weight: 700;
-    font-family: ui-monospace, SFMono-Regular, monospace;
-    color: var(--text-dim);
-    width: 70px;
-}
-
-.score-active {
-    color: var(--text);
-    background: rgba(10, 132, 255, 0.1);
-}
-
-.col-aa {
-    background: rgba(255, 215, 0, 0.05);
-    color: var(--gold);
-}
+:root { --bg: #000; --surface: #111; --text: #fff; --text-dim: #8e8e93; --accent: #0A84FF; --border: #2c2c2e; --gold: #FFD700; --row-alt: #161618; }
+[data-theme="light"] { --bg: #f2f2f7; --surface: #fff; --text: #000; --text-dim: #636366; --accent: #007AFF; --border: #d1d1d6; --gold: #c6a300; --row-alt: #f9f9f9; }
+body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; font-size: 13px; }
+.sticky-top { position: sticky; top: 0; z-index: 1000; background: var(--bg); border-bottom: 1px solid var(--border); }
+.header-top { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; }
+.breadcrumb { font-weight: 800; font-size: 10px; color: var(--text-dim); text-transform: uppercase; }
+.breadcrumb span { color: var(--accent); }
+.filter-row { display: flex; gap: 8px; overflow-x: auto; padding: 10px 15px; }
+.chip { padding: 6px 14px; border-radius: 8px; background: var(--surface); color: var(--text-dim); border: 1px solid var(--border); cursor: pointer; white-space: nowrap; font-weight: 700; }
+.chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.search-area { padding: 10px 15px; }
+input { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px; color: var(--text); box-sizing: border-box; }
+.table-wrapper { width: 100%; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 800px; }
+th { background: var(--surface); color: var(--text-dim); padding: 14px 10px; text-align: left; font-size: 10px; border-bottom: 2px solid var(--border); }
+td { padding: 12px 10px; border-bottom: 1px solid var(--border); }
+tr:nth-child(even) { background: var(--row-alt); }
+.score-cell { text-align: center; font-weight: 700; font-family: monospace; width: 70px; }
+.score-active { background: rgba(10, 132, 255, 0.1); color: var(--text); }
+.col-aa { color: var(--gold); font-weight: 900; }
 </style>
 </head>
-
 <body>
 
 <div class="sticky-top">
     <div class="header-top">
         <div class="breadcrumb" id="meet-title">GYMETRA > <span>RESULTS</span></div>
-        <div class="theme-toggle" id="theme-btn" onclick="toggleTheme()">☀️</div>
+        <div onclick="toggleTheme()" style="cursor:pointer">☀️</div>
     </div>
-    
     <div class="filter-row" id="session-filters"></div>
-    <div class="filter-row event-bar" id="event-filters"></div>
-
-    <div class="search-area">
-        <input id="search" placeholder="Search gymnast, team or division...">
-    </div>
+    <div class="filter-row" id="event-filters" style="background: var(--surface); border-top: 1px solid var(--border);"></div>
+    <div class="search-area"><input id="search" placeholder="Search gymnast, team or division..."></div>
 </div>
 
 <div class="table-wrapper">
@@ -235,27 +60,21 @@ let curSession = "";
 let curSortEvent = "AA";
 
 function toggleTheme() {
-    const current = localStorage.getItem("theme") || "dark";
-    const next = current === "dark" ? "light" : "dark";
+    const next = (localStorage.getItem("theme") || "dark") === "dark" ? "light" : "dark";
     localStorage.setItem("theme", next);
     document.documentElement.setAttribute("data-theme", next);
-    document.getElementById("theme-btn").innerText = next === "light" ? "🌙" : "☀️";
 }
 
-// CORRECCIÓN DE RUTA: ./ busca la carpeta del meet dentro de la carpeta /meets/
+// ESTA ES LA CORRECCIÓN CLAVE:
+// ./ busca la carpeta que tiene el nombre del meet dentro de la carpeta 'meets'
 fetch(`./${slug}/results.json?t=` + Date.now())
-.then(r => {
-    if (!r.ok) throw new Error("Not Found");
-    return r.json();
-})
+.then(r => { if(!r.ok) throw new Error(); return r.json(); })
 .then(data => {
     DATA = data;
     document.getElementById("meet-title").innerHTML = `${data.meet.name} > <span id="sess-display">SESS 1</span>`;
-
     const sessions = [...new Set(data.events.map(e => e.session || "Session 1"))];
     curSession = sessions[0];
     const sessCont = document.getElementById("session-filters");
-
     sessions.forEach((s, i) => {
         const div = document.createElement("div");
         div.className = `chip ${i === 0 ? 'active' : ''}`;
@@ -270,33 +89,25 @@ fetch(`./${slug}/results.json?t=` + Date.now())
         };
         sessCont.appendChild(div);
     });
-
     updateEventChips();
     render();
 })
-.catch(err => {
-    document.body.innerHTML = `<div style="padding:100px 20px; text-align:center;">
-        <h1>Meet Not Found</h1>
-        <p style="color:var(--text-dim)">Could not load data for: <b>${slug}</b></p>
-        <br><a href="/meets/" style="color:var(--accent); text-decoration:none; font-weight:bold;">← Go Back</a>
-    </div>`;
+.catch(() => {
+    document.body.innerHTML = `<div style="text-align:center; padding:100px;"><h1>Meet Not Found</h1><p>Check if folder <b>${slug}</b> exists in /meets/</p><a href="/meets/" style="color:var(--accent)">Go Back</a></div>`;
 });
 
 function updateEventChips() {
     const eventCont = document.getElementById("event-filters");
     eventCont.innerHTML = "";
-    let events = [...new Set(DATA.events.filter(e => (e.session || "Session 1") === curSession).map(e => e.event))];
-    if (!events.includes("AA")) events.push("AA");
-    
-    events.sort((a,b) => a === "AA" ? -1 : b === "AA" ? 1 : 0);
-
-    events.forEach(en => {
+    let evts = [...new Set(DATA.events.filter(e => (e.session || "Session 1") === curSession).map(e => e.event))];
+    if (!evts.includes("AA")) evts.push("AA");
+    evts.sort((a,b) => a === "AA" ? -1 : 1).forEach(en => {
         const div = document.createElement("div");
-        div.className = `chip event-chip ${en === "AA" ? 'aa-chip' : ''} ${en === curSortEvent ? 'active' : ''}`;
+        div.className = `chip ${en === curSortEvent ? 'active' : ''}`;
         div.innerText = en;
         div.onclick = () => {
             curSortEvent = en;
-            eventCont.querySelectorAll(".event-chip").forEach(c => c.classList.remove("active"));
+            eventCont.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
             div.classList.add("active");
             render();
         };
@@ -308,54 +119,30 @@ function render() {
     const head = document.getElementById("table-head");
     const body = document.getElementById("table-body");
     const query = document.getElementById("search").value.toLowerCase();
-
     const sessionEvents = DATA.events.filter(e => (e.session || "Session 1") === curSession);
     let eventNames = [...new Set(sessionEvents.map(e => e.event))].filter(e => e !== "AA");
     eventNames.push("AA");
-
-    head.innerHTML = `<th>Rank</th><th>Gymnast</th><th>Team</th><th>Div</th>` + 
-                     eventNames.map(en => `<th style="text-align:center">${en}</th>`).join('');
-
+    head.innerHTML = `<th>Rank</th><th>Gymnast</th><th>Team</th>` + eventNames.map(en => `<th style="text-align:center">${en}</th>`).join('');
     const athletes = {};
     sessionEvents.forEach(evt => {
         evt.results.forEach(res => {
             const a = res.athlete;
             const id = a.athleteId || (a.firstName + a.lastName);
-            if (!athletes[id]) {
-                athletes[id] = { 
-                    name: `${a.firstName} ${a.lastName}`, 
-                    team: a.club || "—", 
-                    div: a.ageDivision || "—", 
-                    scores: {}, 
-                    total: 0 
-                };
-            }
+            if (!athletes[id]) athletes[id] = { name: `${a.firstName} ${a.lastName}`, team: a.club || "—", scores: {}, total: 0 };
             const s = Number(res.score) || 0;
             athletes[id].scores[evt.event] = s;
             if (evt.event !== "AA") athletes[id].total += s;
         });
     });
-
     Object.values(athletes).forEach(a => { if(!a.scores["AA"]) a.scores["AA"] = a.total; });
-
-    const list = Object.values(athletes)
-        .filter(a => (a.name + a.team + a.div).toLowerCase().includes(query))
-        .sort((a, b) => (b.scores[curSortEvent] || 0) - (a.scores[curSortEvent] || 0));
-
+    const list = Object.values(athletes).filter(a => (a.name + a.team).toLowerCase().includes(query)).sort((a,b) => (b.scores[curSortEvent]||0)-(a.scores[curSortEvent]||0));
     body.innerHTML = "";
-    list.forEach((a, index) => {
+    list.forEach((a, i) => {
         const tr = document.createElement("tr");
-        const rank = index + 1;
-        let html = `<td class="col-rank ${rank === 1 ? 'rank-1' : ''}">${rank}</td>
-                    <td class="col-name">${a.name}</td>
-                    <td class="col-team">${a.team}</td>
-                    <td class="col-div">${a.div}</td>`;
-        
+        let html = `<td>${i+1}</td><td><b>${a.name}</b></td><td style="color:var(--text-dim)">${a.team}</td>`;
         eventNames.forEach(en => {
-            const val = a.scores[en] || 0;
-            const isSort = (en === curSortEvent) ? "score-active" : "";
-            const isAA = (en === "AA") ? "col-aa" : "";
-            html += `<td class="score-cell ${isSort} ${isAA}">${val.toFixed(3)}</td>`;
+            const val = (a.scores[en] || 0).toFixed(3);
+            html += `<td class="score-cell ${en===curSortEvent?'score-active':''} ${en==='AA'?'col-aa':''}">${val}</td>`;
         });
         tr.innerHTML = html;
         body.appendChild(tr);
