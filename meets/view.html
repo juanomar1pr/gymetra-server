@@ -109,7 +109,7 @@ function toggleTheme() {
 
 // CORRECCIÓN CLAVE: Como ya estamos dentro de /meets/, no necesitamos poner /meets/ en la URL.
 // Buscamos directamente la carpeta del meet (el slug).
-fetch(`./${slug}/results.json?t=` + Date.now())
+fetch( ./${slug}/results.json?t=  + Date.now())
 .then(r => {
     if (!r.ok) throw new Error("Meet not found");
     return r.json();
