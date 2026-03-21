@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="/fa.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/fa.png">
-<title>Gymetra | Pro Analytics</title>
+<title>Gymetra | Live Results</title>
 <script>
 const savedTheme = localStorage.getItem("theme") || "light";
 document.documentElement.setAttribute("data-theme", savedTheme);
@@ -31,37 +31,41 @@ tr:nth-child(even) { background: var(--row-alt); }
 .score-cell { text-align: center; font-weight: 700; font-family: monospace; width: 70px; }
 .score-active { background: rgba(10, 132, 255, 0.1); color: var(--text); }
 .col-aa { color: var(--gold); font-weight: 900; }
+.loading-state { text-align: center; padding: 100px; color: var(--text-dim); }
 </style>
 </head>
 <body>
 
 <div class="sticky-top">
     <div class="header-top">
-        <div class="breadcrumb" id="meet-title">GYMETRA > <span>RESULTS</span></div>
+        <div class="breadcrumb" id="meet-title">GYMETRA > <span>CARGANDO...</span></div>
         <div onclick="toggleTheme()" style="cursor:pointer">☀️</div>
     </div>
     <div class="filter-row" id="session-filters"></div>
     <div class="filter-row" id="event-filters" style="background: var(--surface); border-top: 1px solid var(--border);"></div>
-    <div class="search-area"><input id="search" placeholder="Search gymnast, team or division..."></div>
+    <div class="search-area"><input id="search" placeholder="Buscar gimnasta, club o nivel..."></div>
 </div>
 
-<div class="table-wrapper">
+<div class="table-wrapper" id="content-area">
     <table>
         <thead><tr id="table-head"></tr></thead>
         <tbody id="table-body"></tbody>
     </table>
 </div>
 
+<div id="loader" class="loading-state">Conectando con Supabase...</div>
+
 <script>
 const params = new URLSearchParams(window.location.search);
 const slug = params.get("slug");
+
+// --- CONFIGURACIÓN SUPABASE ---
+const sbUrl = "https://ulexxpaatpjtpgkancew.supabase.co/rest/v1/meets";
+const sbKey = "PON_AQUI_TU_LLAVE_LEGACY_EYJ"; // <--- PEGA AQUÍ LA LLAVE LARGA eyJ...
+
 let DATA = null;
 let curSession = "";
 let curSortEvent = "AA";
-
-// CONFIGURACIÓN DE TU PROYECTO SUPABASE
-const sbUrl = "https://ulexxpaatpjtpgkancew.supabase.co/rest/v1/meets";
-const sbKey = "sb_publishable_rF-UPEX2zhC5cZztSFeGaQ_-7bjyloC";
 
 function toggleTheme() {
     const next = (localStorage.getItem("theme") || "dark") === "dark" ? "light" : "dark";
@@ -69,59 +73,64 @@ function toggleTheme() {
     document.documentElement.setAttribute("data-theme", next);
 }
 
-// FETCH DESDE LA BASE DE DATOS
-fetch(`${sbUrl}?slug=eq.${slug}&select=data`, {
-    headers: {
-        "apikey": sbKey,
-        "Authorization": `Bearer ${sbKey}`
-    }
-})
-.then(r => r.json())
-.then(response => {
-    if (response && response.length > 0) {
-        DATA = response[0].data;
-        document.getElementById("meet-title").innerHTML = `${DATA.meet.name} > <span id="sess-display">SESS 1</span>`;
-        
-        const sessions = [...new Set(DATA.events.map(e => e.session || "Session 1"))];
-        curSession = sessions[0];
-        const sessCont = document.getElementById("session-filters");
-        
-        sessCont.innerHTML = "";
-        sessions.forEach((s, i) => {
-            const div = document.createElement("div");
-            div.className = `chip ${i === 0 ? 'active' : ''}`;
-            div.innerText = s;
-            div.onclick = () => {
-                sessCont.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
-                div.classList.add("active");
-                curSession = s;
-                document.getElementById("sess-display").innerText = s;
-                updateEventChips();
-                render();
-            };
-            sessCont.appendChild(div);
+async function loadResults() {
+    try {
+        const response = await fetch(`${sbUrl}?slug=eq.${slug}&select=data`, {
+            headers: {
+                "apikey": sbKey,
+                "Authorization": `Bearer ${sbKey}`
+            }
         });
         
-        updateEventChips();
-        render();
-    } else {
-        throw new Error("No hay datos en Supabase para este slug.");
+        const result = await response.json();
+        
+        if (result && result.length > 0) {
+            DATA = result[0].data;
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("meet-title").innerHTML = `${DATA.meet.name} > <span id="sess-display">SESIÓN</span>`;
+            
+            // Extraer sesiones
+            const sessions = [...new Set(DATA.events.map(e => e.session || "Session 1"))];
+            curSession = sessions[0];
+            setupSessionFilters(sessions);
+            updateEventChips();
+            render();
+        } else {
+            showError("No hay datos para este evento.");
+        }
+    } catch (err) {
+        console.error(err);
+        showError("Error de conexión con el servidor.");
     }
-})
-.catch((err) => {
-    console.error(err);
-    document.body.innerHTML = `<div style="text-align:center; padding:100px;">
-        <h1>No Live Results</h1>
-        <p style="color:var(--text-dim)">Todavía no hay datos para: <b>${slug}</b></p>
-        <a href="/meets/" style="color:var(--accent); text-decoration:none;">← Regresar</a>
-    </div>`;
-});
+}
+
+function setupSessionFilters(sessions) {
+    const sessCont = document.getElementById("session-filters");
+    sessCont.innerHTML = "";
+    sessions.forEach((s, i) => {
+        const div = document.createElement("div");
+        div.className = `chip ${i === 0 ? 'active' : ''}`;
+        div.innerText = s;
+        div.onclick = () => {
+            sessCont.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+            div.classList.add("active");
+            curSession = s;
+            document.getElementById("sess-display").innerText = s;
+            updateEventChips();
+            render();
+        };
+        sessCont.appendChild(div);
+    });
+}
 
 function updateEventChips() {
     const eventCont = document.getElementById("event-filters");
     eventCont.innerHTML = "";
     let evts = [...new Set(DATA.events.filter(e => (e.session || "Session 1") === curSession).map(e => e.event))];
+    
+    // Asegurar que AA esté siempre
     if (!evts.includes("AA")) evts.push("AA");
+    
     evts.sort((a,b) => a === "AA" ? -1 : 1).forEach(en => {
         const div = document.createElement("div");
         div.className = `chip ${en === curSortEvent ? 'active' : ''}`;
@@ -140,23 +149,41 @@ function render() {
     const head = document.getElementById("table-head");
     const body = document.getElementById("table-body");
     const query = document.getElementById("search").value.toLowerCase();
+    
     const sessionEvents = DATA.events.filter(e => (e.session || "Session 1") === curSession);
     let eventNames = [...new Set(sessionEvents.map(e => e.event))].filter(e => e !== "AA");
     eventNames.push("AA");
-    head.innerHTML = `<th>Rank</th><th>Gymnast</th><th>Team</th>` + eventNames.map(en => `<th style="text-align:center">${en}</th>`).join('');
+
+    head.innerHTML = `<th>Rank</th><th>Gymnast</th><th>Team</th>` + 
+                     eventNames.map(en => `<th style="text-align:center">${en}</th>`).join('');
+
     const athletes = {};
     sessionEvents.forEach(evt => {
         evt.results.forEach(res => {
             const a = res.athlete;
             const id = a.athleteId || (a.firstName + a.lastName);
-            if (!athletes[id]) athletes[id] = { name: `${a.firstName} ${a.lastName}`, team: a.club || "—", scores: {}, total: 0 };
+            if (!athletes[id]) {
+                athletes[id] = { 
+                    name: `${a.firstName} ${a.lastName}`, 
+                    team: a.club || "—", 
+                    scores: {}, 
+                    total: 0 
+                };
+            }
             const s = Number(res.score) || 0;
             athletes[id].scores[evt.event] = s;
             if (evt.event !== "AA") athletes[id].total += s;
         });
     });
-    Object.values(athletes).forEach(a => { if(!a.scores["AA"]) a.scores["AA"] = a.total; });
-    const list = Object.values(athletes).filter(a => (a.name + a.team).toLowerCase().includes(query)).sort((a,b) => (b.scores[curSortEvent]||0)-(a.scores[curSortEvent]||0));
+
+    Object.values(athletes).forEach(a => { 
+        if(!a.scores["AA"]) a.scores["AA"] = a.total; 
+    });
+
+    const list = Object.values(athletes)
+        .filter(a => (a.name + a.team).toLowerCase().includes(query))
+        .sort((a,b) => (b.scores[curSortEvent]||0)-(a.scores[curSortEvent]||0));
+
     body.innerHTML = "";
     list.forEach((a, i) => {
         const tr = document.createElement("tr");
@@ -169,7 +196,17 @@ function render() {
         body.appendChild(tr);
     });
 }
+
+function showError(msg) {
+    document.getElementById("loader").innerHTML = `
+        <h1>Sin resultados</h1>
+        <p>${msg}</p>
+        <a href="index.html" style="color:var(--accent); text-decoration:none;">← Volver</a>
+    `;
+}
+
 document.getElementById("search").oninput = render;
+loadResults();
 </script>
 </body>
 </html>
