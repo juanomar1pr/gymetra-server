@@ -153,25 +153,26 @@ background: var(--border);
 </div>
 
 <script>
-
-let ALL_MEETS = []
+let ALL_MEETS = [];
 
 // --- CONFIGURACIÓN ÚNICA (SUPABASE) ---
 const SUPABASE_URL = "https://ulexxpaatpjtpgkancew.supabase.co/rest/v1/meets";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVsZXh4cGFhdHBqdHBna2FuY2V3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTIyNDMsImV4cCI6MjA4OTYyODI0M30.gqKgykSN65QKxTWC7WwsjsUijrfNi0QviwyccZBrPkA"
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVsZXh4cGFhdHBqdHBna2FuY2V3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTIyNDMsImV4cCI6MjA4OTYyODI0M30.gqKgykSN65QKxTWC7WwsjsUijrfNi0QviwyccZBrPkA";
 
 async function loadAllMeets() {
+    const list = document.getElementById("list");
     try {
-        // Traer datos solo de Supabase
         const response = await fetch(SUPABASE_URL, {
             headers: { 
                 'apikey': SUPABASE_KEY, 
                 'Authorization': `Bearer ${SUPABASE_KEY}` 
             }
         });
+        
+        if (!response.ok) throw new Error("Error en respuesta");
+        
         const data = await response.json();
         
-        // Formatear los datos para la lista
         ALL_MEETS = data.map(item => ({
             slug: item.slug,
             name: item.data?.meet?.name || item.slug,
@@ -183,35 +184,35 @@ async function loadAllMeets() {
         render();
 
     } catch (error) {
-        console.error("Error al conectar con Supabase:", error);
-        document.getElementById("list").innerHTML = `<div class="empty">Error conectando con el servidor en vivo</div>`;
+        console.error("Error:", error);
+        list.innerHTML = `<div class="empty">Error conectando con el servidor</div>`;
     }
 }
 
 function formatDate(d) {
-    if (!d) return ""
+    if (!d) return "";
     return new Date(d).toLocaleDateString("en-US", {
         month: "short", day: "numeric"
-    })
+    });
 }
 
 function render() {
-    const search = document.getElementById("search").value.toLowerCase()
-    const list = document.getElementById("list")
-    list.innerHTML = ""
+    const search = document.getElementById("search").value.toLowerCase();
+    const list = document.getElementById("list");
+    list.innerHTML = "";
 
     const filtered = ALL_MEETS.filter(m =>
         (m.name + m.location + m.host).toLowerCase().includes(search)
-    )
+    );
 
     if (filtered.length === 0) {
-        list.innerHTML = `<div class="empty">No hay competencias activas</div>`
-        return
+        list.innerHTML = `<div class="empty">No hay competencias activas</div>`;
+        return;
     }
 
     filtered.forEach(m => {
-        const div = document.createElement("div")
-        div.className = "row"
+        const div = document.createElement("div");
+        div.className = "row";
         div.innerHTML = `
             <div class="row-content">
                 <span class="name">${m.name}</span>
@@ -220,20 +221,18 @@ function render() {
                 ${m.date ? `<span class="dot">•</span><span class="meta">${formatDate(m.date)}</span>` : ""}
             </div>
             <div class="arrow">›</div>
-        `
+        `;
 
         div.onclick = () => {
-            // Ir a la vista detallada usando solo el slug de Supabase
-            window.location.href = `view.html?slug=${m.slug}&source=supabase`;
-        }
+            window.location.href = `view.html?slug=${m.slug}`;
+        };
 
-        list.appendChild(div)
-    })
+        list.appendChild(div);
+    });
 }
 
 document.getElementById("search").oninput = render;
-loadAllMeets(); // Carga inmediata al abrir la página
-</script>
+loadAllMeets();
 </script>
 
 </body>
