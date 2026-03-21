@@ -179,10 +179,26 @@ body {
 </div>
 
 <script>
+
 // --- CONFIGURATION ---
 const SB_BASE_URL = "https://ulexxpaatpjtpgkancew.supabase.co/rest/v1";
 window.ADMIN_KEY = null; 
 
+// --- INTERFACE CONTROLS ---
+function showLogin() {
+    window.ADMIN_KEY = null;
+    document.getElementById("loginView").classList.remove("hidden");
+    document.getElementById("appView").classList.add("hidden");
+    document.getElementById("authBadge").classList.add("hidden");
+}
+
+function showApp() {
+    document.getElementById("loginView").classList.add("hidden");
+    document.getElementById("appView").classList.remove("hidden");
+    document.getElementById("authBadge").classList.remove("hidden");
+}
+
+// --- LOGIC ---
 function login() {
     const password = document.getElementById("password").value.trim();
     const errorEl = document.getElementById("loginError");
@@ -199,7 +215,7 @@ function login() {
     })
     .then(r => {
         if (!r.ok) throw new Error("Status: " + r.status);
-        showApp();
+        showApp(); // Ahora sí existe
         load();
     })
     .catch((err) => {
@@ -265,6 +281,14 @@ function deleteMeet(slug) {
 function openMeet(slug) {
     window.open(`https://gymetra.net/meets/view.html?slug=${slug}`, "_blank");
 }
+
+function logout() {
+    document.getElementById("password").value = "";
+    showLogin();
+}
+
+// Start in login mode
+showLogin();
 </script>
 
 </body>
