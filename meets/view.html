@@ -62,16 +62,37 @@ const slug = params.get("slug");
 
 // --- CONFIGURACIÓN SUPABASE ---
 const sbUrl = "https://ulexxpaatpjtpgkancew.supabase.co/rest/v1/meets";
-const sbKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVsZXh4cGFhdHBqdHBna2FuY2V3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTIyNDMsImV4cCI6MjA4OTYyODI0M30.gqKgykSN65QKxTWC7WwsjsUijrfNi0QviwyccZBrPkA"; // <--- PEGA AQUÍ LA LLAVE LARGA eyJ...
+const sbKey = "TU_KEY_AQUI";
 
 let DATA = null;
-let curSession = "";
+let curSession = null;
 let curSortEvent = "AA";
+let MODE = "simple"; // simple | competitive | demo
 
 function toggleTheme() {
     const next = (localStorage.getItem("theme") || "dark") === "dark" ? "light" : "dark";
     localStorage.setItem("theme", next);
     document.documentElement.setAttribute("data-theme", next);
+}
+
+// 🧠 DETECCIÓN AUTOMÁTICA
+function detectMode() {
+    const sessionSet = new Set(DATA.events.map(e => e.session).filter(Boolean));
+    const hasMultipleSessions = sessionSet.size > 1;
+
+    const hasRealScores = DATA.events.some(e =>
+        e.results && e.results.length > 0 && e.results.some(r => Number(r.score) > 0)
+    );
+
+    if (!hasRealScores) {
+        MODE = "demo";
+    } else if (hasMultipleSessions) {
+        MODE = "competitive";
+    } else {
+        MODE = "simple";
+    }
+
+    console.log("🧠 MODE:", MODE);
 }
 
 async function loadResults() {
@@ -82,20 +103,31 @@ async function loadResults() {
                 "Authorization": `Bearer ${sbKey}`
             }
         });
-        
+
         const result = await response.json();
-        
+
         if (result && result.length > 0) {
             DATA = result[0].data;
+
+            detectMode(); // 🔥 CLAVE
+
             document.getElementById("loader").style.display = "none";
-            document.getElementById("meet-title").innerHTML = `${DATA.meet.name} > <span id="sess-display">SESIÓN</span>`;
-            
-            // Extraer sesiones
-            const sessions = [...new Set(DATA.events.map(e => e.session || "Session 1"))];
-            curSession = sessions[0];
+            document.getElementById("meet-title").innerHTML =
+                `${DATA.meet.name} > <span id="sess-display"></span>`;
+
+            let sessions = [];
+
+            if (MODE === "competitive") {
+                sessions = [...new Set(DATA.events.map(e => e.session).filter(Boolean))];
+                curSession = sessions[0];
+            } else {
+                curSession = null;
+            }
+
             setupSessionFilters(sessions);
             updateEventChips();
             render();
+
         } else {
             showError("No hay datos para este evento.");
         }
@@ -105,94 +137,143 @@ async function loadResults() {
     }
 }
 
+// 🎯 FILTRO DE SESIONES INTELIGENTE
 function setupSessionFilters(sessions) {
     const sessCont = document.getElementById("session-filters");
+
+    if (MODE !== "competitive") {
+        sessCont.style.display = "none";
+        document.getElementById("sess-display").innerText = "";
+        return;
+    }
+
+    sessCont.style.display = "flex";
     sessCont.innerHTML = "";
+
     sessions.forEach((s, i) => {
         const div = document.createElement("div");
         div.className = `chip ${i === 0 ? 'active' : ''}`;
         div.innerText = s;
+
         div.onclick = () => {
             sessCont.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
             div.classList.add("active");
+
             curSession = s;
             document.getElementById("sess-display").innerText = s;
+
             updateEventChips();
             render();
         };
+
         sessCont.appendChild(div);
     });
+
+    document.getElementById("sess-display").innerText = sessions[0];
 }
 
+// 🎯 EVENTOS DINÁMICOS
 function updateEventChips() {
     const eventCont = document.getElementById("event-filters");
     eventCont.innerHTML = "";
-    let evts = [...new Set(DATA.events.filter(e => (e.session || "Session 1") === curSession).map(e => e.event))];
-    
-    // Asegurar que AA esté siempre
+
+    let filteredEvents;
+
+    if (MODE === "competitive") {
+        filteredEvents = DATA.events.filter(e => e.session === curSession);
+    } else {
+        filteredEvents = DATA.events;
+    }
+
+    let evts = [...new Set(filteredEvents.map(e => e.event))];
+
     if (!evts.includes("AA")) evts.push("AA");
-    
-    evts.sort((a,b) => a === "AA" ? -1 : 1).forEach(en => {
+
+    evts.sort((a, b) => a === "AA" ? -1 : 1).forEach(en => {
         const div = document.createElement("div");
         div.className = `chip ${en === curSortEvent ? 'active' : ''}`;
         div.innerText = en;
+
         div.onclick = () => {
             curSortEvent = en;
             eventCont.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
             div.classList.add("active");
             render();
         };
+
         eventCont.appendChild(div);
     });
 }
 
+// 🧠 RENDER PRINCIPAL
 function render() {
     const head = document.getElementById("table-head");
     const body = document.getElementById("table-body");
     const query = document.getElementById("search").value.toLowerCase();
-    
-    const sessionEvents = DATA.events.filter(e => (e.session || "Session 1") === curSession);
+
+    let sessionEvents;
+
+    if (MODE === "competitive") {
+        sessionEvents = DATA.events.filter(e => e.session === curSession);
+    } else {
+        sessionEvents = DATA.events;
+    }
+
     let eventNames = [...new Set(sessionEvents.map(e => e.event))].filter(e => e !== "AA");
     eventNames.push("AA");
 
-    head.innerHTML = `<th>Rank</th><th>Gymnast</th><th>Team</th>` + 
-                     eventNames.map(en => `<th style="text-align:center">${en}</th>`).join('');
+    head.innerHTML =
+        `<th>Rank</th><th>Gymnast</th><th>Team</th>` +
+        eventNames.map(en => `<th style="text-align:center">${en}</th>`).join('');
 
     const athletes = {};
+
     sessionEvents.forEach(evt => {
         evt.results.forEach(res => {
             const a = res.athlete;
             const id = a.athleteId || (a.firstName + a.lastName);
+
             if (!athletes[id]) {
-                athletes[id] = { 
-                    name: `${a.firstName} ${a.lastName}`, 
-                    team: a.club || "—", 
-                    scores: {}, 
-                    total: 0 
+                athletes[id] = {
+                    name: `${a.firstName} ${a.lastName}`,
+                    team: a.club || "—",
+                    scores: {},
+                    total: 0
                 };
             }
+
             const s = Number(res.score) || 0;
             athletes[id].scores[evt.event] = s;
-            if (evt.event !== "AA") athletes[id].total += s;
+
+            if (evt.event !== "AA") {
+                athletes[id].total += s;
+            }
         });
     });
 
-    Object.values(athletes).forEach(a => { 
-        if(!a.scores["AA"]) a.scores["AA"] = a.total; 
+    Object.values(athletes).forEach(a => {
+        if (!a.scores["AA"]) a.scores["AA"] = a.total;
     });
 
     const list = Object.values(athletes)
         .filter(a => (a.name + a.team).toLowerCase().includes(query))
-        .sort((a,b) => (b.scores[curSortEvent]||0)-(a.scores[curSortEvent]||0));
+        .sort((a, b) => (b.scores[curSortEvent] || 0) - (a.scores[curSortEvent] || 0));
 
     body.innerHTML = "";
+
     list.forEach((a, i) => {
         const tr = document.createElement("tr");
-        let html = `<td>${i+1}</td><td><b>${a.name}</b></td><td style="color:var(--text-dim)">${a.team}</td>`;
+
+        let html =
+            `<td>${i + 1}</td>` +
+            `<td><b>${a.name}</b></td>` +
+            `<td style="color:var(--text-dim)">${a.team}</td>`;
+
         eventNames.forEach(en => {
             const val = (a.scores[en] || 0).toFixed(3);
-            html += `<td class="score-cell ${en===curSortEvent?'score-active':''} ${en==='AA'?'col-aa':''}">${val}</td>`;
+            html += `<td class="score-cell ${en === curSortEvent ? 'score-active' : ''} ${en === 'AA' ? 'col-aa' : ''}">${val}</td>`;
         });
+
         tr.innerHTML = html;
         body.appendChild(tr);
     });
@@ -207,6 +288,7 @@ function showError(msg) {
 }
 
 document.getElementById("search").oninput = render;
+
 loadResults();
 </script>
 </body>
