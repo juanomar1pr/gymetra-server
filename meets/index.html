@@ -6,12 +6,12 @@
 <link rel="shortcut icon" href="/fa.ico?v=5" type="image/x-icon">
 <link rel="icon" href="/fa.ico?v=5" type="image/x-icon">
 
-
 <title>Gymetra Meets</title>
 <script>
 const savedTheme = localStorage.getItem("theme") || "light";
 document.documentElement.setAttribute("data-theme", savedTheme);
 </script>
+
 <style>
 :root {
     --bg: #000;
@@ -20,6 +20,7 @@ document.documentElement.setAttribute("data-theme", savedTheme);
     --text: #fff;
     --sub: #8e8e93;
     --accent: #8b5cf6;
+    --ticker-bg: #111;
 }
 [data-theme="light"] {
     --bg: #f2f2f7;
@@ -28,65 +29,136 @@ document.documentElement.setAttribute("data-theme", savedTheme);
     --text: #000;
     --sub: #636366;
     --accent: #7c3aed;
+    --ticker-bg: #e5e5ea;
 }
+
 body {
     margin: 0;
+    padding-top: 40px; /* Espacio para el ticker */
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
     background: var(--bg);
     color: var(--text);
 }
 
+/* --- ESTILO DEL TICKER (SPORT EFFECT) --- */
+.ticker-wrap {
+    width: 100%;
+    overflow: hidden;
+    background: var(--ticker-bg);
+    border-bottom: 1px solid var(--border);
+    height: 35px;
+    display: flex;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+}
+
+.ticker {
+    display: flex;
+    white-space: nowrap;
+    animation: ticker 40s linear infinite;
+}
+
+.ticker:hover { animation-play-state: paused; } /* Se pausa al poner el mouse */
+
+@keyframes ticker {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+.ticker__item {
+    display: inline-block;
+    padding: 0 40px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--text);
+}
+
+.ticker__item span {
+    color: var(--accent);
+    margin-left: 8px;
+    font-family: monospace;
+    font-size: 14px;
+}
+
+.live-dot {
+    height: 8px;
+    width: 8px;
+    background-color: #ff3b30;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.3; }
+    100% { opacity: 1; }
+}
+
+/* --- ESTILOS ORIGINALES Y MEJORAS --- */
 .hero {
     text-align: center;
-    padding: 60px 20px 20px;
+    padding: 40px 20px 10px;
 }
 
 .hero h1 {
-    font-size: 34px;
-    font-weight: 700;
+    font-size: 38px;
+    font-weight: 800;
     margin: 0;
+    letter-spacing: -1px;
 }
 
 .hero p {
     color: var(--sub);
-    margin-top: 6px;
+    margin-top: 4px;
+    font-size: 15px;
 }
 
 .controls {
     display: flex;
     justify-content: center;
-    padding: 10px 20px 20px;
+    padding: 10px 20px 25px;
+    max-width: 700px;
+    margin: 0 auto;
 }
 
 input {
     width: 100%;
-    padding: 14px;
-    border-radius: 12px;
-    border: none;
+    padding: 16px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
     background: var(--row-bg);
     color: var(--text);
     font-size: 16px;
+    outline: none;
+    transition: border 0.3s;
+}
+
+input:focus {
+    border-color: var(--accent);
 }
 
 .list {
     max-width: 700px;
     margin: 0 auto;
     padding-bottom: 80px;
-    overflow-y: auto;
 }
 
 .row {
     display: flex;
     align-items: center;
-    padding: 14px 20px;
+    padding: 16px 20px;
     border-bottom: 1px solid var(--border);
     cursor: pointer;
     transition: background 0.2s;
 }
 
-.row:hover {
-    background: var(--border);
-}
+.row:hover { background: var(--border); }
 
 .row-content {
     display: flex;
@@ -96,47 +168,74 @@ input {
     overflow: hidden;
 }
 
-.name {
-    font-weight: 600;
-    white-space: nowrap;
-}
+.name { font-weight: 600; white-space: nowrap; }
+.dot { color: var(--sub); opacity: 0.5; }
+.meta { color: var(--sub); font-size: 13px; white-space: nowrap; }
+.arrow { color: var(--sub); margin-left: 10px; font-size: 20px; opacity: 0.5; }
 
-.dot {
-    color: var(--sub);
-}
-
-.meta {
-    color: var(--sub);
-    font-size: 13px;
-    white-space: nowrap;
-}
-
-.arrow {
-    color: var(--sub);
-    margin-left: 10px;
-}
-
-.loading, .empty {
+/* --- MEJORAS AL LOADING (SKELETON) --- */
+.loading-shimmer {
+    padding: 20px;
     text-align: center;
-    padding: 40px;
-    color: var(--sub);
 }
+
+.skeleton-row {
+    height: 60px;
+    margin-bottom: 10px;
+    background: var(--row-bg);
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+}
+
+.skeleton-row::after {
+    content: "";
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.empty { text-align: center; padding: 60px; color: var(--sub); }
 </style>
 </head>
 
 <body>
 
+<div class="ticker-wrap">
+    <div class="ticker">
+        <div class="ticker__item"><span class="live-dot"></span>SARAH JENKINS <span>9.875</span></div>
+        <div class="ticker__item"><span class="live-dot"></span>MARCUS RIVERA <span>14.100</span></div>
+        <div class="ticker__item">UPCOMING: FLORIDA CUP <span>MAR 28</span></div>
+        <div class="ticker__item"><span class="live-dot"></span>EMMA WATSON <span>9.950</span></div>
+        <div class="ticker__item"><span class="live-dot"></span>CHRIS EVANS <span>13.450</span></div>
+        <div class="ticker__item">TOP SCORE: L. LOPEZ <span>10.000</span></div>
+        <div class="ticker__item"><span class="live-dot"></span>SARAH JENKINS <span>9.875</span></div>
+        <div class="ticker__item"><span class="live-dot"></span>MARCUS RIVERA <span>14.100</span></div>
+    </div>
+</div>
+
 <div class="hero">
     <h1>Gymetra</h1>
-    <p>Live scoring</p>
+    <p>Live scoring & meet results</p>
 </div>
 
 <div class="controls">
-    <input id="search" placeholder="Search meet, club, or location">
+    <input id="search" placeholder="Search meet, club, or location" autocomplete="off">
 </div>
 
 <div class="list" id="list">
-    <div class="loading">Loading...</div>
+    <div class="loading-shimmer">
+        <div class="skeleton-row"></div>
+        <div class="skeleton-row"></div>
+        <div class="skeleton-row"></div>
+        <p style="color: var(--sub); font-size: 14px;">Fetching live data...</p>
+    </div>
 </div>
 
 <script>
@@ -156,13 +255,11 @@ async function loadAllMeets() {
         });
         
         if (!response.ok) throw new Error("Connection Error");
-        
         const data = await response.json();
         
         ALL_MEETS = data.map(item => {
             const d = item.data || {};
             const meetInfo = d.meet || {};
-            
             return {
                 slug: item.slug,
                 name: meetInfo.name || d.name || item.slug, 
@@ -173,10 +270,8 @@ async function loadAllMeets() {
         });
 
         render();
-
     } catch (error) {
         console.error("Error:", error);
-        // CAMBIADO A INGLÉS
         list.innerHTML = `<div class="empty">Unable to connect to server</div>`;
     }
 }
@@ -198,7 +293,6 @@ function render() {
     );
 
     if (filtered.length === 0) {
-        // CAMBIADO A INGLÉS
         list.innerHTML = `<div class="empty">No active meets found</div>`;
         return;
     }
@@ -215,11 +309,7 @@ function render() {
             </div>
             <div class="arrow">›</div>
         `;
-
-        div.onclick = () => {
-            window.location.href = `view.html?slug=${m.slug}`;
-        };
-
+        div.onclick = () => { window.location.href = `view.html?slug=${m.slug}`; };
         list.appendChild(div);
     });
 }
