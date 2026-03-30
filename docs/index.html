@@ -2,834 +2,319 @@
 <html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="shortcut icon" href="/fa.ico?v=5" type="image/x-icon">
+    <link rel="icon" href="/fa.ico?v=5" type="image/x-icon">
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="shortcut icon" href="/fa.ico?v=5" type="image/x-icon">
-<link rel="icon" href="/fa.ico?v=5" type="image/x-icon">
+    <title>Gymetra Documentation</title>
 
-<title>Gymetra Documentation</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Helvetica, Arial;
+            background: #ffffff;
+            color: #1d1d1f;
+            display: flex;
+        }
 
-<style>
+        /* sidebar escritorio */
+        .sidebar {
+            width: 260px;
+            background: #f5f5f7;
+            height: 100vh;
+            padding: 30px;
+            position: fixed;
+            overflow: auto;
+            box-sizing: border-box;
+            z-index: 1000;
+        }
 
-body{
-margin:0;
-font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",Helvetica,Arial;
-background:#ffffff;
-color:#1d1d1f;
-display:flex;
-}
+        .sidebar h2 {
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
 
-/* sidebar escritorio */
+        .sidebar a {
+            display: block;
+            margin-bottom: 12px;
+            color: #333;
+            text-decoration: none;
+            font-size: 16px;
+        }
 
-.sidebar{
-width:260px;
-background:#f5f5f7;
-height:100vh;
-padding:30px;
-position:fixed;
-overflow:auto;
-box-sizing: border-box;
-z-index: 1000;
-}
+        /* main */
+        .main {
+            margin-left: 260px;
+            padding: 70px;
+            max-width: 980px;
+            flex: 1;
+        }
 
-.sidebar h2{
-font-size:22px;
-margin-bottom:20px;
-}
+        /* headings */
+        h1 {
+            font-size: 44px;
+            margin-bottom: 30px;
+        }
 
-.sidebar a{
-display:block;
-margin-bottom:12px;
-color:#333;
-text-decoration:none;
-font-size:16px;
-}
+        h2 {
+            font-size: 34px;
+            margin-top: 80px;
+            margin-bottom: 20px;
+        }
 
-/* main */
+        /* text */
+        p {
+            font-size: 20px;
+            line-height: 1.7;
+            color: #444;
+        }
 
-.main{
-margin-left:260px;
-padding:70px;
-max-width:980px;
-flex:1;
-}
+        /* step box */
+        .step {
+            background: #f5f5f7;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-size: 19px;
+            line-height: 1.6;
+        }
 
-/* headings */
+        /* tips */
+        .tip {
+            background: #e8f3ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 18px;
+        }
 
-h1{
-font-size:44px;
-margin-bottom:30px;
-}
+        /* responsive */
+        @media (max-width: 800px) {
+            body {
+                flex-direction: column;
+            }
 
-h2{
-font-size:34px;
-margin-top:80px;
-margin-bottom:20px;
-}
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 60px;
+                padding: 0 15px;
+                display: flex;
+                align-items: center;
+                overflow-x: auto;
+                overflow-y: hidden;
+                background: #f5f5f7;
+                border-bottom: 1px solid #d2d2d7;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            }
 
-/* text */
+            .sidebar h2 {
+                font-size: 16px;
+                margin: 0 15px 0 0;
+                white-space: nowrap;
+            }
 
-p{
-font-size:20px;
-line-height:1.7;
-color:#444;
-}
+            .sidebar a {
+                display: inline-block;
+                margin: 0 10px 0 0;
+                padding: 6px 12px;
+                background: #e8e8ed;
+                border-radius: 6px;
+                font-size: 14px;
+                white-space: nowrap;
+            }
 
-/* step box */
+            .main {
+                margin-left: 0;
+                margin-top: 60px;
+                padding: 40px 20px;
+            }
 
-.step{
-background:#f5f5f7;
-padding:25px;
-border-radius:12px;
-margin-top:20px;
-font-size:19px;
-line-height:1.6;
-}
-
-/* tips */
-
-.tip{
-background:#e8f3ff;
-padding:20px;
-border-radius:10px;
-margin-top:20px;
-font-size:18px;
-}
-
-/* responsive */
-
-@media (max-width: 800px) {
-    body {
-        flex-direction: column;
-    }
-
-    .sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 60px;
-        padding: 0 15px;
-        display: flex;
-        align-items: center;
-        overflow-x: auto;
-        overflow-y: hidden;
-        background: #f5f5f7;
-        border-bottom: 1px solid #d2d2d7;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    }
-
-    .sidebar h2 {
-        font-size: 16px;
-        margin: 0 15px 0 0;
-        white-space: nowrap;
-    }
-
-    .sidebar a {
-        display: inline-block;
-        margin: 0 10px 0 0;
-        padding: 6px 12px;
-        background: #e8e8ed;
-        border-radius: 6px;
-        font-size: 14px;
-        white-space: nowrap;
-    }
-
-    .main {
-        margin-left: 0;
-        margin-top: 60px;
-        padding: 40px 20px;
-    }
-
-    h1 { font-size: 32px; }
-    h2 { font-size: 26px; margin-top: 50px; }
-}
-
-</style>
-
+            h1 { font-size: 32px; }
+            h2 { font-size: 26px; margin-top: 50px; }
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="sidebar">
+    <div class="sidebar">
+        <h2>Gymetra Guide</h2>
+        <a href="#create">Create a Meet</a>
+        <a href="#federation">Federation Setup</a>
+        <a href="#judges">Assign Judges</a>
+        <a href="#judgesconnect">Judges Connect</a>
+        <a href="#athletes">Add or Import Athletes</a>
+        <a href="#groups">Assign Gymnasts</a>
+        <a href="#print">Print Documents</a>
+        <a href="#session">Create Session</a>
+        <a href="#workspace">Workspace Setup</a>
+        <a href="#display">Display & Scoreboard</a>
+        <a href="#settings">Meet Settings</a>
+        <a href="#start">Start the Meet</a>
+        <a href="#results">Results</a>
+    </div>
 
-<h2>Gymetra Guide</h2>
+    <div class="main">
+        <h1>Running a Meet with Gymetra</h1>
 
-<a href="#create">Create a Meet</a>
-<a href="#federation">Federation Setup</a>
-<a href="#judges">Assign Judges</a>
-<a href="#judgesconnect">Judges Connect</a>
-<a href="#athletes">Add or Import Athletes</a>
-<a href="#groups">Assign Gymnasts</a>
-<a href="#print">Print Documents</a>
-<a href="#session">Create Session</a>
-<a href="#workspace">Workspace Setup</a>
-<a href="#display">Display & Scoreboard</a>
-<a href="#settings">Meet Settings</a>
-<a href="#start">Start the Meet</a>
-<a href="#results">Results</a>
+        <p>This guide explains the typical workflow used to run a gymnastics competition using Gymetra.</p>
 
-</div>
+        <h2 id="create">1. Create the Meet</h2>
+        <p>Start by entering the basic information for the competition.</p>
+        <div class="step">
+            • Enter meet name<br>
+            • Enter location<br>
+            • Set date and time
+        </div>
 
-<div class="main">
+        <h2 id="federation">2. Federation Setup</h2>
+        <p>Before continuing, select the federation type for your meet.</p>
+        <div class="step">
+            • Select Federation Type<br>
+            • After selecting a federation, additional options will appear
+        </div>
+        <div class="step">
+            • Add Judges (based on federation rules)<br>
+            • Add Coaches<br>
+            • Enter required federation-specific information
+        </div>
 
-<h1>Running a Meet with Gymetra</h1>
+        <div class="tip">
+            Note: The meet name is also used to generate the public results link.
+            This name will appear in the advertising/public results URL, so choose
+            a clear and appropriate name.
+            <br><br>
+            Tip: After entering the meet name and date you can use the
+            <strong>lock icon 🔒</strong> to lock these fields and prevent
+            accidental changes. Tap the <strong>question mark icon ❓</strong>
+            to open contextual help explaining the current screen.
+        </div>
 
-<p>
-This guide explains the typical workflow used to run a gymnastics
-competition using Gymetra.
-</p>
+        <div class="step">
+            <strong>Save or Open a Project</strong>
+            <br><br>
+            • Save the meet project<br>
+            • Open an existing project<br>
+            • Continue editing meet information later
+        </div>
 
-<h2 id="create">1. Create the Meet</h2>
+        <h2 id="judges">3. Federation & Assign Judges</h2>
+        <p>If the meet belongs to a federation, select the federation and assign judges to each apparatus.</p>
+        <div class="step">
+            • Select federation (if applicable)<br>
+            • Assign judges to apparatus<br>
+            • Verify judge assignments
+        </div>
+        <div class="tip">
+            Tip: Filters can help locate judges quickly when assigning them.
+        </div>
 
-<p>
-Start by entering the basic information for the competition.
-</p>
+        <h2 id="judgesconnect">4. Judges Connect and Verify Device</h2>
+        <p>After judges are assigned, each judge should open the Gymetra application on their iPad and connect to the host device.</p>
+        <div class="step">
+            • Judge opens Gymetra on the iPad<br>
+            • Device connects to the host session<br>
+            • The assigned apparatus appears on screen
+        </div>
+        <div class="tip">
+            Tip: Judges should confirm the correct event appears before the meet begins.
+        </div>
 
-<div class="step">
-• Enter meet name  
-<br>
-• Enter location  
-<br>
-• Set date and time  
-</div>
+        <h2 id="athletes">5. Add or Import Athletes</h2>
+        <p>Athletes can be entered into the meet in different ways.</p>
+        <div class="step">
+            • Import athletes from a file<br>
+            • Enter athletes manually<br>
+            • Review athlete information
+        </div>
 
-<h2 id="federation">2. Federation Setup</h2>
+        <h2 id="groups">6. Assign Gymnasts to Events or Groups</h2>
+        <p>After athletes are added they can be assigned to events or organized into rotation groups.</p>
+        <div class="step">
+            • Assign gymnast to apparatus<br>
+            • Create rotation groups<br>
+            • Adjust athlete order
+        </div>
+        <div class="tip">
+            Tip: Filters can help locate athletes faster when assigning them to events.
+        </div>
 
-<p>
-Before continuing, select the federation type for your meet.
-</p>
+        <h2 id="print">7. Print Meet Documents</h2>
+        <p>Before starting the meet you can generate documents for judges and staff.</p>
+        <div class="step">
+            • Print labels<br>
+            • Print attendance list<br>
+            • Print score sheets
+        </div>
 
-<div class="step">
-• Select Federation Type  
-<br>
-• After selecting a federation, additional options will appear  
-</div>
+        <h2 id="session">8. Create and Confirm the Session</h2>
+        <p>When all meet information has been entered, create the competition session.</p>
+        <div class="step">
+            • Create session<br>
+            • Confirm session details<br>
+            • Activate session
+        </div>
 
-<div class="step">
-• Add Judges (based on federation rules)  
-<br>
-• Add Coaches  
-<br>
-• Enter required federation-specific information  
-</div>
+        <h2 id="workspace">9. Prepare the Workspace</h2>
+        <p>Before starting the meet, Gymetra allows the host to prepare the workspace for maximum visibility and efficiency.</p>
+        <div class="step">
+            • Use the expand buttons in Setup or Meet Control<br>
+            • Increase space for judges, athletes, or scoring panels<br>
+            • Focus on the most important active section
+        </div>
+        <div class="tip">
+            Tip: Expanded panels are useful during live competitions when you need extra space for Meet Control or Judges.
+        </div>
 
-<div class="tip">
-Note: The meet name is also used to generate the public results link.
-This name will appear in the advertising/public results URL, so choose
-a clear and appropriate name.
+        <h2 id="display">10. Open the Scoreboard Display</h2>
+        <p>Before the meet begins, you can prepare the live scoreboard display for external screens, TVs, or arena monitors.</p>
+        <div class="step">
+            • Open display from Meet Control<br>
+            • Or go to Window → Scoreboard<br>
+            • Move the scoreboard to a second screen if needed
+        </div>
+        <div class="tip">
+            Tip: This is useful for audience display, coaches, and live ranking projection.
+        </div>
 
-<br><br>
+        <h2 id="settings">11. Configure Meet Settings</h2>
+        <p>Gymetra allows visual and operational customization before the competition starts.</p>
+        <div class="step">
+            • Change scoreboard background color<br>
+            • Update meet logos or branding<br>
+            • Choose full meet logs or single session logs
+        </div>
+        <div class="tip">
+            Tip: Single session logs are useful for large competitions with multiple sessions in one day.
+        </div>
 
-Tip: After entering the meet name and date you can use the
-<strong>lock icon 🔒</strong> to lock these fields and prevent
-accidental changes. Tap the <strong>question mark icon ❓</strong>
-to open contextual help explaining the current screen.
-</div>
+        <h2 id="start">12. Start the Meet</h2>
+        <p>Once the session is activated the competition can begin.</p>
+        <div class="step">
+            • Start meet timer<br>
+            • Start warm-up timer<br>
+            • Judges begin scoring routines
+        </div>
 
-<div class="step">
-<strong>Save or Open a Project</strong>
-<br><br>
-• Save the meet project  
-<br>
-• Open an existing project  
-<br>
-• Continue editing meet information later
-</div>
+        <h2 id="results">13. Results</h2>
+        <p>As judges enter scores the results update automatically.</p>
+        <div class="step">
+            • Scores synchronize in real time<br>
+            • Rankings update automatically<br>
+            • Results can be broadcast live
+        </div>
 
-<h2 id="judges">3. Federation & Assign Judges</h2>
+        <div class="tip">
+            Tip: Tap the <strong>question mark icon ❓</strong>
+            to open contextual help explaining the current screen.
+        </div>
 
-<p>
-If the meet belongs to a federation,
-select the federation and assign judges to each apparatus.
-</p>
-
-<div class="step">
-• Select federation (if applicable)  
-<br>
-• Assign judges to apparatus  
-<br>
-• Verify judge assignments  
-</div>
-
-<div class="tip">
-Tip: Filters can help locate judges quickly when assigning them.
-</div>
-
-<h2 id="judgesconnect">4. Judges Connect and Verify Device</h2>
-
-<p>
-After judges are assigned, each judge should open the Gymetra
-application on their iPad and connect to the host device.
-</p>
-
-<div class="step">
-• Judge opens Gymetra on the iPad  
-<br>
-• Device connects to the host session  
-<br>
-• The assigned apparatus appears on screen  
-</div>
-
-<div class="tip">
-Tip: Judges should confirm the correct event appears
-before the meet begins.
-</div>
-
-<h2 id="athletes">5. Add or Import Athletes</h2>
-
-<p>
-Athletes can be entered into the meet in different ways.
-</p>
-
-<div class="step">
-• Import athletes from a file  
-<br>
-• Enter athletes manually  
-<br>
-• Review athlete information  
-</div>
-
-<h2 id="groups">6. Assign Gymnasts to Events or Groups</h2>
-
-<p>
-After athletes are added they can be assigned to events
-or organized into rotation groups.
-</p>
-
-<div class="step">
-• Assign gymnast to apparatus  
-<br>
-• Create rotation groups  
-<br>
-• Adjust athlete order  
-</div>
-
-<div class="tip">
-Tip: Filters can help locate athletes faster
-when assigning them to events.
-</div>
-
-<h2 id="print">7. Print Meet Documents</h2>
-
-<p>
-Before starting the meet you can generate documents
-for judges and staff.
-</p>
-
-<div class="step">
-• Print labels  
-<br>
-• Print attendance list  
-<br>
-• Print score sheets  
-</div>
-
-<h2 id="session">8. Create and Confirm the Session</h2>
-
-<p>
-When all meet information has been entered,
-create the competition session.
-</p>
-
-<div class="step">
-• Create session  
-<br>
-• Confirm session details  
-<br>
-• Activate session  
-</div>
-
-<h2 id="workspace">9. Prepare the Workspace</h2>
-
-<p>
-Before starting the meet, Gymetra allows the host to prepare the workspace
-for maximum visibility and efficiency.
-</p>
-
-<div class="step">
-• Use the expand buttons in Setup or Meet Control  
-<br>
-• Increase space for judges, athletes, or scoring panels  
-<br>
-• Focus on the most important active section  
-</div>
-
-<div class="tip">
-Tip: Expanded panels are useful during live competitions
-when you need extra space for Meet Control or Judges.
-</div>
-
-<h2 id="display">10. Open the Scoreboard Display</h2>
-
-<p>
-Before the meet begins, you can prepare the live scoreboard display
-for external screens, TVs, or arena monitors.
-</p>
-
-<div class="step">
-• Open display from Meet Control  
-<br>
-• Or go to Window → Scoreboard  
-<br>
-• Move the scoreboard to a second screen if needed  
-</div>
-
-<div class="tip">
-Tip: This is useful for audience display, coaches,
-and live ranking projection.
-</div>
-
-<h2 id="settings">11. Configure Meet Settings</h2>
-
-<p>
-Gymetra allows visual and operational customization
-before the competition starts.
-</p>
-
-<div class="step">
-• Change scoreboard background color  
-<br>
-• Update meet logos or branding  
-<br>
-• Choose full meet logs or single session logs  
-</div>
-
-<div class="tip">
-Tip: Single session logs are useful for large competitions
-with multiple sessions in one day.
-</div>
-
-<h2 id="start">12. Start the Meet</h2>
-
-<p>
-Once the session is activated the competition can begin.
-</p>
-
-<div class="step">
-• Start meet timer  
-<br>
-• Start warm-up timer  
-<br>
-• Judges begin scoring routines  
-</div>
-
-<h2 id="results">13. Results</h2>
-
-<p>
-As judges enter scores the results update automatically.
-</p>
-
-<div class="step">
-• Scores synchronize in real time  
-<br>
-• Rankings update automatically  
-<br>
-• Results can be broadcast live  
-</div>
-
-<div class="tip">
-Tip: Tap the <strong>question mark icon ❓</strong>
-to open contextual help explaining the current screen.
-</div>
-
-<p>
-Gymetra keeps the entire meet organized and synchronized
-from setup to final results.
-</p>
-
-</div>
+        <p>Gymetra keeps the entire meet organized and synchronized from setup to final results.</p>
+    </div>
 
 </body>
-</html>.sidebar h2{
-font-size:22px;
-margin-bottom:20px;
-}
-
-.sidebar a{
-display:block;
-margin-bottom:12px;
-color:#333;
-text-decoration:none;
-font-size:16px;
-}
-
-/* main */
-
-.main{
-margin-left:260px;
-padding:70px;
-max-width:900px;
-flex: 1;
-}
-
-/* headings */
-
-h1{
-font-size:44px;
-margin-bottom:30px;
-}
-
-h2{
-font-size:34px;
-margin-top:80px;
-margin-bottom:20px;
-}
-
-/* text */
-
-p{
-font-size:20px;
-line-height:1.7;
-color:#444;
-}
-
-/* step box */
-
-.step{
-background:#f5f5f7;
-padding:25px;
-border-radius:12px;
-margin-top:20px;
-font-size:19px;
-line-height:1.6;
-}
-
-/* tips */
-
-.tip{
-background:#e8f3ff;
-padding:20px;
-border-radius:10px;
-margin-top:20px;
-font-size:18px;
-}
-
-/* --- RESPONSIVIDAD (ESTO ES LO NUEVO) --- */
-
-@media (max-width: 800px) {
-    body {
-        flex-direction: column;
-    }
-
-    .sidebar {
-        position: fixed; /* Siempre fija arriba en móvil */
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 60px; 
-        padding: 0 15px;
-        display: flex;
-        align-items: center;
-        overflow-x: auto; /* Scroll horizontal para los links */
-        overflow-y: hidden;
-        background: #f5f5f7;
-        border-bottom: 1px solid #d2d2d7;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    }
-
-    .sidebar h2 {
-        font-size: 16px;
-        margin: 0 15px 0 0;
-        white-space: nowrap;
-    }
-
-    .sidebar a {
-        display: inline-block;
-        margin: 0 10px 0 0;
-        padding: 6px 12px;
-        background: #e8e8ed;
-        border-radius: 6px;
-        font-size: 14px;
-        white-space: nowrap;
-    }
-
-    .main {
-        margin-left: 0;
-        margin-top: 60px; /* Para que el menú no tape el contenido */
-        padding: 40px 20px;
-    }
-
-    h1 { font-size: 32px; }
-    h2 { font-size: 26px; margin-top: 50px; }
-}
-
-</style>
-
-</head>
-
-<body>
-
-<div class="sidebar">
-
-<h2>Gymetra Guide</h2>
-
-<a href="#create">Create a Meet</a>
-<a href="#judges">Assign Judges</a>
-<a href="#judgesconnect">Judges Connect</a>
-<a href="#athletes">Add or Import Athletes</a>
-<a href="#groups">Assign Gymnasts</a>
-<a href="#print">Print Documents</a>
-<a href="#session">Create Session</a>
-<a href="#start">Start the Meet</a>
-<a href="#results">Results</a>
-
-</div>
-
-
-<div class="main">
-
-<h1>Running a Meet with Gymetra</h1>
-
-<p>
-This guide explains the typical workflow used to run a gymnastics
-competition using Gymetra.
-</p>
-
-
-<h2 id="create">1. Create the Meet</h2>
-
-<p>
-Start by entering the basic information for the competition.
-</p>
-
-<div class="step">
-
-• Enter meet name  
-<br>
-• Enter location  
-<br>
-• Set date and time  
-
-</div>
-<!-- NUEVO: Federation Type -->
-<h2 id="federation">Federation Setup</h2>
-
-<p>
-Before continuing, select the federation type for your meet.
-</p>
-
-<div class="step">
-
-• Select Federation Type  
-<br>
-• After selecting a federation, additional options will appear  
-
-</div>
-
-<div class="step">
-
-• Add Judges (based on federation rules)  
-<br>
-• Add Coaches  
-<br>
-• Enter required federation-specific information  
-
-
-<div class="tip">
-Note: The meet name is also used to generate the public results link.
-This name will appear in the advertising/public results URL, so choose
-a clear and appropriate name.
-   
-
-
-Tip: After entering the meet name and date you can use the
-<strong>lock icon 🔒</strong> to lock these fields and prevent
-accidental changes. Tap the <strong>question mark icon ❓</strong>
-to open contextual help explaining the current screen.
-
-</div>
-
-<div class="step">
-
-<strong>Save or Open a Project</strong>
-
-<br><br>
-
-• Save the meet project  
-<br>
-• Open an existing project  
-<br>
-• Continue editing meet information later
-
-</div>
-
-
-<h2 id="judges">2. Federation & Assign Judges</h2>
-
-<p>
-If the meet belongs to a federation,
-select the federation and assign judges to each apparatus.
-</p>
-
-<div class="step">
-
-• Select federation (if applicable)  
-<br>
-• Assign judges to apparatus  
-<br>
-• Verify judge assignments  
-
-</div>
-
-<div class="tip">
-
-Tip: Filters can help locate judges quickly when assigning them.
-
-</div>
-
-
-<h2 id="judgesconnect">3. Judges Connect and Verify Device</h2>
-
-<p>
-After judges are assigned, each judge should open the Gymetra
-application on their iPad and connect to the host device.
-</p>
-
-<div class="step">
-
-• Judge opens Gymetra on the iPad  
-<br>
-• Device connects to the host session  
-<br>
-• The assigned apparatus appears on screen  
-
-</div>
-
-<div class="tip">
-
-Tip: Judges should confirm the correct event appears
-before the meet begins.
-
-</div>
-
-
-<h2 id="athletes">4. Add or Import Athletes</h2>
-
-<p>
-Athletes can be entered into the meet in different ways.
-</p>
-
-<div class="step">
-
-• Import athletes from a file  
-<br>
-• Enter athletes manually  
-<br>
-• Review athlete information  
-
-</div>
-
-
-<h2 id="groups">5. Assign Gymnasts to Events or Groups</h2>
-
-<p>
-After athletes are added they can be assigned to events
-or organized into rotation groups.
-</p>
-
-<div class="step">
-
-• Assign gymnast to apparatus  
-<br>
-• Create rotation groups  
-<br>
-• Adjust athlete order  
-
-</div>
-
-<div class="tip">
-
-Tip: Filters can help locate athletes faster
-when assigning them to events.
-
-</div>
-
-
-<h2 id="print">6. Print Meet Documents</h2>
-
-<p>
-Before starting the meet you can generate documents
-for judges and staff.
-</p>
-
-<div class="step">
-
-• Print labels  
-<br>
-• Print attendance list  
-<br>
-• Print score sheets  
-
-</div>
-
-
-<h2 id="session">7. Create and Confirm the Session</h2>
-
-<p>
-When all meet information has been entered,
-create the competition session.
-</p>
-
-<div class="step">
-
-• Create session  
-<br>
-• Confirm session details  
-<br>
-• Activate session  
-
-</div>
-
-
-
-<h2 id="start">8. Start the Meet</h2>
-
-<p>
-Once the session is activated the competition can begin.
-</p>
-
-<div class="step">
-
-• Start meet timer  
-<br>
-• Start warm-up timer  
-<br>
-• Judges begin scoring routines  
-
-</div>
-
-
-<h2 id="results">9. Results</h2>
-
-<p>
-As judges enter scores the results update automatically.
-</p>
-
-<div class="step">
-
-• Scores synchronize in real time  
-<br>
-• Rankings update automatically  
-<br>
-• Results can be broadcast live  
-
-</div>
-
-<div class="tip">
-
-Tip: Tap the <strong>question mark icon ❓</strong>
-to open contextual help explaining the current screen.
-
-</div>
-<p>
-Gymetra keeps the entire meet organized and synchronized
-from setup to final results.
-</p>
-
-</div>
-
-</body>
-
 </html>
