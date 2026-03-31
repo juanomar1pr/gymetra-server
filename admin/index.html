@@ -20,13 +20,18 @@
     --danger: #ff453a;
 }
 
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
-    background-color: var(--bg);
-    color: var(--text-primary);
-    margin: 0;
-    -webkit-font-smoothing: antialiased;
-}
+   body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: var(--negro-metalico);
+            /* Rejilla de puntos (Dot Grid) estilo Xcode */
+            background-image: radial-gradient(circle, #222 1px, transparent 1px);
+            background-size: 30px 30px;
+            overflow: hidden;
+        }
 
 .container {
     max-width: 800px;
