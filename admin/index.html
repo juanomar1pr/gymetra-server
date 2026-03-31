@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" href="/fa.ico?v=5" type="image/x-icon">
+<link rel="icon" href="/fa.ico?v=5" type="image/x-icon">
+
 <title>Gymetra Admin | Control Panel</title>
 
 <style>
@@ -18,15 +21,17 @@
 
 body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: var(--bg); /* Corregido de --negro-metalico */
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+    background-color: var(--bg);
+    /* Rejilla de puntos estilo Xcode/Moderno */
     background-image: radial-gradient(circle, #222 1px, transparent 1px);
     background-size: 30px 30px;
     color: var(--text-primary);
     min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
 }
 
-/* NAVBAR - Ahora se mantiene arriba */
+/* NAVBAR - Reparada para que no flote sobre el login */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -36,7 +41,7 @@ body {
     background: rgba(28, 28, 30, 0.8);
     backdrop-filter: saturate(180%) blur(20px);
     border-bottom: 1px solid var(--border);
-    position: fixed; /* Fixed para que no se mueva al hacer scroll */
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -45,17 +50,16 @@ body {
 
 .brand { font-weight: 800; letter-spacing: -0.5px; font-size: 18px; }
 
-/* CONTENEDOR PRINCIPAL */
+/* CONTENEDORES */
 .container {
     max-width: 800px;
     margin: 0 auto;
-    padding: 120px 20px 60px 20px; /* Padding superior para no quedar debajo de la navbar */
+    padding: 120px 20px 60px 20px; /* Espacio para que la navbar no tape el contenido */
 }
 
-/* LOGIN VIEW CENTRADO */
+/* Centrado especial para el login */
 #loginView {
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     min-height: 80vh;
@@ -104,8 +108,8 @@ body {
     font-size: 15px;
     cursor: pointer;
     transition: all 0.2s;
-    text-decoration: none;
     text-align: center;
+    text-decoration: none;
 }
 
 .btn:hover { opacity: 0.9; transform: translateY(-1px); }
@@ -113,7 +117,7 @@ body {
 .btn-danger { background: rgba(255, 69, 58, 0.15); color: var(--danger); }
 .btn-danger:hover { background: var(--danger); color: white; }
 
-/* MEETS LIST */
+/* LISTA DE MEETS */
 .card-item {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -131,8 +135,8 @@ body {
 
 /* UTILS */
 .hidden { display: none !important; }
-.badge { background: rgba(50, 215, 75, 0.1); color: #32D74B; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; }
 .error-msg { color: var(--danger); font-size: 13px; margin-top: 12px; font-weight: 600; }
+.badge { background: rgba(50, 215, 75, 0.1); color: #32D74B; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; }
 
 @media (max-width: 600px) {
     .card-item { flex-direction: column; align-items: flex-start; gap: 16px; }
@@ -149,14 +153,12 @@ body {
 </div>
 
 <div id="loginView" class="container">
-    <div style="text-align: center; width: 100%;">
+    <div class="login-card">
         <h2 class="title">Welcome Back</h2>
-        <p class="subtitle">Enter administrator credentials to manage meets.</p>
-        <div class="login-card" style="margin: 0 auto;">
-            <input id="password" class="input" type="password" placeholder="Admin Password" onkeypress="if(event.key==='Enter') login()">
-            <button class="btn" style="width: 100%;" onclick="login()">Sign In</button>
-            <div id="loginError" class="error-msg"></div>
-        </div>
+        <p class="subtitle">Enter administrator credentials.</p>
+        <input id="password" class="input" type="password" placeholder="Admin Password" onkeypress="if(event.key==='Enter') login()">
+        <button class="btn" style="width: 100%;" onclick="login()">Sign In</button>
+        <div id="loginError" class="error-msg"></div>
     </div>
 </div>
 
@@ -164,21 +166,131 @@ body {
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
         <div>
             <h2 class="title" style="margin:0">Active Meets</h2>
-            <p style="color: var(--text-secondary); margin: 4px 0 0 0;">Manage live events and results.</p>
+            <p style="color: var(--text-secondary); margin: 4px 0 0 0;">Manage your live events.</p>
         </div>
         <button class="btn btn-secondary" onclick="logout()">Logout</button>
     </div>
 
-    <div class="section">
-        <p style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px;">Database Overview</p>
-        <div id="list" class="list">
-            </div>
-    </div>
+    <div id="list" class="list">
+        </div>
 </div>
 
 <script>
-// El resto de tu script de Supabase se mantiene igual, ya está bien estructurado.
-// ... (mismo código JS de antes)
+// --- CONFIGURATION ---
+const SB_BASE_URL = "https://ulexxpaatpjtpgkancew.supabase.co/rest/v1";
+let ADMIN_KEY = null; 
+
+// --- INTERFACE CONTROLS ---
+function showLogin() {
+    ADMIN_KEY = null;
+    document.getElementById("loginView").classList.remove("hidden");
+    document.getElementById("appView").classList.add("hidden");
+    document.getElementById("authBadge").classList.add("hidden");
+    document.getElementById("loginError").textContent = "";
+}
+
+function showApp() {
+    document.getElementById("loginView").classList.add("hidden");
+    document.getElementById("appView").classList.remove("hidden");
+    document.getElementById("authBadge").classList.remove("hidden");
+}
+
+// --- LOGIC ---
+function login() {
+    const password = document.getElementById("password").value.trim();
+    const errorEl = document.getElementById("loginError");
+    
+    if (!password) {
+        errorEl.textContent = "Please enter a key.";
+        return;
+    }
+
+    ADMIN_KEY = password; 
+
+    // Test connection to Supabase
+    fetch(`${SB_BASE_URL}/meets?select=slug&limit=1`, {
+        method: "GET",
+        headers: { 
+            "apikey": ADMIN_KEY, 
+            "Authorization": `Bearer ${ADMIN_KEY}`
+        }
+    })
+    .then(r => {
+        if (!r.ok) throw new Error("Unauthorized");
+        showApp();
+        load();
+    })
+    .catch((err) => {
+        ADMIN_KEY = null;
+        errorEl.textContent = "Invalid key. Access denied.";
+    });
+}
+
+function load() {
+    fetch(`${SB_BASE_URL}/meets?select=slug`, {
+        headers: { 
+            "apikey": ADMIN_KEY, 
+            "Authorization": `Bearer ${ADMIN_KEY}` 
+        }
+    })
+    .then(r => r.json())
+    .then(data => {
+        const container = document.getElementById("list");
+        container.innerHTML = "";
+
+        if (!data || data.length === 0) {
+            container.innerHTML = '<div style="color:var(--text-secondary); padding: 20px;">No active meets found.</div>';
+            return;
+        }
+
+        data.forEach(item => {
+            const div = document.createElement("div");
+            div.className = "card-item";
+            div.innerHTML = `
+                <div class="card-left">
+                    <div class="slug-name">${item.slug}</div>
+                    <div class="url-preview">/view.html?slug=${item.slug}</div>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-secondary" onclick="openMeet('${item.slug}')">Open</button>
+                    <button class="btn btn-danger" onclick="deleteMeet('${item.slug}')">Delete</button>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    })
+    .catch(err => console.error("Loading error:", err));
+}
+
+function deleteMeet(slug) {
+    if (!confirm(`Permanently delete "${slug}"?`)) return;
+
+    fetch(`${SB_BASE_URL}/meets?slug=eq.${slug}`, {
+        method: "DELETE",
+        headers: { 
+            "apikey": ADMIN_KEY, 
+            "Authorization": `Bearer ${ADMIN_KEY}`,
+            "Content-Type": "application/json"
+        }
+    })
+    .then(r => {
+        if (!r.ok) throw new Error("Delete failed");
+        load(); 
+    })
+    .catch(err => alert("Delete failed. Check your service_role key."));
+}
+
+function openMeet(slug) {
+    window.open(`https://gymetra.net/meets/view.html?slug=${slug}`, "_blank");
+}
+
+function logout() {
+    document.getElementById("password").value = "";
+    showLogin();
+}
+
+// Start
+showLogin();
 </script>
 
 </body>
