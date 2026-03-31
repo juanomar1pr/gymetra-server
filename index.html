@@ -4,12 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="shortcut icon" href="/fa.png?v=5" type="image/x-icon">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <link rel="icon" type="image/png" sizes="32x32" href="fa.png?v=5">
 <link rel="apple-touch-icon" sizes="180x180" href="/images/fa.png?v=5">
-
 <link rel="mask-icon" href="/images/fa.png?v=5" color="#0A84FF">
+
 <style>
     :root {
         --apple-black: #1d1d1f;
@@ -26,14 +24,12 @@
         -webkit-font-smoothing: antialiased;
     }
 
-    /* Contenedor central de la narrativa */
     .content-wrapper {
         max-width: 980px;
         margin: 0 auto;
         padding: 0 20px;
     }
 
-    /* HEADER / HERO */
     .hero {
         padding-top: 120px;
         padding-bottom: 100px;
@@ -59,11 +55,10 @@
         line-height: 1.125;
         font-weight: 600;
         color: var(--apple-gray);
-        max-width: 700px;
+        max-width: 760px;
         margin: 0 auto 40px;
     }
 
-    /* SECCIONES DE PRODUCTO */
     .section {
         padding: 120px 0;
         border-bottom: 1px solid #f5f5f7;
@@ -90,7 +85,7 @@
         line-height: 1.4;
         font-weight: 500;
         color: var(--apple-gray);
-        max-width: 800px;
+        max-width: 820px;
         margin: 0;
     }
 
@@ -98,7 +93,6 @@
         color: var(--apple-black);
     }
 
-    /* CIERRE COMUNITARIO */
     .closing {
         padding: 150px 0;
         text-align: center;
@@ -123,9 +117,10 @@
         transition: opacity 0.3s;
     }
 
-    .closing-list li:hover { opacity: 1; }
+    .closing-list li:hover {
+        opacity: 1;
+    }
 
-    /* BOTONES */
     .cta-group {
         display: flex;
         gap: 30px;
@@ -159,7 +154,9 @@
         gap: 5px;
     }
 
-    .link-apple:hover { text-decoration: underline; }
+    .link-apple:hover {
+        text-decoration: underline;
+    }
 
     footer {
         padding: 60px 0;
@@ -169,7 +166,23 @@
         background: #f5f5f7;
     }
 
-    /* RESPONSIVE */
+    img[alt="Gymetra Logo"] {
+        width: 120px;
+        height: 120px;
+        border-radius: 22%;
+        background: #ffffff;
+        padding: 20px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        display: block;
+        margin: 0 auto;
+    }
+
+    img[alt="Gymetra Logo"]:hover {
+        transform: scale(1.05);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+    }
+
     @media (max-width: 734px) {
         h1 { font-size: 48px; }
         h2 { font-size: 36px; }
@@ -177,36 +190,24 @@
         .section-p { font-size: 20px; }
         .closing h2 { font-size: 42px; }
     }
-img[alt="Gymetra Logo"] {
-    width: 120px;
-    height: 120px;
-    border-radius: 22%; /* El curvado exacto de los iconos de iOS */
-    background: #ffffff;
-    padding: 20px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.08); /* Sombra suave y realista */
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    display: block;
-    margin: 0 auto;
-}
-
-img[alt="Gymetra Logo"]:hover {
-    transform: scale(1.05); /* Efecto de acercamiento premium */
-    box-shadow: 0 15px 30px rgba(0,0,0,0.12);
-}
 </style>
 </head>
 <body>
+
 <div style="background: #fff3cd; color: #856404; padding: 12px 20px; text-align: center; font-size: 14px; font-weight: 500; border-bottom: 1px solid #ffeeba; width: 100%; box-sizing: border-box; position: relative; z-index: 2000;">
     ⚠️ This application is currently in <strong>Beta version</strong>. Some features may be subject to change.
 </div>
+
 <div class="content-wrapper">
     <header class="hero">
-               <img src="/images/a.png" alt="Gymetra Logo">
+        <img src="/images/a.png" alt="Gymetra Logo">
 
         <h1>This is Gymetra.</h1>
 
-        <p class="hero-lead">A simple and powerful way to run gymnastics scoring — from large competitions to small local events, and even at home.</p>
-        
+        <p class="hero-lead">
+            A simple and powerful way to run gymnastics scoring — from major competitions to small local meets, daily gym training, and even practice at home.
+        </p>
+
         <div class="cta-group">
             <a href="https://testflight.apple.com/join/WnqNAtZ2/" class="btn-apple">Download</a>
             <a href="/meets/" class="link-apple">View Meets</a>
@@ -214,29 +215,30 @@ img[alt="Gymetra Logo"]:hover {
     </header>
 
     <section class="section">
-        <span class="section-label">For the Arena</span>
-        <h2>Competitions.</h2>
+        <span class="section-label">For Competitions</span>
+        <h2>Run meets with confidence.</h2>
         <p class="section-p">
-            Organize events, assign judges, and manage athletes in real time. 
-            <span class="highlight">Judges enter scores instantly</span>, and results update live across the entire system. 
-            Everything stays synchronized, clear, and professional.
+            Organize sessions, assign judges, and manage athletes in real time. 
+            <span class="highlight">Scores are entered instantly</span>, and results update live across the entire event. 
+            Everything stays synchronized, fast, and easy to control.
         </p>
     </section>
 
     <section class="section">
-        <span class="section-label">For the Club</span>
-        <h2>Small gyms.</h2>
+        <span class="section-label">For Small Gyms</span>
+        <h2>Professional tools for every club.</h2>
         <p class="section-p">
-            Gymetra is not only for major leagues. 
-            Local gyms can use the <span class="highlight">exact same pro tools</span> to organize sessions, evaluate routines, and keep track of progress.
+            Gymetra is designed for more than large competitions. 
+            Small gyms and local events can use the <span class="highlight">same professional scoring tools</span> to organize sessions, evaluate routines, and follow athlete progress with ease.
         </p>
     </section>
 
     <section class="section">
-        <span class="section-label">For the Family</span>
-        <h2>Training at home.</h2>
+        <span class="section-label">For Training at Home</span>
+        <h2>Practice with purpose.</h2>
         <p class="section-p">
-            Parents and coaches can score practice routines, <span class="highlight">track improvement</span>, and turn training into a motivating experience. Gymetra brings the podium to your living room.
+            Parents and coaches can score routines, <span class="highlight">track improvement over time</span>, and turn practice into a motivating experience. 
+            Gymetra brings structure, feedback, and excitement right into your home.
         </p>
     </section>
 
@@ -244,14 +246,18 @@ img[alt="Gymetra Logo"]:hover {
         <h2>Built for the entire gymnastics community.</h2>
         <ul class="closing-list">
             <li>From major events…</li>
-            <li>To small gyms…</li>
+            <li>To local gyms…</li>
             <li>To training at home.</li>
         </ul>
-        <p class="section-p" style="margin: 0 auto; text-align: center;">Everyone is welcome here.</p>
+
+        <p class="section-p" style="margin: 0 auto; text-align: center;">
+            One platform for athletes, coaches, judges, and families.
+        </p>
+
         <h2 style="font-size: 32px; margin-top: 40px; opacity: 0.9;">This is Gymetra.</h2>
- <a href="/docs/" class="section-p">Docs</a>
+
+        <a href="/docs/" class="section-p">Docs</a>
     </section>
- 
 </div>
 
 <footer>
