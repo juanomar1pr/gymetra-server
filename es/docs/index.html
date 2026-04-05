@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="shortcut icon" href="../fa.png?v=5" type="image/x-icon">
+    <link rel="icon" href="../fa.png?v=5" type="image/x-icon">
+
+    <title>Documentación de Gymetra</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Helvetica, Arial;
+            background: #ffffff;
+            color: #1d1d1f;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: #f5f5f7;
+            height: 100vh;
+            padding: 30px;
+            position: fixed;
+            overflow: auto;
+            box-sizing: border-box;
+            z-index: 1000;
+        }
+
+        .sidebar h2 {
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            margin-bottom: 12px;
+            color: #333;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .main {
+            margin-left: 260px;
+            padding: 70px;
+            max-width: 980px;
+            flex: 1;
+        }
+
+        h1 {
+            font-size: 44px;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-size: 34px;
+            margin-top: 80px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 20px;
+            line-height: 1.7;
+            color: #444;
+        }
+
+        .step {
+            background: #f5f5f7;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-size: 19px;
+            line-height: 1.6;
+        }
+
+        .tip {
+            background: #e8f3ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        @media (max-width: 800px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 60px;
+                padding: 0 15px;
+                display: flex;
+                align-items: center;
+                overflow-x: auto;
+                overflow-y: hidden;
+                background: #f5f5f7;
+                border-bottom: 1px solid #d2d2d7;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            }
+
+            .sidebar h2 {
+                font-size: 16px;
+                margin: 0 15px 0 0;
+                white-space: nowrap;
+            }
+
+            .sidebar a {
+                display: inline-block;
+                margin: 0 10px 0 0;
+                padding: 6px 12px;
+                background: #e8e8ed;
+                border-radius: 6px;
+                font-size: 14px;
+                white-space: nowrap;
+            }
+
+            .main {
+                margin-left: 0;
+                margin-top: 60px;
+                padding: 40px 20px;
+            }
+
+            h1 { font-size: 32px; }
+            h2 { font-size: 26px; margin-top: 50px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <h2>Guía de Gymetra</h2>
+        <a href="#create">Crear Competencia</a>
+        <a href="#federation">Configuración de Federación</a>
+        <a href="#judges">Asignar Jueces</a>
+        <a href="#judgesconnect">Conectar Dispositivos</a>
+        <a href="#athletes">Agregar o Importar Atletas</a>
+        <a href="#groups">Asignar Gimnastas</a>
+        <a href="#print">Imprimir Documentos</a>
+        <a href="#session">Crear Sesión</a>
+        <a href="#workspace">Preparar Espacio de Trabajo</a>
+        <a href="#display">Pantalla y Marcador</a>
+        <a href="#settings">Configuración del Meet</a>
+        <a href="#start">Iniciar Competencia</a>
+        <a href="#results">Resultados</a>
+    </div>
+
+    <div class="main">
+        <h1>Cómo gestionar una competencia con Gymetra</h1>
+
+        <p>Esta guía explica el flujo de trabajo típico utilizado para gestionar una competencia de gimnasia con Gymetra.</p>
+
+        <h2 id="create">1. Crear la Competencia</h2>
+        <p>Comienza ingresando la información básica de la competencia.</p>
+        <div class="step">
+            • Ingresar nombre de la competencia<br>
+            • Ingresar ubicación<br>
+            • Configurar fecha y hora
+        </div>
+         <div class="tip">
+            Nota: El nombre de la competencia también se utiliza para generar el enlace público de resultados.
+            Este nombre aparecerá en la URL pública/publicitaria de resultados, así que elige
+            un nombre claro y apropiado.
+        </div>
+
+        <h2 id="federation">2. Configuración de Federación</h2>
+        <p>Antes de continuar, selecciona el tipo de federación para tu competencia.</p>
+        <div class="step">
+            • Seleccionar tipo de federación<br>
+            • Después de seleccionar una federación aparecerán opciones adicionales
+        </div>
+        <div class="step">
+            • Agregar jueces (según reglas de la federación)<br>
+            • Agregar entrenadores<br>
+            • Ingresar información requerida específica de la federación
+        </div>
+
+        <div class="tip">
+            Consejo: Después de ingresar el nombre y la fecha de la competencia puedes usar el
+            <strong>ícono de candado 🔒</strong> para bloquear estos campos y evitar
+            cambios accidentales. Toca el <strong>ícono de signo de pregunta ❓</strong>
+            para abrir ayuda contextual explicando la pantalla actual.
+        </div>
+
+        <div class="step">
+            <strong>Guardar o Abrir un Proyecto</strong>
+            <br><br>
+            • Guardar proyecto de la competencia<br>
+            • Abrir un proyecto existente<br>
+            • Continuar editando la información después
+        </div>
+
+        <h2 id="judgesconnect">3. Conectar Dispositivos de Jueces</h2>
+
+        <p>
+        Antes de asignar jueces, asegúrate de que cada iPad esté conectado a la
+        <strong>misma red Wi-Fi</strong> que la Mac host.
+        Cuando se abre la app de Gymetra, cada iPad muestra automáticamente un
+        <strong>código único de 3 caracteres</strong>.
+        Ese mismo código aparecerá en la computadora host, facilitando identificar
+        el dispositivo correcto antes de asignar un juez.
+        </p>
+
+        <div class="step">
+            • Conectar todos los iPads de jueces al mismo Wi-Fi que la Mac host<br>
+            • Abrir Gymetra en cada iPad<br>
+            • Anotar el código de 3 caracteres mostrado en cada pantalla<br>
+            • Verificar que el mismo código aparezca en la lista del host<br>
+            • Relacionar cada iPad con el juez correcto usando el código<br>
+            • Asignar juez y aparato desde la Mac host
+        </div>
+
+        <div class="tip">
+            <strong>Consejo:</strong> Puedes <strong>hacer clic derecho en cualquier dispositivo conectado</strong> en el host
+            para renombrarlo.
+        </div>
+
+        <h2 id="judges">4. Federación y Asignación de Jueces</h2>
+        <p>Si la competencia pertenece a una federación, selecciona la federación y asigna jueces a cada aparato.</p>
+        <div class="step">
+            • Seleccionar federación (si aplica)<br>
+            • Asignar jueces a aparatos<br>
+            • Verificar asignaciones
+        </div>
+        <div class="tip">
+            Consejo: Los filtros ayudan a localizar jueces rápidamente.
+        </div>
+
+        <h2 id="athletes">5. Agregar o Importar Atletas</h2>
+        <p>Las atletas pueden ingresarse de diferentes maneras.</p>
+        <div class="step">
+            • Importar atletas desde archivo<br>
+            • Ingresar atletas manualmente<br>
+            • Revisar información
+        </div>
+
+        <h2 id="groups">6. Asignar Gimnastas a Eventos o Grupos</h2>
+        <p>Después de agregar atletas pueden asignarse a eventos o organizarse en grupos de rotación.</p>
+        <div class="step">
+            • Asignar gimnasta a aparato<br>
+            • Crear grupos de rotación<br>
+            • Ajustar orden de atletas
+        </div>
+        <div class="tip">
+            Consejo: Los filtros ayudan a encontrar atletas más rápido.
+        </div>
+
+        <h2 id="print">7. Imprimir Documentos</h2>
+        <p>Antes de comenzar puedes generar documentos para jueces y staff.</p>
+        <div class="step">
+            • Imprimir etiquetas<br>
+            • Imprimir lista de asistencia<br>
+            • Imprimir hojas de puntuación
+        </div>
+
+        <h2 id="session">8. Crear y Confirmar la Sesión</h2>
+        <p>Cuando toda la información esté lista, crea la sesión.</p>
+        <div class="step">
+            • Crear sesión<br>
+            • Confirmar detalles<br>
+            • Activar sesión
+        </div>
+
+        <h2 id="workspace">9. Preparar el Espacio de Trabajo</h2>
+        <p>Antes de iniciar, Gymetra permite preparar el espacio para máxima visibilidad y eficiencia.</p>
+        <div class="step">
+            • Usar botones de expandir en Setup o Meet Control<br>
+            • Aumentar espacio para jueces, atletas o paneles<br>
+            • Enfocarte en la sección activa más importante
+        </div>
+        <div class="tip">
+            Consejo: Los paneles expandidos son útiles durante competencias en vivo.
+        </div>
+
+        <h2 id="display">10. Abrir la Pantalla del Marcador</h2>
+        <p>Antes de comenzar, puedes preparar la pantalla en vivo para monitores externos, TVs o arena.</p>
+        <div class="step">
+            • Abrir pantalla desde Meet Control<br>
+            • O ir a Ventana → Marcador<br>
+            • Mover el marcador a una segunda pantalla
+        </div>
+        <div class="tip">
+            Consejo: Ideal para audiencia, entrenadores y rankings en vivo.
+        </div>
+
+        <h2 id="settings">11. Configurar Ajustes del Meet</h2>
+        <p>Gymetra permite personalización visual y operativa antes de comenzar.</p>
+        <div class="step">
+            • Cambiar color de fondo de Gymetra Studio<br>
+            • Actualizar logos o branding<br>
+            • Elegir logs completos o por sesión
+        </div>
+        <div class="tip">
+            Puedes verificar la conexión actual revisando la
+            <strong>dirección IP del host</strong> mostrada en Gymetra
+        </div>
+
+        <h2 id="start">12. Iniciar la Competencia</h2>
+        <p>Una vez activada la sesión la competencia puede comenzar.</p>
+        <div class="step">
+            • Iniciar cronómetro de competencia<br>
+            • Iniciar cronómetro de calentamiento<br>
+            • Los jueces comienzan a puntuar rutinas
+        </div>
+
+        <h2 id="results">13. Resultados</h2>
+        <p>A medida que los jueces ingresan puntuaciones, los resultados se actualizan automáticamente.</p>
+        <div class="step">
+            • Las puntuaciones se sincronizan en tiempo real<br>
+            • Rankings actualizados automáticamente<br>
+            • Resultados pueden transmitirse en vivo
+        </div>
+
+        <p>Gymetra mantiene toda la competencia organizada y sincronizada desde la configuración inicial hasta los resultados finales.</p>
+    </div>
+
+</body>
+</html>
