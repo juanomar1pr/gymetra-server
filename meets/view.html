@@ -125,9 +125,12 @@ async function loadResults() {
                 curSession = null;
             }
 
-            setupSessionFilters(sessions);
-            updateEventChips();
-            render();
+           if (MODE === "competitive" && sessions.length > 0) {
+    curSession = sessions[0];
+}
+
+updateEventChips();
+render();
 
         } else {
             showError("No hay datos para este evento.");
@@ -138,19 +141,6 @@ async function loadResults() {
     }
 }
 
-// 🎯 FILTRO DE SESIONES INTELIGENTE
-function setupSessionFilters(sessions) {
-    document.getElementById("session-filters").style.display = "none";
-
-    if (MODE === "competitive" && sessions.length > 0) {
-        curSession = sessions[0];
-        document.getElementById("sess-display").innerText =
-            sessions[0].replace("Sesión", "Session");
-    } else {
-        document.getElementById("sess-display").innerText = "";
-    }
-}
-// 🎯 EVENTOS DINÁMICOS
 function updateEventChips() {
     const eventCont = document.getElementById("event-filters");
     eventCont.innerHTML = "";
