@@ -95,13 +95,12 @@ function detectMode() {
 
     console.log("🧠 MODE:", MODE);
 }
-
 async function loadResults() {
     try {
         const response = await fetch(`${sbUrl}?slug=eq.${slug}&select=data`, {
             headers: {
-                "apikey": sbKey,
-                "Authorization": `Bearer ${sbKey}`
+                apikey: sbKey,
+                Authorization: `Bearer ${sbKey}`
             }
         });
 
@@ -110,20 +109,18 @@ async function loadResults() {
         if (result && result.length > 0) {
             DATA = result[0].data;
 
-            detectMode(); // 🔥 CLAVE
+            detectMode();
 
             document.getElementById("loader").style.display = "none";
-         document.getElementById("meet-title").innerHTML = DATA.meet.name;
+            document.getElementById("meet-title").innerHTML = DATA.meet.name;
 
-           
-}
-
-updateEventChips();
-render();
+            updateEventChips();
+            render();
 
         } else {
             showError("No hay datos para este evento.");
         }
+
     } catch (err) {
         console.error(err);
         showError("Error de conexión con el servidor.");
