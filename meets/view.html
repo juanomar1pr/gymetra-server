@@ -66,7 +66,7 @@ const sbKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJl
 
 let DATA = null;
 let curSession = null;
-let curSortEvent = "AA";
+let curSortEvent = "allAround";
 let MODE = "simple"; // simple | competitive | demo
 
 function toggleTheme() {
@@ -187,12 +187,10 @@ function updateEventChips() {
 
     let evts = [...new Set(filteredEvents.map(e => e.event))];
 
-    if (!evts.includes("AA")) evts.push("AA");
-
-    evts.sort((a, b) => a === "AA" ? -1 : 1).forEach(en => {
+   evts.sort((a, b) => a === "allAround" ? -1 : 1).forEach(en => {
         const div = document.createElement("div");
         div.className = `chip ${en === curSortEvent ? 'active' : ''}`;
-        div.innerText = en;
+    div.innerText = en === "allAround" ? "AA" : en;
 
         div.onclick = () => {
             curSortEvent = en;
@@ -219,12 +217,14 @@ function render() {
         sessionEvents = DATA.events;
     }
 
-    let eventNames = [...new Set(sessionEvents.map(e => e.event))].filter(e => e !== "AA");
-    eventNames.push("AA");
+   let eventNames = [...new Set(sessionEvents.map(e => e.event))]
+    .sort((a, b) => a === "allAround" ? -1 : 1);
 
     head.innerHTML =
         `<th>Rank</th><th>Gymnast</th><th>Team</th>` +
-        eventNames.map(en => `<th style="text-align:center">${en}</th>`).join('');
+        eventNames.map(en =>
+    `<th style="text-align:center">${en === "allAround" ? "AA" : en}</th>`
+).join('');
 
     const athletes = {};
 
@@ -245,15 +245,11 @@ function render() {
             const s = Number(res.score) || 0;
             athletes[id].scores[evt.event] = s;
 
-            if (evt.event !== "AA") {
-                athletes[id].total += s;
-            }
+           
         });
     });
 
-    Object.values(athletes).forEach(a => {
-        if (!a.scores["AA"]) a.scores["AA"] = a.total;
-    });
+   
 
     const list = Object.values(athletes)
         .filter(a => (a.name + a.team).toLowerCase().includes(query))
@@ -271,7 +267,7 @@ function render() {
 
         eventNames.forEach(en => {
             const val = (a.scores[en] || 0).toFixed(3);
-            html += `<td class="score-cell ${en === curSortEvent ? 'score-active' : ''} ${en === 'AA' ? 'col-aa' : ''}">${val}</td>`;
+            html += `<td class="score-cell ${en === curSortEvent ? 'score-active' : ''} ${en === 'allAround' ? 'col-aa' : ''}">${val}</td>`;
         });
 
         tr.innerHTML = html;
