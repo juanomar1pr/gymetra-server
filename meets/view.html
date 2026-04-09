@@ -35,10 +35,6 @@ tr:nth-child(even) { background: var(--row-alt); }
 .col-aa { color: var(--gold); font-weight: 900; }
 .loading-state { text-align: center; padding: 100px; color: var(--text-dim); }
 @media (max-width: 700px) {
-    table {
-        table-layout: fixed;
-    }
-
     .col-team {
         display: none;
     }
@@ -48,24 +44,24 @@ tr:nth-child(even) { background: var(--row-alt); }
     }
 
     .col-rank {
-        width: 42px;
+        width: 36px;
+        min-width: 36px;
     }
 
     .col-score.mobile-priority {
         width: 72px;
+        min-width: 72px;
         text-align: right;
     }
 
     .col-name {
-        width: calc(100% - 114px);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        width: auto;
     }
 
     .score-cell {
         font-size: 16px;
         font-weight: 800;
+        white-space: nowrap;
     }
 
     td, th {
