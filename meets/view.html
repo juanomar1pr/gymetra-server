@@ -43,7 +43,7 @@ tr:nth-child(even) { background: var(--row-alt); }
         <div class="breadcrumb" id="meet-title">GYMETRA > <span>CARGANDO...</span></div>
         <div onclick="toggleTheme()" style="cursor:pointer">☀️</div>
     </div>
-    <div class="filter-row" id="session-filters"></div>
+   
     <div class="filter-row" id="event-filters" style="background: var(--surface); border-top: 1px solid var(--border);"></div>
     <div class="search-area"><input id="search" placeholder="Buscar gimnasta, club o nivel..."></div>
 </div>
@@ -140,41 +140,16 @@ async function loadResults() {
 
 // 🎯 FILTRO DE SESIONES INTELIGENTE
 function setupSessionFilters(sessions) {
-    const sessCont = document.getElementById("session-filters");
+    document.getElementById("session-filters").style.display = "none";
 
-    if (MODE !== "competitive") {
-        sessCont.style.display = "none";
+    if (MODE === "competitive" && sessions.length > 0) {
+        curSession = sessions[0];
+        document.getElementById("sess-display").innerText =
+            sessions[0].replace("Sesión", "Session");
+    } else {
         document.getElementById("sess-display").innerText = "";
-        return;
     }
-
-    sessCont.style.display = "flex";
-    sessCont.innerHTML = "";
-
-    sessions.forEach((s, i) => {
-        const div = document.createElement("div");
-        div.className = `chip ${i === 0 ? 'active' : ''}`;
-        div.innerText = s.replace("Sesión", "Session");
-
-        div.onclick = () => {
-            sessCont.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
-            div.classList.add("active");
-
-            curSession = s;
-           document.getElementById("sess-display").innerText =
-    s.replace("Sesión", "Session");
-
-            updateEventChips();
-            render();
-        };
-
-        sessCont.appendChild(div);
-    });
-
- document.getElementById("sess-display").innerText =
-    sessions[0].replace("Sesión", "Session");
 }
-
 // 🎯 EVENTOS DINÁMICOS
 function updateEventChips() {
     const eventCont = document.getElementById("event-filters");
