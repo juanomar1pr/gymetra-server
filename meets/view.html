@@ -17,7 +17,7 @@ document.documentElement.setAttribute("data-theme", savedTheme);
 body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; font-size: 13px; }
 .sticky-top { position: sticky; top: 0; z-index: 1000; background: var(--bg); border-bottom: 1px solid var(--border); }
 .header-top { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; }
-.breadcrumb { font-weight: 800; font-size: 16px; color: var(--text-dim);    text-transform: uppercase;
+.breadcrumb { font-weight: 800; font-size: 18px; color: var(--text);    text-transform: uppercase;
  text-transform: uppercase; }
 .breadcrumb span { color: var(--accent); }
 .filter-row { display: flex; gap: 8px; overflow-x: auto; padding: 10px 15px; }
@@ -113,8 +113,7 @@ async function loadResults() {
             detectMode(); // 🔥 CLAVE
 
             document.getElementById("loader").style.display = "none";
-            document.getElementById("meet-title").innerHTML =
-                `${DATA.meet.name} > <span id="sess-display"></span>`;
+         document.getElementById("meet-title").innerHTML = DATA.meet.name;
 
            
 }
