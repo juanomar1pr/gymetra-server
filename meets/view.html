@@ -116,17 +116,7 @@ async function loadResults() {
             document.getElementById("meet-title").innerHTML =
                 `${DATA.meet.name} > <span id="sess-display"></span>`;
 
-            let sessions = [];
-
-            if (MODE === "competitive") {
-                sessions = [...new Set(DATA.events.map(e => e.session).filter(Boolean))];
-                curSession = sessions[0];
-            } else {
-                curSession = null;
-            }
-
-           if (MODE === "competitive" && sessions.length > 0) {
-    curSession = sessions[0];
+           
 }
 
 updateEventChips();
