@@ -45,7 +45,14 @@ tr:nth-child(even) { background: var(--row-alt); }
 
     .col-name {
         min-width: 160px;
+    max-width: 180px;
     }
+    .col-name,
+.col-name b {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
     .score-cell {
         width: 90px;
