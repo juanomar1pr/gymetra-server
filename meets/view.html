@@ -26,7 +26,7 @@ body { font-family: -apple-system, sans-serif; background: var(--bg); color: var
 .search-area { padding: 10px 15px; }
 input { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px; color: var(--text); box-sizing: border-box; }
 .table-wrapper { width: 100%; overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; min-width: 800px; }
+table { width: 100%; border-collapse: collapse;  }
 th { background: var(--surface); color: var(--text-dim); padding: 14px 10px; text-align: left; font-size: 10px; border-bottom: 2px solid var(--border); }
 td { padding: 12px 10px; border-bottom: 1px solid var(--border); }
 tr:nth-child(even) { background: var(--row-alt); }
@@ -34,8 +34,11 @@ tr:nth-child(even) { background: var(--row-alt); }
 .score-active { background: rgba(10, 132, 255, 0.1); color: var(--text); }
 .col-aa { color: var(--gold); font-weight: 900; }
 .loading-state { text-align: center; padding: 100px; color: var(--text-dim); }
-
 @media (max-width: 700px) {
+    table {
+        table-layout: fixed;
+    }
+
     .col-team {
         display: none;
     }
@@ -45,7 +48,7 @@ tr:nth-child(even) { background: var(--row-alt); }
     }
 
     .col-rank {
-        width: 44px;
+        width: 42px;
     }
 
     .col-score.mobile-priority {
@@ -54,8 +57,10 @@ tr:nth-child(even) { background: var(--row-alt); }
     }
 
     .col-name {
-        width: auto;
-        max-width: none;
+        width: calc(100% - 114px);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .score-cell {
