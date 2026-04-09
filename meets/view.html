@@ -145,32 +145,31 @@ function updateEventChips() {
     const eventCont = document.getElementById("event-filters");
     eventCont.innerHTML = "";
 
-    let filteredEvents;
+    // ✅ usar TODOS los eventos del meet
+    let evts = [...new Set(DATA.events.map(e => e.event))];
 
-    if (MODE === "competitive") {
-        filteredEvents = DATA.events.filter(e => e.session === curSession);
-    } else {
-        filteredEvents = DATA.events;
+    if (!curSortEvent || !evts.includes(curSortEvent)) {
+        curSortEvent = evts.find(e => e !== "allAround") || evts[0];
     }
 
-    let evts = [...new Set(filteredEvents.map(e => e.event))];
-if (!curSortEvent || !evts.includes(curSortEvent)) {
-    curSortEvent = evts.find(e => e !== "allAround") || evts[0];
-}
-   evts.sort((a, b) => a === "allAround" ? -1 : 1).forEach(en => {
-        const div = document.createElement("div");
-        div.className = `chip ${en === curSortEvent ? 'active' : ''}`;
-    div.innerText = en === "allAround" ? "AA" : en;
+    evts.sort((a, b) => a === "allAround" ? -1 : 1)
+        .forEach(en => {
+            const div = document.createElement("div");
+            div.className = `chip ${en === curSortEvent ? "active" : ""}`;
+            div.innerText = en === "allAround" ? "AA" : en;
 
-        div.onclick = () => {
-            curSortEvent = en;
-            eventCont.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
-            div.classList.add("active");
-            render();
-        };
+            div.onclick = () => {
+                curSortEvent = en;
+                eventCont.querySelectorAll(".chip").forEach(c =>
+                    c.classList.remove("active")
+                );
+                div.classList.add("active");
+                render();
+            };
 
-        eventCont.appendChild(div);
-    });
+            eventCont.appendChild(div);
+        });
+
 }
 
 // 🧠 RENDER PRINCIPAL
@@ -179,13 +178,9 @@ function render() {
     const body = document.getElementById("table-body");
     const query = document.getElementById("search").value.toLowerCase();
 
-    let sessionEvents;
 
-    if (MODE === "competitive") {
-        sessionEvents = DATA.events.filter(e => e.session === curSession);
-    } else {
-        sessionEvents = DATA.events;
-    }
+
+   let sessionEvents = DATA.events;
 
    let eventNames = [...new Set(sessionEvents.map(e => e.event))]
     .sort((a, b) => a === "allAround" ? -1 : 1);
