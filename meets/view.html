@@ -17,7 +17,8 @@ document.documentElement.setAttribute("data-theme", savedTheme);
 body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; font-size: 13px; }
 .sticky-top { position: sticky; top: 0; z-index: 1000; background: var(--bg); border-bottom: 1px solid var(--border); }
 .header-top { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; }
-.breadcrumb { font-weight: 800; font-size: 10px; color: var(--text-dim); text-transform: uppercase; }
+.breadcrumb { font-weight: 800; font-size: 16px; color: var(--text-dim);    text-transform: uppercase;
+ text-transform: uppercase; }
 .breadcrumb span { color: var(--accent); }
 .filter-row { display: flex; gap: 8px; overflow-x: auto; padding: 10px 15px; }
 .chip { padding: 6px 14px; border-radius: 8px; background: var(--surface); color: var(--text-dim); border: 1px solid var(--border); cursor: pointer; white-space: nowrap; font-weight: 700; }
@@ -66,7 +67,7 @@ const sbKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJl
 
 let DATA = null;
 let curSession = null;
-let curSortEvent = "allAround";
+let curSortEvent = null;
 let MODE = "simple"; // simple | competitive | demo
 
 function toggleTheme() {
@@ -153,14 +154,15 @@ function setupSessionFilters(sessions) {
     sessions.forEach((s, i) => {
         const div = document.createElement("div");
         div.className = `chip ${i === 0 ? 'active' : ''}`;
-        div.innerText = s;
+        div.innerText = s.replace("Sesión", "Session");
 
         div.onclick = () => {
             sessCont.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
             div.classList.add("active");
 
             curSession = s;
-            document.getElementById("sess-display").innerText = s;
+           document.getElementById("sess-display").innerText =
+    s.replace("Sesión", "Session");
 
             updateEventChips();
             render();
@@ -169,7 +171,8 @@ function setupSessionFilters(sessions) {
         sessCont.appendChild(div);
     });
 
-    document.getElementById("sess-display").innerText = sessions[0];
+ document.getElementById("sess-display").innerText =
+    sessions[0].replace("Sesión", "Session");
 }
 
 // 🎯 EVENTOS DINÁMICOS
@@ -186,7 +189,9 @@ function updateEventChips() {
     }
 
     let evts = [...new Set(filteredEvents.map(e => e.event))];
-
+if (!curSortEvent || !evts.includes(curSortEvent)) {
+    curSortEvent = evts.find(e => e !== "allAround") || evts[0];
+}
    evts.sort((a, b) => a === "allAround" ? -1 : 1).forEach(en => {
         const div = document.createElement("div");
         div.className = `chip ${en === curSortEvent ? 'active' : ''}`;
