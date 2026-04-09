@@ -34,6 +34,7 @@ tr:nth-child(even) { background: var(--row-alt); }
 .score-active { background: rgba(10, 132, 255, 0.1); color: var(--text); }
 .col-aa { color: var(--gold); font-weight: 900; }
 .loading-state { text-align: center; padding: 100px; color: var(--text-dim); }
+
 @media (max-width: 700px) {
     .col-team {
         display: none;
@@ -43,20 +44,23 @@ tr:nth-child(even) { background: var(--row-alt); }
         display: none;
     }
 
-    .col-name {
-        min-width: 160px;
-    max-width: 180px;
+    .col-rank {
+        width: 44px;
     }
-    .col-name,
-.col-name b {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+
+    .col-score.mobile-priority {
+        width: 72px;
+        text-align: right;
+    }
+
+    .col-name {
+        width: auto;
+        max-width: none;
+    }
 
     .score-cell {
-        width: 90px;
         font-size: 16px;
+        font-weight: 800;
     }
 
     td, th {
