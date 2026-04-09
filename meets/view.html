@@ -34,6 +34,28 @@ tr:nth-child(even) { background: var(--row-alt); }
 .score-active { background: rgba(10, 132, 255, 0.1); color: var(--text); }
 .col-aa { color: var(--gold); font-weight: 900; }
 .loading-state { text-align: center; padding: 100px; color: var(--text-dim); }
+@media (max-width: 700px) {
+    .col-team {
+        display: none;
+    }
+
+    .col-score:not(.mobile-priority) {
+        display: none;
+    }
+
+    .col-name {
+        min-width: 160px;
+    }
+
+    .score-cell {
+        width: 90px;
+        font-size: 16px;
+    }
+
+    td, th {
+        padding: 14px 8px;
+    }
+}
 </style>
 </head>
 <body>
@@ -171,11 +193,15 @@ function render() {
    let eventNames = [...new Set(sessionEvents.map(e => e.event))]
     .sort((a, b) => a === "allAround" ? -1 : 1);
 
-    head.innerHTML =
-        `<th>Rank</th><th>Gymnast</th><th>Team</th>` +
-        eventNames.map(en =>
-    `<th style="text-align:center">${en === "allAround" ? "AA" : en}</th>`
-).join('');
+head.innerHTML =
+    `<th class="col-rank">Rank</th>
+     <th class="col-name">Gymnast</th>
+     <th class="col-team">Team</th>` +
+    eventNames.map(en =>
+        `<th class="col-score ${en === curSortEvent ? "mobile-priority" : ""}" style="text-align:center">
+            ${en === "allAround" ? "AA" : en}
+        </th>`
+    ).join('');
 
     const athletes = {};
 
@@ -210,15 +236,16 @@ function render() {
 
     list.forEach((a, i) => {
         const tr = document.createElement("tr");
-
-        let html =
-            `<td>${i + 1}</td>` +
-            `<td><b>${a.name}</b></td>` +
-            `<td style="color:var(--text-dim)">${a.team}</td>`;
+let html =
+    `<td class="col-rank">${i + 1}</td>` +
+    `<td class="col-name"><b>${a.name}</b></td>` +
+    `<td class="col-team" style="color:var(--text-dim)">${a.team}</td>`;
 
         eventNames.forEach(en => {
             const val = (a.scores[en] || 0).toFixed(3);
-            html += `<td class="score-cell ${en === curSortEvent ? 'score-active' : ''} ${en === 'allAround' ? 'col-aa' : ''}">${val}</td>`;
+            html += `<td class="score-cell col-score ${en === curSortEvent ? 'score-active mobile-priority' : ''} ${en === 'allAround' ? 'col-aa' : ''}">
+    ${val}
+</td>`;
         });
 
         tr.innerHTML = html;
