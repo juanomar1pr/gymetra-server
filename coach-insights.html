@@ -72,52 +72,13 @@ input {
     <div id="athlete-list" class="athlete-list"></div>
     <div id="chart-area"></div>
 </div>
-
 <script>
-/*
- 🔥 DEMO:
- reemplaza esto por tus meets reales desde Supabase
-*/
-const MEETS = [
-    {
-        meet: { name: "Pueba1", startDate: "2026-04-10" },
-        events: [
-            {
-                event: "allAround",
-                results: [
-                    {
-                        athlete: {
-                            firstName: "Emma",
-                            lastName: "Johnson",
-                            club: "Elite Gym",
-                            level: "Level 4"
-                        },
-                        score: 37
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        meet: { name: "Test01", startDate: "2026-04-11" },
-        events: [
-            {
-                event: "allAround",
-                results: [
-                    {
-                        athlete: {
-                            firstName: "Emma",
-                            lastName: "Johnson",
-                            club: "Elite Gym",
-                            level: "Level 4"
-                        },
-                        score: 38.2
-                    }
-                ]
-            }
-        ]
-    }
-];
+const SUPABASE_URL = "https://ulexxpaatpjtpgkancew.supabase.co/rest/v1/meets";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVsZXh4cGFhdHBqdHBna2FuY2V3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTIyNDMsImV4cCI6MjA4OTYyODI0M30.gqKgykSN65QKxTWC7WwsjsUijrfNi0QviwyccZBrPkA";
+
+let MEETS = [];
+let ATHLETES = {};
+let currentChart = null;
 
 function athleteKey(a) {
     return `${a.firstName}|${a.lastName}|${a.club}|${a.level}`.toLowerCase();
@@ -127,31 +88,63 @@ function athleteDisplay(a) {
     return `${a.firstName} ${a.lastName}`;
 }
 
-let ATHLETES = {};
+async function loadRealMeets() {
+    try {
+        const response = await fetch(SUPABASE_URL, {
+            headers: {
+                apikey: SUPABASE_KEY,
+                Authorization: `Bearer ${SUPABASE_KEY}`
+            }
+        });
+
+        const rows = await response.json();
+
+        // ✅ extraer SOLO el data JSON interno
+        MEETS = rows
+            .map(row => row.data)
+            .filter(Boolean);
+
+        buildDatabase();
+        renderList();
+
+    } catch (error) {
+        console.error("Error loading meets", error);
+    }
+}
 
 function buildDatabase() {
     ATHLETES = {};
 
-    MEETS.forEach(meet => {
-        const aaEvent = meet.events.find(e => e.event === "allAround");
+    MEETS.forEach(meetData => {
+        if (!meetData.events) return;
+
+        const aaEvent = meetData.events.find(e => e.event === "allAround");
         if (!aaEvent) return;
 
         aaEvent.results.forEach(r => {
-            const key = athleteKey(r.athlete);
+            const athlete = r.athlete;
+            if (!athlete) return;
+
+            const key = athleteKey(athlete);
 
             if (!ATHLETES[key]) {
                 ATHLETES[key] = {
-                    athlete: r.athlete,
+                    athlete,
                     history: []
                 };
             }
 
             ATHLETES[key].history.push({
-                meet: meet.meet.name,
-                date: meet.meet.startDate,
-                score: r.score
+                meet: meetData.meet?.name || "Meet",
+                date: meetData.meet?.startDate || "",
+                score: Number(r.score) || 0
             });
         });
+    });
+
+    // ✅ ordenar por fecha
+    Object.values(ATHLETES).forEach(entry => {
+        entry.history.sort((a, b) => new Date(a.date) - new Date(b.date));
     });
 }
 
@@ -161,9 +154,7 @@ function renderList() {
     list.innerHTML = "";
 
     Object.values(ATHLETES)
-        .filter(a =>
-            athleteDisplay(a.athlete).toLowerCase().includes(q)
-        )
+        .filter(a => athleteDisplay(a.athlete).toLowerCase().includes(q))
         .forEach(entry => {
             const div = document.createElement("div");
             div.className = "athlete-row";
@@ -175,8 +166,6 @@ function renderList() {
             list.appendChild(div);
         });
 }
-
-let currentChart = null;
 
 function showChart(entry) {
     const chartArea = document.getElementById("chart-area");
@@ -204,20 +193,14 @@ function showChart(entry) {
                 data: scores,
                 tension: 0.3
             }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { display: true }
-            }
         }
     });
 }
 
 document.getElementById("search").oninput = renderList;
 
-buildDatabase();
-renderList();
+// ✅ REAL DATA
+loadRealMeets();
 </script>
 </body>
 </html>
