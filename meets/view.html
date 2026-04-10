@@ -209,12 +209,14 @@ head.innerHTML =
     `<th class="col-rank">Rank</th>
      <th class="col-name">Gymnast</th>
      <th class="col-team">Team</th>` +
+
     eventNames.map(en =>
         `<th class="col-score ${en === curSortEvent ? "mobile-priority" : ""}" style="text-align:center">
             ${en === "allAround" ? "AA" : en}
         </th>`
-    ).join('');
+    ).join('') +
 
+    `<th>Insights</th>`;
     const athletes = {};
 
     sessionEvents.forEach(evt => {
@@ -223,12 +225,21 @@ head.innerHTML =
             const id = a.athleteId || (a.firstName + a.lastName);
 
             if (!athletes[id]) {
-                athletes[id] = {
-                    name: `${a.firstName} ${a.lastName}`,
-                    team: a.club || "—",
-                    scores: {},
-                    total: 0
-                };
+          const insightKey = [
+    a.firstName,
+    a.lastName,
+    a.club,
+    a.level
+]
+.map(v => String(v || "").trim().toLowerCase())
+.join("|");
+  athletes[id] = {
+    insightKey,
+    name: `${a.firstName} ${a.lastName}`,
+    team: a.club || "—",
+    scores: {},
+    total: 0
+};
             }
 
             const s = Number(res.score) || 0;
@@ -245,25 +256,37 @@ head.innerHTML =
         .sort((a, b) => (b.scores[curSortEvent] || 0) - (a.scores[curSortEvent] || 0));
 
     body.innerHTML = "";
+list.forEach((a, i) => {
+    const tr = document.createElement("tr");
 
-    list.forEach((a, i) => {
-        const tr = document.createElement("tr");
-let html =
-    `<td class="col-rank">${i + 1}</td>` +
-    `<td class="col-name"><b>${a.name}</b></td>` +
-    `<td class="col-team" style="color:var(--text-dim)">${a.team}</td>`;
+    let html =
+        `<td class="col-rank">${i + 1}</td>` +
+        `<td class="col-name"><b>${a.name}</b></td>` +
+        `<td class="col-team" style="color:var(--text-dim)">${a.team}</td>`;
 
-        eventNames.forEach(en => {
-            const val = (a.scores[en] || 0).toFixed(3);
-            html += `<td class="score-cell col-score ${en === curSortEvent ? 'score-active mobile-priority' : ''} ${en === 'allAround' ? 'col-aa' : ''}">
-    ${val}
-</td>`;
-        });
+    // scores
+    eventNames.forEach(en => {
+        const val = (a.scores[en] || 0).toFixed(3);
 
-        tr.innerHTML = html;
-        body.appendChild(tr);
+        html += `
+            <td class="score-cell col-score ${en === curSortEvent ? 'score-active mobile-priority' : ''} ${en === 'allAround' ? 'col-aa' : ''}">
+                ${val}
+            </td>
+        `;
     });
+
+    // one single insights button
+    html += `
+        <td>
+          <button onclick="openInsights('${encodeURIComponent(a.insightKey)}')">📈</button>
+        </td>
+    `;
+
+    tr.innerHTML = html;
+    body.appendChild(tr);
+});
 }
+  
 
 function showError(msg) {
     document.getElementById("loader").innerHTML = `
@@ -276,6 +299,9 @@ function showError(msg) {
 document.getElementById("search").oninput = render;
 
 loadResults();
+function openInsights(athleteKey) {
+    window.location.href = `coach.html?athlete=${athleteKey}`;
+}
 </script>
 </body>
 </html>

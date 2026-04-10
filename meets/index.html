@@ -310,7 +310,9 @@ function render() {
             </div>
             <div class="arrow">›</div>
         `;
-        div.onclick = () => { window.location.href = `view.html?slug=${m.slug}`; };
+        div.onclick = () => { 
+    window.location.href = `view.html?slug=${m.slug}&v=6`; 
+};
         list.appendChild(div);
     });
 }
