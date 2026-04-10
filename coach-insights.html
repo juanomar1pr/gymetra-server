@@ -84,7 +84,8 @@ input {
  const SUPABASE_URL = "https://ulexxpaatpjtpgkancew.supabase.co/rest/v1/meets";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVsZXh4cGFhdHBqdHBna2FuY2V3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTIyNDMsImV4cCI6MjA4OTYyODI0M30.gqKgykSN65QKxTWC7WwsjsUijrfNi0QviwyccZBrPkA";
 
-
+const athleteFromURL = new URLSearchParams(window.location.search)
+    .get("athlete");
 let MEETS = [];
 let ATHLETES = {};
 let currentChart = null;
@@ -109,12 +110,36 @@ async function loadRealMeets() {
         const rows = await response.json();
 
         MEETS = rows.map(row => row.data).filter(Boolean);
+buildDatabase();
 
-        buildDatabase();
+if (athleteFromURL) {
+    const decodedKey = decodeURIComponent(athleteFromURL).toLowerCase();
 
-        // 🔥 refrescar búsqueda si ya escribieron algo
-        renderList();
+    const entry = Object.values(ATHLETES).find(a => {
+        const athlete = a.athlete;
 
+        const key = [
+            athlete.firstName,
+            athlete.lastName,
+            athlete.club,
+            athlete.level
+        ]
+        .map(v => String(v || "").trim().toLowerCase())
+        .join("|");
+
+        return key === decodedKey;
+    });
+
+    if (entry) {
+        showChart(entry);
+        document.getElementById("search").value =
+            `${entry.athlete.firstName} ${entry.athlete.lastName}`;
+        return;
+    }
+}
+
+renderList();
+   
     } catch (error) {
         console.error("Error loading meets", error);
     }
