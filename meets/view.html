@@ -221,13 +221,16 @@ head.innerHTML =
 
     sessionEvents.forEach(evt => {
         evt.results.forEach(res => {
-            const a = res.athlete;
-            const id = a.athleteId || (a.firstName + a.lastName);
+         const a = res.athlete;
+const id = a.athleteId || (a.firstName + a.lastName);
+
 if (!athletes[id]) {
- const insightKey = String(
-    a.federationID || ""
-).trim().toLowerCase();
-    
+    const insightKey = String(
+        a.federationID ||
+        `${a.firstName}|${a.lastName}|${a.birthDate || ""}`
+    )
+    .trim()
+    .toLowerCase();
 
     athletes[id] = {
         insightKey,
@@ -236,6 +239,7 @@ if (!athletes[id]) {
         scores: {},
         total: 0
     };
+
 }
             const s = Number(res.score) || 0;
             athletes[id].scores[evt.event] = s;
