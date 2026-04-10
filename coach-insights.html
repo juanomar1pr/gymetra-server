@@ -116,6 +116,59 @@ function buildDatabase() {
     ATHLETES = {};
 
     MEETS.forEach(meetData => {
+        if (!meetData.events?.length) return;
+
+        const meetName = meetData.meet?.name || "Meet";
+        const meetDate = meetData.meet?.startDate || "";
+
+        const athleteScores = {};
+
+        meetData.events.forEach(event => {
+            if (!event.results?.length) return;
+
+            event.results.forEach(r => {
+                const athlete = r.athlete;
+                if (!athlete) return;
+
+                const key = athleteKey(athlete);
+                const score = Number(r.score) || 0;
+
+                if (!athleteScores[key]) {
+                    athleteScores[key] = {
+                        athlete,
+                        total: 0
+                    };
+                }
+
+                athleteScores[key].total += score;
+            });
+        });
+
+        Object.entries(athleteScores).forEach(([key, value]) => {
+            if (!ATHLETES[key]) {
+                ATHLETES[key] = {
+                    athlete: value.athlete,
+                    history: []
+                };
+            }
+
+            ATHLETES[key].history.push({
+                meet: meetName,
+                date: meetDate,
+                score: value.total
+            });
+        });
+    });
+
+    Object.values(ATHLETES).forEach(entry => {
+        entry.history.sort((a, b) => new Date(a.date) - new Date(b.date));
+    });
+}
+
+
+    ATHLETES = {};
+
+    MEETS.forEach(meetData => {
         if (!meetData.events) return;
 
         const aaEvent = meetData.events.find(e => e.event === "allAround");
