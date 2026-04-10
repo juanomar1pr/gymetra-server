@@ -69,7 +69,14 @@ input {
 <body>
 <div class="container">
     <h1>Gymetra Coach Insights</h1>
-    <input id="search" placeholder="Search athlete...">
+  <input 
+    id="search"
+    placeholder="Search athlete..."
+    autocomplete="off"
+    autocorrect="off"
+    autocapitalize="none"
+    spellcheck="false"
+/>
     <div id="athlete-list" class="athlete-list"></div>
     <div id="chart-area"></div>
 </div>
@@ -112,23 +119,7 @@ async function loadRealMeets() {
         console.error("Error loading meets", error);
     }
 }
-    try {
-        const response = await fetch(SUPABASE_URL, {
-            headers: {
-                apikey: SUPABASE_KEY,
-                Authorization: `Bearer ${SUPABASE_KEY}`
-            }
-        });
 
-        const rows = await response.json();
-
-        MEETS = rows.map(row => row.data).filter(Boolean);
-
-        buildDatabase();
-    } catch (error) {
-        console.error("Error loading meets", error);
-    }
-}
 
 function buildDatabase() {
     ATHLETES = {};
@@ -231,11 +222,13 @@ function renderList() {
             <div class="meta">${entry.athlete.club} • ${entry.athlete.level}</div>
         `;
 
-        div.onclick = () => {
-            showChart(entry);
-            list.style.display = "none";
-            list.innerHTML = "";
-        };
+div.addEventListener("click", () => {
+    showChart(entry);
+    list.style.display = "none";
+    list.innerHTML = "";
+});
+
+
 
         list.appendChild(div);
     });
@@ -279,7 +272,11 @@ function showChart(entry) {
     });
 }
 
-document.getElementById("search").addEventListener("input", renderList);
+const searchInput = document.getElementById("search");
+
+["input", "keyup", "change"].forEach(evt => {
+    searchInput.addEventListener(evt, renderList);
+});
 
 loadRealMeets();
 </script>
