@@ -104,6 +104,27 @@ async function loadRealMeets() {
         MEETS = rows.map(row => row.data).filter(Boolean);
 
         buildDatabase();
+
+        // 🔥 refrescar búsqueda si ya escribieron algo
+        renderList();
+
+    } catch (error) {
+        console.error("Error loading meets", error);
+    }
+}
+    try {
+        const response = await fetch(SUPABASE_URL, {
+            headers: {
+                apikey: SUPABASE_KEY,
+                Authorization: `Bearer ${SUPABASE_KEY}`
+            }
+        });
+
+        const rows = await response.json();
+
+        MEETS = rows.map(row => row.data).filter(Boolean);
+
+        buildDatabase();
     } catch (error) {
         console.error("Error loading meets", error);
     }
