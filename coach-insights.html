@@ -74,8 +74,9 @@ input {
     <div id="chart-area"></div>
 </div>
 <script>
-const SUPABASE_URL = "https://ulexxpaatpjtpgkancew.supabase.co/rest/v1/meets";
+ const SUPABASE_URL = "https://ulexxpaatpjtpgkancew.supabase.co/rest/v1/meets";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVsZXh4cGFhdHBqdHBna2FuY2V3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTIyNDMsImV4cCI6MjA4OTYyODI0M30.gqKgykSN65QKxTWC7WwsjsUijrfNi0QviwyccZBrPkA";
+
 
 let MEETS = [];
 let ATHLETES = {};
@@ -100,14 +101,9 @@ async function loadRealMeets() {
 
         const rows = await response.json();
 
-        // ✅ extraer SOLO el data JSON interno
-        MEETS = rows
-            .map(row => row.data)
-            .filter(Boolean);
+        MEETS = rows.map(row => row.data).filter(Boolean);
 
         buildDatabase();
-        renderList();
-
     } catch (error) {
         console.error("Error loading meets", error);
     }
@@ -121,11 +117,9 @@ function buildDatabase() {
 
         const meetName = meetData.meet?.name || "Meet";
         const meetDate = meetData.meet?.startDate || "";
-
         const athleteScores = {};
 
         meetData.events.forEach(event => {
-            const eventName = event.event;
             if (!event.results?.length) return;
 
             event.results.forEach(r => {
@@ -134,6 +128,7 @@ function buildDatabase() {
 
                 const key = athleteKey(athlete);
                 const score = Number(r.score) || 0;
+                const eventName = event.event;
 
                 if (!athleteScores[key]) {
                     athleteScores[key] = {
@@ -172,114 +167,32 @@ function buildDatabase() {
         entry.history.sort((a, b) => new Date(a.date) - new Date(b.date));
     });
 }
-    ATHLETES = {};
-
-    MEETS.forEach(meetData => {
-        if (!meetData.events?.length) return;
-
-        const meetName = meetData.meet?.name || "Meet";
-        const meetDate = meetData.meet?.startDate || "";
-
-        const athleteScores = {};
-
-        meetData.events.forEach(event => {
-            if (!event.results?.length) return;
-
-            event.results.forEach(r => {
-                const athlete = r.athlete;
-                if (!athlete) return;
-
-                const key = athleteKey(athlete);
-                const score = Number(r.score) || 0;
-
-                if (!athleteScores[key]) {
-                    athleteScores[key] = {
-                        athlete,
-                        total: 0
-                    };
-                }
-
-                athleteScores[key].total += score;
-            });
-        });
-
-        Object.entries(athleteScores).forEach(([key, value]) => {
-            if (!ATHLETES[key]) {
-                ATHLETES[key] = {
-                    athlete: value.athlete,
-                    history: []
-                };
-            }
-
-            ATHLETES[key].history.push({
-                meet: meetName,
-                date: meetDate,
-                score: value.total
-            });
-        });
-    });
-
-    Object.values(ATHLETES).forEach(entry => {
-        entry.history.sort((a, b) => new Date(a.date) - new Date(b.date));
-    });
-}
-
-
-    ATHLETES = {};
-
-    MEETS.forEach(meetData => {
-        if (!meetData.events) return;
-
-        const aaEvent = meetData.events.find(e => e.event === "allAround");
-        if (!aaEvent) return;
-
-        aaEvent.results.forEach(r => {
-            const athlete = r.athlete;
-            if (!athlete) return;
-
-            const key = athleteKey(athlete);
-
-            if (!ATHLETES[key]) {
-                ATHLETES[key] = {
-                    athlete,
-                    history: []
-                };
-            }
-
-            ATHLETES[key].history.push({
-                meet: meetData.meet?.name || "Meet",
-                date: meetData.meet?.startDate || "",
-                score: Number(r.score) || 0
-            });
-        });
-    });
-
-    // ✅ ordenar por fecha
-    Object.values(ATHLETES).forEach(entry => {
-        entry.history.sort((a, b) => new Date(a.date) - new Date(b.date));
-    });
-}
 
 function renderList() {
-    const q = document.getElementById("search").value
-        .trim()
-        .toLowerCase();
-
+    const q = document.getElementById("search").value.trim().toLowerCase();
     const list = document.getElementById("athlete-list");
+
     list.innerHTML = "";
 
-    // ✅ no mostrar nada hasta que escriba
     if (!q) {
         list.style.display = "none";
         return;
     }
 
-    const filtered = Object.values(ATHLETES)
-        .filter(a =>
-            athleteDisplay(a.athlete)
-                .toLowerCase()
-                .includes(q)
-        );
+  const filtered = Object.values(ATHLETES).filter(entry => {
+    const athlete = entry.athlete;
+
+    const searchable = [
+        athlete.firstName,
+        athlete.lastName,
+        athlete.club,
+        athlete.level
+    ]
+    .join(" ")
+    .toLowerCase();
+
+    return searchable.includes(q);
+});
 
     if (!filtered.length) {
         list.style.display = "grid";
@@ -299,31 +212,12 @@ function renderList() {
 
         div.onclick = () => {
             showChart(entry);
-
-            // ✅ ocultar resultados después de seleccionar
-            list.innerHTML = "";
             list.style.display = "none";
+            list.innerHTML = "";
         };
 
         list.appendChild(div);
     });
-}
-    const q = document.getElementById("search").value.toLowerCase();
-    const list = document.getElementById("athlete-list");
-    list.innerHTML = "";
-
-    Object.values(ATHLETES)
-        .filter(a => athleteDisplay(a.athlete).toLowerCase().includes(q))
-        .forEach(entry => {
-            const div = document.createElement("div");
-            div.className = "athlete-row";
-            div.innerHTML = `
-                <b>${athleteDisplay(entry.athlete)}</b>
-                <div class="meta">${entry.athlete.club} • ${entry.athlete.level}</div>
-            `;
-            div.onclick = () => showChart(entry);
-            list.appendChild(div);
-        });
 }
 
 function showChart(entry) {
@@ -332,11 +226,11 @@ function showChart(entry) {
     chartArea.innerHTML = `
         <div class="chart-card">
             <h2>${athleteDisplay(entry.athlete)}</h2>
-            <canvas id="scoreChart"></canvas>
+            <div style="height:400px">
+    <canvas id="scoreChart"></canvas>
+</div>
         </div>
     `;
-
-    const labels = entry.history.map(h => h.meet);
 
     const ctx = document.getElementById("scoreChart");
 
@@ -345,33 +239,13 @@ function showChart(entry) {
     currentChart = new Chart(ctx, {
         type: "line",
         data: {
-            labels,
+            labels: entry.history.map(h => h.meet),
             datasets: [
-                {
-                    label: "AA",
-                    data: entry.history.map(h => h.aa),
-                    tension: 0.3
-                },
-                {
-                    label: "Floor",
-                    data: entry.history.map(h => h.floor),
-                    tension: 0.3
-                },
-                {
-                    label: "Vault",
-                    data: entry.history.map(h => h.vault),
-                    tension: 0.3
-                },
-                {
-                    label: "Bars",
-                    data: entry.history.map(h => h.bars),
-                    tension: 0.3
-                },
-                {
-                    label: "Beam",
-                    data: entry.history.map(h => h.beam),
-                    tension: 0.3
-                }
+                { label: "AA", data: entry.history.map(h => h.aa), tension: 0.3 },
+                { label: "Floor", data: entry.history.map(h => h.floor), tension: 0.3 },
+                { label: "Vault", data: entry.history.map(h => h.vault), tension: 0.3 },
+                { label: "Bars", data: entry.history.map(h => h.bars), tension: 0.3 },
+                { label: "Beam", data: entry.history.map(h => h.beam), tension: 0.3 }
             ]
         },
         options: {
@@ -383,38 +257,9 @@ function showChart(entry) {
         }
     });
 }
-    const chartArea = document.getElementById("chart-area");
 
-    chartArea.innerHTML = `
-        <div class="chart-card">
-            <h2>${athleteDisplay(entry.athlete)}</h2>
-            <canvas id="scoreChart"></canvas>
-        </div>
-    `;
+document.getElementById("search").addEventListener("input", renderList);
 
-    const labels = entry.history.map(h => h.meet);
-    const scores = entry.history.map(h => h.score);
-
-    const ctx = document.getElementById("scoreChart");
-
-    if (currentChart) currentChart.destroy();
-
-    currentChart = new Chart(ctx, {
-        type: "line",
-        data: {
-            labels,
-            datasets: [{
-                label: "AA Score",
-                data: scores,
-                tension: 0.3
-            }]
-        }
-    });
-}
-
-document.getElementById("search").oninput = renderList;
-
-// ✅ REAL DATA
 loadRealMeets();
 </script>
 </body>
