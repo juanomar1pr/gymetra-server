@@ -223,25 +223,20 @@ head.innerHTML =
         evt.results.forEach(res => {
             const a = res.athlete;
             const id = a.athleteId || (a.firstName + a.lastName);
+if (!athletes[id]) {
+ const insightKey = String(
+    a.federationID || ""
+).trim().toLowerCase();
+    
 
-            if (!athletes[id]) {
-          const insightKey = [
-    a.firstName,
-    a.lastName,
-    a.club,
-    a.level
-]
-.map(v => String(v || "").trim().toLowerCase())
-.join("|");
-  athletes[id] = {
-    insightKey,
-    name: `${a.firstName} ${a.lastName}`,
-    team: a.club || "—",
-    scores: {},
-    total: 0
-};
-            }
-
+    athletes[id] = {
+        insightKey,
+        name: `${a.firstName} ${a.lastName}`,
+        team: a.club || "—",
+        scores: {},
+        total: 0
+    };
+}
             const s = Number(res.score) || 0;
             athletes[id].scores[evt.event] = s;
 

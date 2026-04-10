@@ -91,9 +91,11 @@ let ATHLETES = {};
 let currentChart = null;
 
 function athleteKey(a) {
-    return `${a.firstName}|${a.lastName}|${a.club}|${a.level}`.toLowerCase();
+    return String(
+        a.federationID ||
+        `${a.firstName}|${a.lastName}|${a.birthDate || ""}`
+    ).toLowerCase().trim();
 }
-
 function athleteDisplay(a) {
     return `${a.firstName} ${a.lastName}`;
 }
@@ -113,21 +115,12 @@ async function loadRealMeets() {
 buildDatabase();
 
 if (athleteFromURL) {
-    const decodedKey = decodeURIComponent(athleteFromURL).toLowerCase();
+    const decodedKey = decodeURIComponent(athleteFromURL)
+        .toLowerCase()
+        .trim();
 
     const entry = Object.values(ATHLETES).find(a => {
-        const athlete = a.athlete;
-
-        const key = [
-            athlete.firstName,
-            athlete.lastName,
-            athlete.club,
-            athlete.level
-        ]
-        .map(v => String(v || "").trim().toLowerCase())
-        .join("|");
-
-        return key === decodedKey;
+        return athleteKey(a.athlete) === decodedKey;
     });
 
     if (entry) {
