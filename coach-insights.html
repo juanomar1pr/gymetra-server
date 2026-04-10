@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gymetra Coach Insights</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root {
+    --bg: #000;
+    --card: #111;
+    --text: #fff;
+    --sub: #8e8e93;
+    --border: #2c2c2e;
+    --accent: #0A84FF;
+}
+body {
+    margin: 0;
+    font-family: -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+h1 {
+    margin: 0 0 20px;
+}
+input {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+.athlete-list {
+    display: grid;
+    gap: 10px;
+}
+.athlete-row {
+    background: var(--card);
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+}
+.athlete-row:hover {
+    border-color: var(--accent);
+}
+.chart-card {
+    margin-top: 30px;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid var(--border);
+}
+.meta {
+    color: var(--sub);
+    font-size: 13px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>Gymetra Coach Insights</h1>
+    <input id="search" placeholder="Search athlete...">
+    <div id="athlete-list" class="athlete-list"></div>
+    <div id="chart-area"></div>
+</div>
+
+<script>
+/*
+ 🔥 DEMO:
+ reemplaza esto por tus meets reales desde Supabase
+*/
+const MEETS = [
+    {
+        meet: { name: "Pueba1", startDate: "2026-04-10" },
+        events: [
+            {
+                event: "allAround",
+                results: [
+                    {
+                        athlete: {
+                            firstName: "Emma",
+                            lastName: "Johnson",
+                            club: "Elite Gym",
+                            level: "Level 4"
+                        },
+                        score: 37
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        meet: { name: "Test01", startDate: "2026-04-11" },
+        events: [
+            {
+                event: "allAround",
+                results: [
+                    {
+                        athlete: {
+                            firstName: "Emma",
+                            lastName: "Johnson",
+                            club: "Elite Gym",
+                            level: "Level 4"
+                        },
+                        score: 38.2
+                    }
+                ]
+            }
+        ]
+    }
+];
+
+function athleteKey(a) {
+    return `${a.firstName}|${a.lastName}|${a.club}|${a.level}`.toLowerCase();
+}
+
+function athleteDisplay(a) {
+    return `${a.firstName} ${a.lastName}`;
+}
+
+let ATHLETES = {};
+
+function buildDatabase() {
+    ATHLETES = {};
+
+    MEETS.forEach(meet => {
+        const aaEvent = meet.events.find(e => e.event === "allAround");
+        if (!aaEvent) return;
+
+        aaEvent.results.forEach(r => {
+            const key = athleteKey(r.athlete);
+
+            if (!ATHLETES[key]) {
+                ATHLETES[key] = {
+                    athlete: r.athlete,
+                    history: []
+                };
+            }
+
+            ATHLETES[key].history.push({
+                meet: meet.meet.name,
+                date: meet.meet.startDate,
+                score: r.score
+            });
+        });
+    });
+}
+
+function renderList() {
+    const q = document.getElementById("search").value.toLowerCase();
+    const list = document.getElementById("athlete-list");
+    list.innerHTML = "";
+
+    Object.values(ATHLETES)
+        .filter(a =>
+            athleteDisplay(a.athlete).toLowerCase().includes(q)
+        )
+        .forEach(entry => {
+            const div = document.createElement("div");
+            div.className = "athlete-row";
+            div.innerHTML = `
+                <b>${athleteDisplay(entry.athlete)}</b>
+                <div class="meta">${entry.athlete.club} • ${entry.athlete.level}</div>
+            `;
+            div.onclick = () => showChart(entry);
+            list.appendChild(div);
+        });
+}
+
+let currentChart = null;
+
+function showChart(entry) {
+    const chartArea = document.getElementById("chart-area");
+
+    chartArea.innerHTML = `
+        <div class="chart-card">
+            <h2>${athleteDisplay(entry.athlete)}</h2>
+            <canvas id="scoreChart"></canvas>
+        </div>
+    `;
+
+    const labels = entry.history.map(h => h.meet);
+    const scores = entry.history.map(h => h.score);
+
+    const ctx = document.getElementById("scoreChart");
+
+    if (currentChart) currentChart.destroy();
+
+    currentChart = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels,
+            datasets: [{
+                label: "AA Score",
+                data: scores,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: true }
+            }
+        }
+    });
+}
+
+document.getElementById("search").oninput = renderList;
+
+buildDatabase();
+renderList();
+</script>
+</body>
+</html>
