@@ -242,16 +242,17 @@ input:focus {
 <script>
 let ALL_MEETS = [];
 
-const SUPABASE_URL = "https://ulexxpaatpjtpgkancew.supabase.co/rest/v1/meets";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVsZXh4cGFhdHBqdHBna2FuY2V3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTIyNDMsImV4cCI6MjA4OTYyODI0M30.gqKgykSN65QKxTWC7WwsjsUijrfNi0QviwyccZBrPkA";
+const SUPABASE_BASE_URL = "https://ulexxpaatpjtpgkancew.supabase.co";
+const SUPABASE_URL = `${SUPABASE_BASE_URL}/rest/v1/meets`;
+const SUPABASE_KEY = "sb_publishable_rF-UPEX2zhC5cZztSFeGaQ_-7bjyloC";
 
 async function loadAllMeets() {
     const list = document.getElementById("list");
     try {
         const response = await fetch(SUPABASE_URL, {
-            headers: { 
-                'apikey': SUPABASE_KEY, 
-                'Authorization': `Bearer ${SUPABASE_KEY}` 
+            headers: {
+                apikey: SUPABASE_KEY,
+                Authorization: `Bearer ${SUPABASE_KEY}`
             }
         });
         
