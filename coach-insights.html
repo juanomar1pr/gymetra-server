@@ -82,7 +82,7 @@ input {
 </div>
 <script>
  const SUPABASE_URL = "https://ulexxpaatpjtpgkancew.supabase.co/rest/v1/meets";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVsZXh4cGFhdHBqdHBna2FuY2V3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTIyNDMsImV4cCI6MjA4OTYyODI0M30.gqKgykSN65QKxTWC7WwsjsUijrfNi0QviwyccZBrPkA";
+const SUPABASE_KEY = "sb_publishable_rF-UPEX2zhC5cZztSFeGaQ_-7bjyloC";
 
 const athleteFromURL = new URLSearchParams(window.location.search)
     .get("athlete");
@@ -272,13 +272,37 @@ function showChart(entry) {
         type: "line",
         data: {
             labels: entry.history.map(h => h.meet),
-            datasets: [
-                { label: "AA", data: entry.history.map(h => h.aa), tension: 0.3 },
-                { label: "Floor", data: entry.history.map(h => h.floor), tension: 0.3 },
-                { label: "Vault", data: entry.history.map(h => h.vault), tension: 0.3 },
-                { label: "Bars", data: entry.history.map(h => h.bars), tension: 0.3 },
-                { label: "Beam", data: entry.history.map(h => h.beam), tension: 0.3 }
-            ]
+           datasets: [
+    {
+        label: "AA",
+        data: entry.history.map(h => h.aa),
+        tension: 0.3
+    },
+    {
+        label: "Floor",
+        data: entry.history.map(h => h.floor),
+        tension: 0.3,
+        hidden: true
+    },
+    {
+        label: "Vault",
+        data: entry.history.map(h => h.vault),
+        tension: 0.3,
+        hidden: true
+    },
+    {
+        label: "Bars",
+        data: entry.history.map(h => h.bars),
+        tension: 0.3,
+        hidden: true
+    },
+    {
+        label: "Beam",
+        data: entry.history.map(h => h.beam),
+        tension: 0.3,
+        hidden: true
+    }
+]
         },
         options: {
             responsive: true,
