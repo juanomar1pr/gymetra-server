@@ -238,8 +238,8 @@ if (!athletes[id]) {
     team: a.club || "—",
 
     // ✅ NUEVO (safe)
-    ageDivision: a.ageCategory || "—",
-    session: evt.session || "—",
+   ageDivision: a.ageCategory || "",
+session: evt.session === "AA" ? "" : (evt.session || ""),
 
     scores: {},
     total: 0
@@ -263,12 +263,13 @@ if (!athletes[id]) {
 list.forEach((a, i) => {
     const tr = document.createElement("tr");
 
+
 let html =
     `<td class="col-rank">${i + 1}</td>` +
     `<td class="col-name">
         <b>${a.name}</b><br>
         <small style="color:var(--text-dim)">
-            ${a.ageDivision} • ${a.session}
+            ${[a.ageDivision, a.session].filter(Boolean).join(" • ")}
         </small>
     </td>` +
     `<td class="col-team" style="color:var(--text-dim)">${a.team}</td>`;
