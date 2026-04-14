@@ -373,6 +373,7 @@ async function deleteMeet(slug) {
 }
 function logout() {
     sessionStorage.removeItem("gymetra_admin");
+    sessionStorage.removeItem("gymetra_admin_password");
     document.getElementById("password").value = "";
     showLogin();
 }
