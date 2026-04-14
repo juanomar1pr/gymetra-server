@@ -276,7 +276,7 @@ function showApp() {
     document.getElementById("authBadge").classList.remove("hidden");
 }
 
-const supabase = window.supabase.createClient(
+const sb = window.supabase.createClient(
     "https://ulexxpaatpjtpgkancew.supabase.co",
     PUBLIC_KEY
 );
@@ -294,7 +294,7 @@ async function login() {
     }
 
     try {
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await sb.auth.signInWithPassword({
             email,
             password
         });
@@ -326,7 +326,7 @@ async function checkConnection() {
     errorEl.textContent = "";
 
     try {
-        const { data, error } = await supabase.auth.getSession();
+        const { data, error } = await sb.auth.getSession();
         console.log("Current session check:", { data, error });
         errorEl.textContent = error ? (error.message || "Auth connection failed.") : "Auth connection OK. Check browser console for details.";
     } catch (err) {
@@ -388,7 +388,7 @@ function openMeet(slug) {
 async function deleteMeet(slug) {
     const {
         data: { session }
-    } = await supabase.auth.getSession();
+    } = await sb.auth.getSession();
 
     if (!session) {
         alert("Session expired.");
@@ -420,7 +420,7 @@ async function deleteMeet(slug) {
 }
 
 async function logout() {
-    await supabase.auth.signOut();
+    await sb.auth.signOut();
     sessionStorage.removeItem("gymetra_admin");
     document.getElementById("email").value = "";
     document.getElementById("password").value = "";
@@ -442,7 +442,7 @@ function escapeJs(value) {
         .replaceAll("'", "\\'");
 }
 
-supabase.auth.getSession().then(({ data }) => {
+sb.auth.getSession().then(({ data }) => {
     if (data.session) {
         sessionStorage.setItem("gymetra_admin", "true");
         showApp();
