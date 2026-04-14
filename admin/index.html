@@ -229,6 +229,7 @@ body {
     class="input"
     type="email"
     placeholder="Admin Email"
+    onkeypress="if(event.key==='Enter') login()"
 >
         <p class="subtitle">Enter administrator credentials.</p>
         <input
@@ -283,6 +284,11 @@ async function login() {
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value.trim();
     const errorEl = document.getElementById("loginError");
+
+    if (!email || !password) {
+        errorEl.textContent = "Enter your admin email and password.";
+        return;
+    }
 
     const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -382,46 +388,11 @@ async function deleteMeet(slug) {
     alert(`"${slug}" deleted successfully`);
     load();
 }
-    const password = sessionStorage.getItem("gymetra_admin_password");
 
-    if (!password) {
-        alert("Admin session expired.");
-        logout();
-        return;
-    }
-
-    if (!confirm(`Delete "${slug}" permanently?`)) return;
-
-    try {
-        const response = await fetch(
-            "https://ulexxpaatpjtpgkancew.supabase.co/functions/v1/delete-meet",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    slug,
-                    adminPassword: password
-                })
-            }
-        );
-
-        const result = await response.json();
-
-        if (!response.ok) {
-            throw new Error(result.error || "Delete failed");
-        }
-
-        load();
-    } catch (error) {
-        console.error(error);
-        alert(error.message);
-    }
-}
-function logout() {
+async function logout() {
+    await supabase.auth.signOut();
     sessionStorage.removeItem("gymetra_admin");
-    sessionStorage.removeItem("gymetra_admin_password");
+    document.getElementById("email").value = "";
     document.getElementById("password").value = "";
     showLogin();
 }
@@ -441,12 +412,15 @@ function escapeJs(value) {
         .replaceAll("'", "\\'");
 }
 
-if (sessionStorage.getItem("gymetra_admin") === "true") {
-    showApp();
-    load();
-} else {
-    showLogin();
-}
+supabase.auth.getSession().then(({ data }) => {
+    if (data.session) {
+        sessionStorage.setItem("gymetra_admin", "true");
+        showApp();
+        load();
+    } else {
+        showLogin();
+    }
+});
 </script>
 
 </body>
