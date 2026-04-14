@@ -233,7 +233,7 @@ body {
         >
         <button class="btn" style="width: 100%;" onclick="login()">Sign In</button>
         <div id="loginError" class="error-msg"></div>
-        <div class="notice">This panel is read-only for now. Delete is temporarily disabled.</div>
+    <div class="notice">Moderation delete is enabled via secure backend.</div>
     </div>
 </div>
 
@@ -281,6 +281,7 @@ function login() {
     sessionStorage.setItem("gymetra_admin_password", password);
 
     showApp();
+    alert(`"${slug}" deleted successfully`);
     load();
 }
 
