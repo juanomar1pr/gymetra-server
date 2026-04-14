@@ -223,6 +223,13 @@ body {
 <div id="loginView" class="container">
     <div class="login-card">
         <h2 class="title">Welcome Back</h2>
+         <p class="subtitle">Enter User for administrator</p>
+        <input
+    id="email"
+    class="input"
+    type="email"
+    placeholder="Admin Email"
+>
         <p class="subtitle">Enter administrator credentials.</p>
         <input
             id="password"
@@ -248,7 +255,7 @@ body {
 
     <div id="list" class="list"></div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const PUBLIC_KEY = "sb_publishable_rF-UPEX2zhC5cZztSFeGaQ_-7bjyloC";
 
@@ -267,21 +274,29 @@ function showApp() {
     document.getElementById("authBadge").classList.remove("hidden");
 }
 
-function login() {
+const supabase = window.supabase.createClient(
+    "https://ulexxpaatpjtpgkancew.supabase.co",
+    PUBLIC_KEY
+);
+
+async function login() {
+    const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value.trim();
     const errorEl = document.getElementById("loginError");
 
-    if (!password) {
-        errorEl.textContent = "Please enter password.";
+    const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+    });
+
+    if (error) {
+        errorEl.textContent = error.message;
         return;
     }
 
-    // solo guardamos la sesión visual
     sessionStorage.setItem("gymetra_admin", "true");
-    sessionStorage.setItem("gymetra_admin_password", password);
 
     showApp();
-    alert(`"${slug}" deleted successfully`);
     load();
 }
 
@@ -335,6 +350,38 @@ function openMeet(slug) {
     window.open(`https://gymetra.net/meets/view.html?slug=${encodeURIComponent(slug)}`, "_blank");
 }
 async function deleteMeet(slug) {
+    const {
+        data: { session }
+    } = await supabase.auth.getSession();
+
+    if (!session) {
+        alert("Session expired.");
+        logout();
+        return;
+    }
+
+    const response = await fetch(
+        "https://ulexxpaatpjtpgkancew.supabase.co/functions/v1/delete-meet",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${session.access_token}`
+            },
+            body: JSON.stringify({ slug })
+        }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        alert(result.error);
+        return;
+    }
+
+    alert(`"${slug}" deleted successfully`);
+    load();
+}
     const password = sessionStorage.getItem("gymetra_admin_password");
 
     if (!password) {
