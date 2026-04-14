@@ -240,6 +240,7 @@ body {
             onkeypress="if(event.key==='Enter') login()"
         >
         <button class="btn" style="width: 100%;" onclick="login()">Sign In</button>
+        <button class="btn btn-secondary" style="width: 100%; margin-top: 10px;" onclick="checkConnection()">Test Auth Connection</button>
         <div id="loginError" class="error-msg"></div>
     <div class="notice">Moderation delete is enabled via secure backend.</div>
     </div>
@@ -284,19 +285,33 @@ async function login() {
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value.trim();
     const errorEl = document.getElementById("loginError");
+    errorEl.textContent = "";
+    console.log("Trying login with email:", email);
 
     if (!email || !password) {
         errorEl.textContent = "Enter your admin email and password.";
         return;
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-    });
+    try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password
+        });
 
-    if (error) {
-        errorEl.textContent = error.message;
+        if (error) {
+            console.error("Supabase login error:", error);
+            errorEl.textContent = error.message || "Login failed.";
+            return;
+        }
+
+        if (!data.session) {
+            errorEl.textContent = "Login succeeded but no session was returned.";
+            return;
+        }
+    } catch (err) {
+        console.error("Unexpected login error:", err);
+        errorEl.textContent = err?.message || "Unexpected login error.";
         return;
     }
 
@@ -306,10 +321,25 @@ async function login() {
     load();
 }
 
+async function checkConnection() {
+    const errorEl = document.getElementById("loginError");
+    errorEl.textContent = "";
+
+    try {
+        const { data, error } = await supabase.auth.getSession();
+        console.log("Current session check:", { data, error });
+        errorEl.textContent = error ? (error.message || "Auth connection failed.") : "Auth connection OK. Check browser console for details.";
+    } catch (err) {
+        console.error("Auth connection check failed:", err);
+        errorEl.textContent = err?.message || "Auth connection failed.";
+    }
+}
+
 function load() {
     fetch(`${SB_BASE_URL}/meets?select=slug&order=slug.asc`, {
         headers: {
-            apikey: PUBLIC_KEY
+            apikey: PUBLIC_KEY,
+            Authorization: `Bearer ${PUBLIC_KEY}`
         }
     })
     .then(async (r) => {
