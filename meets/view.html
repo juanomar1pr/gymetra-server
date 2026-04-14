@@ -232,13 +232,18 @@ if (!athletes[id]) {
     .trim()
     .toLowerCase();
 
-    athletes[id] = {
-        insightKey,
-        name: `${a.firstName} ${a.lastName}`,
-        team: a.club || "—",
-        scores: {},
-        total: 0
-    };
+  athletes[id] = {
+    insightKey,
+    name: `${a.firstName} ${a.lastName}`,
+    team: a.club || "—",
+
+    // ✅ NUEVO (safe)
+    ageDivision: a.ageCategory || "—",
+    session: evt.session || "—",
+
+    scores: {},
+    total: 0
+};
 
 }
             const s = Number(res.score) || 0;
@@ -258,10 +263,15 @@ if (!athletes[id]) {
 list.forEach((a, i) => {
     const tr = document.createElement("tr");
 
-    let html =
-        `<td class="col-rank">${i + 1}</td>` +
-        `<td class="col-name"><b>${a.name}</b></td>` +
-        `<td class="col-team" style="color:var(--text-dim)">${a.team}</td>`;
+let html =
+    `<td class="col-rank">${i + 1}</td>` +
+    `<td class="col-name">
+        <b>${a.name}</b><br>
+        <small style="color:var(--text-dim)">
+            ${a.ageDivision} • ${a.session}
+        </small>
+    </td>` +
+    `<td class="col-team" style="color:var(--text-dim)">${a.team}</td>`;
 
     // scores
     eventNames.forEach(en => {
