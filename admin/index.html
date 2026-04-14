@@ -24,7 +24,6 @@ body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
     background-color: var(--bg);
-    /* Rejilla de puntos estilo Xcode/Moderno */
     background-image: radial-gradient(circle, #222 1px, transparent 1px);
     background-size: 30px 30px;
     color: var(--text-primary);
@@ -32,7 +31,6 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-/* NAVBAR - Reparada para que no flote sobre el login */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -49,16 +47,18 @@ body {
     z-index: 1000;
 }
 
-.brand { font-weight: 800; letter-spacing: -0.5px; font-size: 18px; }
+.brand {
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    font-size: 18px;
+}
 
-/* CONTENEDORES */
 .container {
     max-width: 800px;
     margin: 0 auto;
-    padding: 120px 20px 60px 20px; /* Espacio para que la navbar no tape el contenido */
+    padding: 120px 20px 60px 20px;
 }
 
-/* Centrado especial para el login */
 #loginView {
     display: flex;
     justify-content: center;
@@ -66,7 +66,6 @@ body {
     min-height: 80vh;
 }
 
-/* LOGIN CARD */
 .login-card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -78,8 +77,18 @@ body {
     max-width: 400px;
 }
 
-.title { font-size: 32px; font-weight: 800; margin-bottom: 8px; letter-spacing: -1px; }
-.subtitle { color: var(--text-secondary); margin-bottom: 24px; font-size: 14px; }
+.title {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    letter-spacing: -1px;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    font-size: 14px;
+}
 
 .input {
     width: 100%;
@@ -95,9 +104,11 @@ body {
     transition: 0.2s;
 }
 
-.input:focus { border-color: var(--accent); background: #3a3a3c; }
+.input:focus {
+    border-color: var(--accent);
+    background: #3a3a3c;
+}
 
-/* BUTTONS */
 .btn {
     display: inline-block;
     background: var(--accent);
@@ -113,12 +124,26 @@ body {
     text-decoration: none;
 }
 
-.btn:hover { opacity: 0.9; transform: translateY(-1px); }
-.btn-secondary { background: #3a3a3c; color: var(--text-primary); }
-.btn-danger { background: rgba(255, 69, 58, 0.15); color: var(--danger); }
-.btn-danger:hover { background: var(--danger); color: white; }
+.btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
 
-/* LISTA DE MEETS */
+.btn-secondary {
+    background: #3a3a3c;
+    color: var(--text-primary);
+}
+
+.btn-danger {
+    background: rgba(255, 69, 58, 0.15);
+    color: var(--danger);
+}
+
+.btn-danger:hover {
+    background: var(--danger);
+    color: white;
+}
+
 .card-item {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -130,18 +155,60 @@ body {
     margin-bottom: 12px;
 }
 
-.slug-name { font-weight: 700; font-size: 18px; }
-.url-preview { font-size: 12px; color: var(--accent); font-family: monospace; }
-.actions { display: flex; gap: 10px; }
+.slug-name {
+    font-weight: 700;
+    font-size: 18px;
+}
 
-/* UTILS */
-.hidden { display: none !important; }
-.error-msg { color: var(--danger); font-size: 13px; margin-top: 12px; font-weight: 600; }
-.badge { background: rgba(50, 215, 75, 0.1); color: #32D74B; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; }
+.url-preview {
+    font-size: 12px;
+    color: var(--accent);
+    font-family: monospace;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.error-msg {
+    color: var(--danger);
+    font-size: 13px;
+    margin-top: 12px;
+    font-weight: 600;
+}
+
+.badge {
+    background: rgba(50, 215, 75, 0.1);
+    color: #32D74B;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.notice {
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin-top: 10px;
+}
 
 @media (max-width: 600px) {
-    .card-item { flex-direction: column; align-items: flex-start; gap: 16px; }
-    .actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr; }
+    .card-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
 }
 </style>
 </head>
@@ -157,9 +224,16 @@ body {
     <div class="login-card">
         <h2 class="title">Welcome Back</h2>
         <p class="subtitle">Enter administrator credentials.</p>
-        <input id="password" class="input" type="password" placeholder="Admin Password" onkeypress="if(event.key==='Enter') login()">
+        <input
+            id="password"
+            class="input"
+            type="password"
+            placeholder="Admin Password"
+            onkeypress="if(event.key==='Enter') login()"
+        >
         <button class="btn" style="width: 100%;" onclick="login()">Sign In</button>
         <div id="loginError" class="error-msg"></div>
+        <div class="notice">This panel is read-only for now. Delete is temporarily disabled.</div>
     </div>
 </div>
 
@@ -172,18 +246,15 @@ body {
         <button class="btn btn-secondary" onclick="logout()">Logout</button>
     </div>
 
-    <div id="list" class="list">
-        </div>
+    <div id="list" class="list"></div>
 </div>
 
 <script>
-// --- CONFIGURATION ---
+const PUBLIC_KEY = "sb_publishable_rF-UPEX2zhC5cZztSFeGaQ_-7bjyloC";
+const ADMIN_PASSWORD = "CAMBIA_ESTO_POR_UN_PASSWORD_LARGO_Y_UNICO";
 const SB_BASE_URL = "https://ulexxpaatpjtpgkancew.supabase.co/rest/v1";
-let ADMIN_KEY = null; 
 
-// --- INTERFACE CONTROLS ---
 function showLogin() {
-    ADMIN_KEY = null;
     document.getElementById("loginView").classList.remove("hidden");
     document.getElementById("appView").classList.add("hidden");
     document.getElementById("authBadge").classList.add("hidden");
@@ -196,102 +267,105 @@ function showApp() {
     document.getElementById("authBadge").classList.remove("hidden");
 }
 
-// --- LOGIC ---
 function login() {
     const password = document.getElementById("password").value.trim();
     const errorEl = document.getElementById("loginError");
-    
+
     if (!password) {
-        errorEl.textContent = "Please enter a key.";
+        errorEl.textContent = "Please enter password.";
         return;
     }
 
-    ADMIN_KEY = password; 
+    if (password !== ADMIN_PASSWORD) {
+        errorEl.textContent = "Invalid password.";
+        return;
+    }
 
-    // Test connection to Supabase
-    fetch(`${SB_BASE_URL}/meets?select=slug&limit=1`, {
-        method: "GET",
-        headers: { 
-            "apikey": ADMIN_KEY, 
-            "Authorization": `Bearer ${ADMIN_KEY}`
-        }
-    })
-    .then(r => {
-        if (!r.ok) throw new Error("Unauthorized");
-        showApp();
-        load();
-    })
-    .catch((err) => {
-        ADMIN_KEY = null;
-        errorEl.textContent = "Invalid key. Access denied.";
-    });
+    sessionStorage.setItem("gymetra_admin", "true");
+    showApp();
+    load();
 }
 
 function load() {
-    fetch(`${SB_BASE_URL}/meets?select=slug`, {
-        headers: { 
-            "apikey": ADMIN_KEY, 
-            "Authorization": `Bearer ${ADMIN_KEY}` 
+    fetch(`${SB_BASE_URL}/meets?select=slug&order=slug.asc`, {
+        headers: {
+            apikey: PUBLIC_KEY
         }
     })
-    .then(r => r.json())
-    .then(data => {
+    .then(async (r) => {
+        if (!r.ok) {
+            throw new Error(`Load failed: ${r.status}`);
+        }
+        return r.json();
+    })
+    .then((data) => {
         const container = document.getElementById("list");
         container.innerHTML = "";
 
-        if (!data || data.length === 0) {
+        if (!Array.isArray(data) || data.length === 0) {
             container.innerHTML = '<div style="color:var(--text-secondary); padding: 20px;">No active meets found.</div>';
             return;
         }
 
-        data.forEach(item => {
+        data.forEach((item) => {
+            const slug = item.slug || "untitled";
             const div = document.createElement("div");
             div.className = "card-item";
             div.innerHTML = `
                 <div class="card-left">
-                    <div class="slug-name">${item.slug}</div>
-                    <div class="url-preview">/view.html?slug=${item.slug}</div>
+                    <div class="slug-name">${escapeHtml(slug)}</div>
+                    <div class="url-preview">/view.html?slug=${encodeURIComponent(slug)}</div>
                 </div>
                 <div class="actions">
-                    <button class="btn btn-secondary" onclick="openMeet('${item.slug}')">Open</button>
-                    <button class="btn btn-danger" onclick="deleteMeet('${item.slug}')">Delete</button>
+                    <button class="btn btn-secondary" onclick="openMeet('${escapeJs(slug)}')">Open</button>
+                    <button class="btn btn-danger" onclick="deleteMeet('${escapeJs(slug)}')">Delete</button>
                 </div>
             `;
             container.appendChild(div);
         });
     })
-    .catch(err => console.error("Loading error:", err));
+    .catch((err) => {
+        console.error("Loading error:", err);
+        document.getElementById("list").innerHTML =
+            '<div style="color:var(--danger); padding: 20px;">Failed to load meets.</div>';
+    });
 }
 
 function deleteMeet(slug) {
-    if (!confirm(`Permanently delete "${slug}"?`)) return;
-
-    fetch(`${SB_BASE_URL}/meets?slug=eq.${slug}`, {
-        method: "DELETE",
-        headers: { 
-            "apikey": ADMIN_KEY, 
-            "Authorization": `Bearer ${ADMIN_KEY}`,
-            "Content-Type": "application/json"
-        }
-    })
-    .then(r => {
-        if (!r.ok) throw new Error("Delete failed");
-        load(); 
-    })
-    .catch(err => alert("Delete failed. Check your service_role key."));
+    alert(`Delete is temporarily disabled for security.\n\nMeet: ${slug}\n\nNext step: move delete to a secure backend or host-side moderation tool.`);
 }
 
 function openMeet(slug) {
-    window.open(`https://gymetra.net/meets/view.html?slug=${slug}`, "_blank");
+    window.open(`https://gymetra.net/meets/view.html?slug=${encodeURIComponent(slug)}`, "_blank");
 }
 
 function logout() {
+    sessionStorage.removeItem("gymetra_admin");
     document.getElementById("password").value = "";
     showLogin();
 }
 
-// Start
-showLogin();
+function escapeHtml(value) {
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function escapeJs(value) {
+    return String(value)
+        .replaceAll("\\", "\\\\")
+        .replaceAll("'", "\\'");
+}
+
+if (sessionStorage.getItem("gymetra_admin") === "true") {
+    showApp();
+    load();
+} else {
+    showLogin();
+}
 </script>
 
 </body>
