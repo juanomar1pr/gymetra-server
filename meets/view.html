@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="/fa.png?v=6" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/fa.png?v=6">
+
 <title>Gymetra | Live Results</title>
 
 <script>
@@ -56,6 +57,7 @@ body {
 .breadcrumb {
     font-weight: 800;
     font-size: 18px;
+    color: var(--text);
     text-transform: uppercase;
 }
 .filter-row {
@@ -65,7 +67,7 @@ body {
     padding: 10px 15px;
 }
 .chip {
-    padding: 8px 14px;
+    padding: 6px 14px;
     border-radius: 999px;
     background: var(--surface);
     color: var(--text-dim);
@@ -73,6 +75,7 @@ body {
     cursor: pointer;
     white-space: nowrap;
     font-weight: 700;
+    flex: 0 0 auto;
 }
 .chip.active {
     background: var(--accent);
@@ -86,8 +89,8 @@ input {
     width: 100%;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 12px;
+    border-radius: 10px;
+    padding: 10px;
     color: var(--text);
     box-sizing: border-box;
 }
@@ -118,9 +121,11 @@ tr:nth-child(even) {
     text-align: center;
     font-weight: 700;
     font-family: monospace;
+    width: 70px;
 }
 .score-active {
     background: rgba(124, 58, 237, 0.12);
+    color: var(--text);
 }
 .col-aa {
     color: var(--gold);
@@ -131,22 +136,50 @@ tr:nth-child(even) {
     padding: 100px;
     color: var(--text-dim);
 }
+.insight-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 9px;
+    color: var(--text);
+    cursor: pointer;
+}
+.insight-btn:hover {
+    border-color: var(--accent);
+}
 
 @media (max-width: 700px) {
-    .desktop-only {
+    .col-team {
         display: none;
     }
 
-    .mobile-hidden {
+    .col-score.mobile-hidden {
         display: none;
     }
 
-    .mobile-score {
-        display: table-cell;
-        width: 80px;
+    .col-rank {
+        width: 36px;
+        min-width: 36px;
+    }
+
+    .col-score.mobile-priority {
+        width: 72px;
+        min-width: 72px;
         text-align: right;
+    }
+
+    .col-name {
+        width: auto;
+    }
+
+    .score-cell {
         font-size: 16px;
         font-weight: 800;
+        white-space: nowrap;
+    }
+
+    td, th {
+        padding: 14px 8px;
     }
 }
 </style>
@@ -155,26 +188,26 @@ tr:nth-child(even) {
 
 <div class="sticky-top">
     <div class="header-top">
-        <div class="breadcrumb" id="meet-title">GYMETRA</div>
+        <div class="breadcrumb" id="meet-title">GYMETRA > CARGANDO...</div>
         <div onclick="toggleTheme()" style="cursor:pointer">🌓</div>
     </div>
 
     <div class="filter-row" id="session-filters"></div>
-    <div class="filter-row" id="event-filters"></div>
+    <div class="filter-row" id="event-filters" style="background: var(--surface); border-top: 1px solid var(--border);"></div>
 
     <div class="search-area">
-        <input id="search" placeholder="Search gymnast, club, level, division...">
+        <input id="search" placeholder="Search by gymnast, club, or level...">
     </div>
 </div>
 
-<div class="table-wrapper">
+<div class="table-wrapper" id="content-area">
     <table>
         <thead><tr id="table-head"></tr></thead>
         <tbody id="table-body"></tbody>
     </table>
 </div>
 
-<div id="loader" class="loading-state">Connecting...</div>
+<div id="loader" class="loading-state">Conectando con Supabase...</div>
 
 <script>
 const params = new URLSearchParams(window.location.search);
@@ -184,8 +217,8 @@ const sbUrl = "https://ulexxpaatpjtpgkancew.supabase.co/rest/v1/meets";
 const sbKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVsZXh4cGFhdHBqdHBna2FuY2V3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTIyNDMsImV4cCI6MjA4OTYyODI0M30.gqKgykSN65QKxTWC7WwsjsUijrfNi0QviwyccZBrPkA";
 
 let DATA = null;
-let curSortEvent = "allAround";
 let curSession = "all";
+let curSortEvent = "allAround";
 
 function toggleTheme() {
     const next = (localStorage.getItem("theme") || "dark") === "dark" ? "light" : "dark";
@@ -194,38 +227,60 @@ function toggleTheme() {
 }
 
 async function loadResults() {
-    const response = await fetch(`${sbUrl}?slug=eq.${slug}&select=data`, {
-        headers: {
-            apikey: sbKey,
-            Authorization: `Bearer ${sbKey}`
+    try {
+        const response = await fetch(`${sbUrl}?slug=eq.${slug}&select=data`, {
+            headers: {
+                apikey: sbKey,
+                Authorization: `Bearer ${sbKey}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Supabase error ${response.status}`);
         }
-    });
 
-    const result = await response.json();
-    if (!result?.length) return;
+        const result = await response.json();
 
-    DATA = result[0].data;
-    document.getElementById("loader").style.display = "none";
-    document.getElementById("meet-title").innerHTML = DATA.meet.name;
+        if (result && result.length > 0) {
+            DATA = result[0].data;
 
-    buildSessionFilters();
-    buildEventFilters();
-    render();
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("meet-title").innerHTML = DATA.meet?.name || "GYMETRA";
+
+            buildSessionFilters();
+            buildEventFilters();
+            render();
+        } else {
+            showError("No hay datos para este evento.");
+        }
+    } catch (err) {
+        console.error(err);
+        showError("Error de conexión con el servidor.");
+    }
+}
+
+function getSessionOptions() {
+    const sessions = [...new Set(
+        DATA.events
+            .map(e => e.session)
+            .filter(Boolean)
+            .filter(s => s !== "AA")
+    )];
+
+    return ["all", ...sessions];
 }
 
 function buildSessionFilters() {
     const container = document.getElementById("session-filters");
     container.innerHTML = "";
 
-    const sessions = [...new Set(DATA.events.map(e => e.session).filter(Boolean))];
-
-    ["all", ...sessions].forEach(session => {
+    getSessionOptions().forEach(sessionName => {
         const chip = document.createElement("div");
-        chip.className = `chip ${session === curSession ? "active" : ""}`;
-        chip.textContent = session === "all" ? "All" : session;
+        chip.className = `chip ${sessionName === curSession ? "active" : ""}`;
+        chip.textContent = sessionName === "all" ? "All" : sessionName;
 
         chip.onclick = () => {
-            curSession = session;
+            curSession = sessionName;
             buildSessionFilters();
             render();
         };
@@ -234,12 +289,26 @@ function buildSessionFilters() {
     });
 }
 
+function getVisibleEvents() {
+    const sessionEvents = DATA.events.filter(e => {
+        if (e.event === "allAround") return true;
+        if (curSession === "all") return true;
+        return e.session === curSession;
+    });
+
+    return [...new Set(sessionEvents.map(e => e.event))]
+        .sort((a, b) => a === "allAround" ? -1 : b === "allAround" ? 1 : 0);
+}
+
 function buildEventFilters() {
     const container = document.getElementById("event-filters");
     container.innerHTML = "";
 
-    const events = [...new Set(DATA.events.map(e => e.event))]
-        .sort((a, b) => a === "allAround" ? -1 : 1);
+    const events = getVisibleEvents();
+
+    if (!events.includes(curSortEvent)) {
+        curSortEvent = events.includes("allAround") ? "allAround" : events[0];
+    }
 
     events.forEach(eventName => {
         const chip = document.createElement("div");
@@ -261,37 +330,43 @@ function render() {
     const body = document.getElementById("table-body");
     const query = document.getElementById("search").value.toLowerCase();
 
-    const events = DATA.events.filter(e =>
-        curSession === "all" || e.session === curSession
-    );
+    const sessionEvents = DATA.events.filter(e => {
+        if (e.event === "allAround") return true;
+        if (curSession === "all") return true;
+        return e.session === curSession;
+    });
 
-    const eventNames = [...new Set(events.map(e => e.event))]
-        .sort((a, b) => a === "allAround" ? -1 : 1);
+    const eventNames = [...new Set(sessionEvents.map(e => e.event))]
+        .sort((a, b) => a === "allAround" ? -1 : b === "allAround" ? 1 : 0);
 
-    head.innerHTML = `
-        <th>Rank</th>
-        <th>Gymnast</th>
-        <th class="desktop-only">Team</th>
-        <th class="mobile-score">${curSortEvent === "allAround" ? "AA" : curSortEvent}</th>
-        <th class="desktop-only">Insights</th>
-    `;
+    head.innerHTML =
+        `<th class="col-rank">Rank</th>
+         <th class="col-name">Gymnast</th>
+         <th class="col-team">Team</th>` +
+        eventNames.map(en => {
+            const mobileClass = en === curSortEvent ? "mobile-priority" : "mobile-hidden";
+            return `<th class="col-score ${mobileClass}" style="text-align:center">
+                ${en === "allAround" ? "AA" : en}
+            </th>`;
+        }).join("") +
+        `<th>Insights</th>`;
 
     const athletes = {};
 
-    events.forEach(evt => {
+    sessionEvents.forEach(evt => {
         evt.results.forEach(res => {
-            const a = res.athlete;
-            const id = a.athleteId || `${a.firstName}${a.lastName}`;
+            const a = res.athlete || {};
+            const id = a.id || a.athleteId || `${a.firstName || ""}${a.lastName || ""}`;
 
             if (!athletes[id]) {
                 const insightKey = String(
                     a.federationID ||
-                    `${a.firstName}|${a.lastName}|${a.birthDate || ""}`
+                    `${a.firstName || ""}|${a.lastName || ""}|${a.birthDate || ""}`
                 ).trim().toLowerCase();
 
                 athletes[id] = {
                     insightKey,
-                    name: `${a.firstName} ${a.lastName}`,
+                    name: `${a.firstName || ""} ${a.lastName || ""}`.trim(),
                     team: a.club || "—",
                     level: a.level || "",
                     ageDivision: a.ageCategory || "",
@@ -304,35 +379,52 @@ function render() {
     });
 
     const list = Object.values(athletes)
-        .filter(a => (
-            a.name + a.team + a.level + a.ageDivision
-        ).toLowerCase().includes(query))
-        .sort((a, b) =>
-            (b.scores[curSortEvent] || 0) -
-            (a.scores[curSortEvent] || 0)
-        );
+        .filter(a => {
+            const searchable = (
+                a.name + " " +
+                a.team + " " +
+                a.level + " " +
+                a.ageDivision
+            ).toLowerCase();
+
+            return searchable.includes(query);
+        })
+        .sort((a, b) => (b.scores[curSortEvent] || 0) - (a.scores[curSortEvent] || 0));
 
     body.innerHTML = "";
 
     list.forEach((a, i) => {
-        body.innerHTML += `
-            <tr>
-                <td>${i + 1}</td>
-                <td>
-                    <b>${a.name}</b><br>
-                    <small style="color:var(--text-dim)">
-                        ${a.level} • ${a.ageDivision}
-                    </small>
+        const tr = document.createElement("tr");
+
+        let html =
+            `<td class="col-rank">${i + 1}</td>` +
+            `<td class="col-name">
+                <b>${escapeHtml(a.name)}</b><br>
+                <small style="color:var(--text-dim)">
+                    ${escapeHtml([a.level, a.ageDivision].filter(Boolean).join(" • "))}
+                </small>
+            </td>` +
+            `<td class="col-team" style="color:var(--text-dim)">${escapeHtml(a.team)}</td>`;
+
+        eventNames.forEach(en => {
+            const mobileClass = en === curSortEvent ? "mobile-priority" : "mobile-hidden";
+            const val = (a.scores[en] || 0).toFixed(3);
+
+            html += `
+                <td class="score-cell col-score ${mobileClass} ${en === curSortEvent ? "score-active" : ""} ${en === "allAround" ? "col-aa" : ""}">
+                    ${val}
                 </td>
-                <td class="desktop-only">${a.team}</td>
-                <td class="score-cell mobile-score">
-                    ${(a.scores[curSortEvent] || 0).toFixed(3)}
-                </td>
-                <td class="desktop-only">
-                    <button onclick="openInsights('${encodeURIComponent(a.insightKey)}')">📈</button>
-                </td>
-            </tr>
+            `;
+        });
+
+        html += `
+            <td>
+                <button class="insight-btn" onclick="openInsights('${encodeURIComponent(a.insightKey)}')">📈</button>
+            </td>
         `;
+
+        tr.innerHTML = html;
+        body.appendChild(tr);
     });
 }
 
@@ -340,7 +432,24 @@ function openInsights(key) {
     window.location.href = `/coach-insights.html?athlete=${key}`;
 }
 
-document.getElementById("search").oninput = render;
+function showError(msg) {
+    document.getElementById("loader").innerHTML = `
+        <h1>Sin resultados</h1>
+        <p>${msg}</p>
+        <a href="index.html" style="color:var(--accent); text-decoration:none;">← Volver</a>
+    `;
+}
+
+function escapeHtml(str) {
+    return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+document.getElementById("search").addEventListener("input", render);
 loadResults();
 </script>
 </body>
