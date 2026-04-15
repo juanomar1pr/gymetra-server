@@ -91,6 +91,10 @@ input {
     color: var(--text);
     box-sizing: border-box;
 }
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
 table {
     width: 100%;
     border-collapse: collapse;
@@ -127,6 +131,24 @@ tr:nth-child(even) {
     padding: 100px;
     color: var(--text-dim);
 }
+
+@media (max-width: 700px) {
+    .desktop-only {
+        display: none;
+    }
+
+    .mobile-hidden {
+        display: none;
+    }
+
+    .mobile-score {
+        display: table-cell;
+        width: 80px;
+        text-align: right;
+        font-size: 16px;
+        font-weight: 800;
+    }
+}
 </style>
 </head>
 <body>
@@ -137,6 +159,7 @@ tr:nth-child(even) {
         <div onclick="toggleTheme()" style="cursor:pointer">🌓</div>
     </div>
 
+    <div class="filter-row" id="session-filters"></div>
     <div class="filter-row" id="event-filters"></div>
 
     <div class="search-area">
@@ -144,7 +167,7 @@ tr:nth-child(even) {
     </div>
 </div>
 
-<div id="content-area">
+<div class="table-wrapper">
     <table>
         <thead><tr id="table-head"></tr></thead>
         <tbody id="table-body"></tbody>
@@ -162,6 +185,7 @@ const sbKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJl
 
 let DATA = null;
 let curSortEvent = "allAround";
+let curSession = "all";
 
 function toggleTheme() {
     const next = (localStorage.getItem("theme") || "dark") === "dark" ? "light" : "dark";
@@ -177,10 +201,6 @@ async function loadResults() {
         }
     });
 
-    if (!response.ok) {
-        throw new Error(`Supabase error ${response.status}`);
-    }
-
     const result = await response.json();
     if (!result?.length) return;
 
@@ -188,8 +208,30 @@ async function loadResults() {
     document.getElementById("loader").style.display = "none";
     document.getElementById("meet-title").innerHTML = DATA.meet.name;
 
+    buildSessionFilters();
     buildEventFilters();
     render();
+}
+
+function buildSessionFilters() {
+    const container = document.getElementById("session-filters");
+    container.innerHTML = "";
+
+    const sessions = [...new Set(DATA.events.map(e => e.session).filter(Boolean))];
+
+    ["all", ...sessions].forEach(session => {
+        const chip = document.createElement("div");
+        chip.className = `chip ${session === curSession ? "active" : ""}`;
+        chip.textContent = session === "all" ? "All" : session;
+
+        chip.onclick = () => {
+            curSession = session;
+            buildSessionFilters();
+            render();
+        };
+
+        container.appendChild(chip);
+    });
 }
 
 function buildEventFilters() {
@@ -219,19 +261,24 @@ function render() {
     const body = document.getElementById("table-body");
     const query = document.getElementById("search").value.toLowerCase();
 
-    const eventNames = [...new Set(DATA.events.map(e => e.event))]
+    const events = DATA.events.filter(e =>
+        curSession === "all" || e.session === curSession
+    );
+
+    const eventNames = [...new Set(events.map(e => e.event))]
         .sort((a, b) => a === "allAround" ? -1 : 1);
 
-    head.innerHTML =
-        `<th>Rank</th>
-         <th>Gymnast</th>
-         <th>Team</th>` +
-        eventNames.map(en => `<th>${en === "allAround" ? "AA" : en}</th>`).join("") +
-        `<th>Insights</th>`;
+    head.innerHTML = `
+        <th>Rank</th>
+        <th>Gymnast</th>
+        <th class="desktop-only">Team</th>
+        <th class="mobile-score">${curSortEvent === "allAround" ? "AA" : curSortEvent}</th>
+        <th class="desktop-only">Insights</th>
+    `;
 
     const athletes = {};
 
-    DATA.events.forEach(evt => {
+    events.forEach(evt => {
         evt.results.forEach(res => {
             const a = res.athlete;
             const id = a.athleteId || `${a.firstName}${a.lastName}`;
@@ -257,16 +304,9 @@ function render() {
     });
 
     const list = Object.values(athletes)
-        .filter(a => {
-            const searchable = (
-                a.name +
-                a.team +
-                a.level +
-                a.ageDivision
-            ).toLowerCase();
-
-            return searchable.includes(query);
-        })
+        .filter(a => (
+            a.name + a.team + a.level + a.ageDivision
+        ).toLowerCase().includes(query))
         .sort((a, b) =>
             (b.scores[curSortEvent] || 0) -
             (a.scores[curSortEvent] || 0)
@@ -275,7 +315,7 @@ function render() {
     body.innerHTML = "";
 
     list.forEach((a, i) => {
-        let row = `
+        body.innerHTML += `
             <tr>
                 <td>${i + 1}</td>
                 <td>
@@ -284,25 +324,15 @@ function render() {
                         ${a.level} • ${a.ageDivision}
                     </small>
                 </td>
-                <td>${a.team}</td>
-        `;
-
-        eventNames.forEach(en => {
-            row += `
-                <td class="score-cell ${en === curSortEvent ? "score-active" : ""} ${en === "allAround" ? "col-aa" : ""}">
-                    ${(a.scores[en] || 0).toFixed(3)}
+                <td class="desktop-only">${a.team}</td>
+                <td class="score-cell mobile-score">
+                    ${(a.scores[curSortEvent] || 0).toFixed(3)}
                 </td>
-            `;
-        });
-
-        row += `
-            <td>
-                <button onclick="openInsights('${encodeURIComponent(a.insightKey)}')">📈</button>
-            </td>
+                <td class="desktop-only">
+                    <button onclick="openInsights('${encodeURIComponent(a.insightKey)}')">📈</button>
+                </td>
             </tr>
         `;
-
-        body.innerHTML += row;
     });
 }
 
