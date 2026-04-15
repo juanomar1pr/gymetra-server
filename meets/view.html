@@ -137,7 +137,7 @@ tr:nth-child(even) {
         <div onclick="toggleTheme()" style="cursor:pointer">🌓</div>
     </div>
 
-    <div class="filter-row" id="smart-filters"></div>
+    <div class="filter-row" id="event-filters"></div>
 
     <div class="search-area">
         <input id="search" placeholder="Search gymnast, club, level, division...">
@@ -162,9 +162,6 @@ const sbKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJl
 
 let DATA = null;
 let curSortEvent = "allAround";
-let curSession = "all";
-let curLevel = "all";
-let curAge = "all";
 
 function toggleTheme() {
     const next = (localStorage.getItem("theme") || "dark") === "dark" ? "light" : "dark";
@@ -191,26 +188,29 @@ async function loadResults() {
     document.getElementById("loader").style.display = "none";
     document.getElementById("meet-title").innerHTML = DATA.meet.name;
 
-    buildSmartFilters();
+    buildEventFilters();
     render();
 }
 
-function buildSmartFilters() {
-    const container = document.getElementById("smart-filters");
+function buildEventFilters() {
+    const container = document.getElementById("event-filters");
     container.innerHTML = "";
 
-    const chips = [
-        { label: curSortEvent === "allAround" ? "AA" : curSortEvent, key: "event" },
-        { label: curSession === "all" ? "All Sessions" : curSession, key: "session" },
-        { label: curLevel === "all" ? "All Levels" : curLevel, key: "level" },
-        { label: curAge === "all" ? "All Divisions" : curAge, key: "age" }
-    ];
+    const events = [...new Set(DATA.events.map(e => e.event))]
+        .sort((a, b) => a === "allAround" ? -1 : 1);
 
-    chips.forEach(ch => {
-        const div = document.createElement("div");
-        div.className = "chip active";
-        div.textContent = ch.label;
-        container.appendChild(div);
+    events.forEach(eventName => {
+        const chip = document.createElement("div");
+        chip.className = `chip ${eventName === curSortEvent ? "active" : ""}`;
+        chip.textContent = eventName === "allAround" ? "AA" : eventName;
+
+        chip.onclick = () => {
+            curSortEvent = eventName;
+            buildEventFilters();
+            render();
+        };
+
+        container.appendChild(chip);
     });
 }
 
