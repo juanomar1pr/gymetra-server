@@ -182,6 +182,11 @@ async function loadResults() {
         }
     });
 
+if (!response.ok) {
+    throw new Error(`Supabase error ${response.status}`);
+}
+
+
     const result = await response.json();
 
     if (!result?.length) return;
