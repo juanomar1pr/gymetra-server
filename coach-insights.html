@@ -16,9 +16,13 @@
 }
 body {
     margin: 0;
-    font-family: -apple-system, sans-serif;
-    background: var(--bg);
-    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+    background-color: var(--bg);
+    background-image: radial-gradient(circle, #222 1px, transparent 1px);
+    background-size: 30px 30px;
+    color: var(--text-primary);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
 }
 .container {
     max-width: 900px;
