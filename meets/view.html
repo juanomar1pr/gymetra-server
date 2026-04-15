@@ -137,13 +137,10 @@ tr:nth-child(even) {
         <div onclick="toggleTheme()" style="cursor:pointer">🌓</div>
     </div>
 
-    <div class="filter-row" id="session-filters"></div>
-    <div class="filter-row" id="level-filters"></div>
-    <div class="filter-row" id="age-filters"></div>
-    <div class="filter-row" id="event-filters"></div>
+    <div class="filter-row" id="smart-filters"></div>
 
     <div class="search-area">
-        <input id="search" placeholder="Search gymnast or club...">
+        <input id="search" placeholder="Search gymnast, club, level, division...">
     </div>
 </div>
 
@@ -162,8 +159,9 @@ const slug = params.get("slug");
 
 const sbUrl = "https://ulexxpaatpjtpgkancew.supabase.co/rest/v1/meets";
 const sbKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVsZXh4cGFhdHBqdHBna2FuY2V3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTIyNDMsImV4cCI6MjA4OTYyODI0M30.gqKgykSN65QKxTWC7WwsjsUijrfNi0QviwyccZBrPkA";
+
 let DATA = null;
-let curSortEvent = null;
+let curSortEvent = "allAround";
 let curSession = "all";
 let curLevel = "all";
 let curAge = "all";
@@ -182,54 +180,38 @@ async function loadResults() {
         }
     });
 
-if (!response.ok) {
-    throw new Error(`Supabase error ${response.status}`);
-}
-
+    if (!response.ok) {
+        throw new Error(`Supabase error ${response.status}`);
+    }
 
     const result = await response.json();
-
     if (!result?.length) return;
 
     DATA = result[0].data;
     document.getElementById("loader").style.display = "none";
     document.getElementById("meet-title").innerHTML = DATA.meet.name;
 
-    buildFilterChips();
+    buildSmartFilters();
     render();
 }
 
-function buildChipRow(containerId, items, currentValue, setter) {
-    const container = document.getElementById(containerId);
+function buildSmartFilters() {
+    const container = document.getElementById("smart-filters");
     container.innerHTML = "";
 
-    ["all", ...items].forEach(item => {
-        const chip = document.createElement("div");
-        chip.className = `chip ${item === currentValue ? "active" : ""}`;
-        chip.textContent = item === "all" ? "All" : item;
+    const chips = [
+        { label: curSortEvent === "allAround" ? "AA" : curSortEvent, key: "event" },
+        { label: curSession === "all" ? "All Sessions" : curSession, key: "session" },
+        { label: curLevel === "all" ? "All Levels" : curLevel, key: "level" },
+        { label: curAge === "all" ? "All Divisions" : curAge, key: "age" }
+    ];
 
-        chip.onclick = () => {
-            setter(item);
-            buildFilterChips();
-            render();
-        };
-
-        container.appendChild(chip);
+    chips.forEach(ch => {
+        const div = document.createElement("div");
+        div.className = "chip active";
+        div.textContent = ch.label;
+        container.appendChild(div);
     });
-}
-
-function buildFilterChips() {
-    const sessions = [...new Set(DATA.events.map(e => e.session).filter(Boolean))];
-    const levels = [...new Set(DATA.events.flatMap(e => e.results.map(r => r.athlete.level)).filter(Boolean))];
-    const ages = [...new Set(DATA.events.flatMap(e => e.results.map(r => r.athlete.ageCategory)).filter(Boolean))];
-    const events = [...new Set(DATA.events.map(e => e.event))];
-
-    if (!curSortEvent) curSortEvent = events[0];
-
-    buildChipRow("session-filters", sessions, curSession, v => curSession = v);
-    buildChipRow("level-filters", levels, curLevel, v => curLevel = v);
-    buildChipRow("age-filters", ages, curAge, v => curAge = v);
-    buildChipRow("event-filters", events, curSortEvent, v => curSortEvent = v);
 }
 
 function render() {
@@ -237,11 +219,8 @@ function render() {
     const body = document.getElementById("table-body");
     const query = document.getElementById("search").value.toLowerCase();
 
-    let sessionEvents = DATA.events.filter(e =>
-        curSession === "all" || e.session === curSession || e.session === "AA"
-    );
-
-    const eventNames = [...new Set(sessionEvents.map(e => e.event))];
+    const eventNames = [...new Set(DATA.events.map(e => e.event))]
+        .sort((a, b) => a === "allAround" ? -1 : 1);
 
     head.innerHTML =
         `<th>Rank</th>
@@ -252,14 +231,19 @@ function render() {
 
     const athletes = {};
 
-    sessionEvents.forEach(evt => {
+    DATA.events.forEach(evt => {
         evt.results.forEach(res => {
             const a = res.athlete;
-            const id = a.id || `${a.firstName}${a.lastName}`;
+            const id = a.athleteId || `${a.firstName}${a.lastName}`;
 
             if (!athletes[id]) {
+                const insightKey = String(
+                    a.federationID ||
+                    `${a.firstName}|${a.lastName}|${a.birthDate || ""}`
+                ).trim().toLowerCase();
+
                 athletes[id] = {
-                    insightKey: `${a.firstName}|${a.lastName}`.toLowerCase(),
+                    insightKey,
                     name: `${a.firstName} ${a.lastName}`,
                     team: a.club || "—",
                     level: a.level || "",
@@ -274,12 +258,19 @@ function render() {
 
     const list = Object.values(athletes)
         .filter(a => {
-            const matchesSearch = (a.name + a.team).toLowerCase().includes(query);
-            const matchesLevel = curLevel === "all" || a.level === curLevel;
-            const matchesAge = curAge === "all" || a.ageDivision === curAge;
-            return matchesSearch && matchesLevel && matchesAge;
+            const searchable = (
+                a.name +
+                a.team +
+                a.level +
+                a.ageDivision
+            ).toLowerCase();
+
+            return searchable.includes(query);
         })
-        .sort((a, b) => (b.scores[curSortEvent] || 0) - (a.scores[curSortEvent] || 0));
+        .sort((a, b) =>
+            (b.scores[curSortEvent] || 0) -
+            (a.scores[curSortEvent] || 0)
+        );
 
     body.innerHTML = "";
 
