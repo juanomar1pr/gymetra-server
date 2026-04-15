@@ -5,68 +5,127 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="/fa.png?v=6" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/fa.png?v=6">
-
 <title>Gymetra | Live Results</title>
+
 <script>
 const savedTheme = localStorage.getItem("theme") || "light";
 document.documentElement.setAttribute("data-theme", savedTheme);
 </script>
+
 <style>
-:root { --bg: #000; --surface: #111; --text: #fff; --text-dim: #8e8e93; --accent: #0A84FF; --border: #2c2c2e; --gold: #FFD700; --row-alt: #161618; }
-[data-theme="light"] { --bg: #f2f2f7; --surface: #fff; --text: #000; --text-dim: #636366; --accent: #007AFF; --border: #d1d1d6; --gold: #c6a300; --row-alt: #f9f9f9; }
-body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; font-size: 13px; }
-.sticky-top { position: sticky; top: 0; z-index: 1000; background: var(--bg); border-bottom: 1px solid var(--border); }
-.header-top { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; }
-.breadcrumb { font-weight: 800; font-size: 18px; color: var(--text);    text-transform: uppercase;
- text-transform: uppercase; }
-.breadcrumb span { color: var(--accent); }
-.filter-row { display: flex; gap: 8px; overflow-x: auto; padding: 10px 15px; }
-.chip { padding: 6px 14px; border-radius: 8px; background: var(--surface); color: var(--text-dim); border: 1px solid var(--border); cursor: pointer; white-space: nowrap; font-weight: 700; }
-.chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-.search-area { padding: 10px 15px; }
-input { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px; color: var(--text); box-sizing: border-box; }
-.table-wrapper { width: 100%; overflow-x: auto; }
-table { width: 100%; border-collapse: collapse;  }
-th { background: var(--surface); color: var(--text-dim); padding: 14px 10px; text-align: left; font-size: 10px; border-bottom: 2px solid var(--border); }
-td { padding: 12px 10px; border-bottom: 1px solid var(--border); }
-tr:nth-child(even) { background: var(--row-alt); }
-.score-cell { text-align: center; font-weight: 700; font-family: monospace; width: 70px; }
-.score-active { background: rgba(10, 132, 255, 0.1); color: var(--text); }
-.col-aa { color: var(--gold); font-weight: 900; }
-.loading-state { text-align: center; padding: 100px; color: var(--text-dim); }
-@media (max-width: 700px) {
-    .col-team {
-        display: none;
-    }
-
-    .col-score:not(.mobile-priority) {
-        display: none;
-    }
-
-    .col-rank {
-        width: 36px;
-        min-width: 36px;
-    }
-
-    .col-score.mobile-priority {
-        width: 72px;
-        min-width: 72px;
-        text-align: right;
-    }
-
-    .col-name {
-        width: auto;
-    }
-
-    .score-cell {
-        font-size: 16px;
-        font-weight: 800;
-        white-space: nowrap;
-    }
-
-    td, th {
-        padding: 14px 8px;
-    }
+:root {
+    --bg: #000;
+    --surface: #111;
+    --text: #fff;
+    --text-dim: #8e8e93;
+    --accent: #7c3aed;
+    --border: #2c2c2e;
+    --gold: #FFD700;
+    --row-alt: #161618;
+}
+[data-theme="light"] {
+    --bg: #f2f2f7;
+    --surface: #fff;
+    --text: #000;
+    --text-dim: #636366;
+    --accent: #7c3aed;
+    --border: #d1d1d6;
+    --gold: #c6a300;
+    --row-alt: #f9f9f9;
+}
+body {
+    font-family: -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    font-size: 13px;
+}
+.sticky-top {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+}
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+}
+.breadcrumb {
+    font-weight: 800;
+    font-size: 18px;
+    text-transform: uppercase;
+}
+.filter-row {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 10px 15px;
+}
+.chip {
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    white-space: nowrap;
+    font-weight: 700;
+}
+.chip.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+}
+.search-area {
+    padding: 10px 15px;
+}
+input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    color: var(--text);
+    box-sizing: border-box;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th {
+    background: var(--surface);
+    color: var(--text-dim);
+    padding: 14px 10px;
+    text-align: left;
+    font-size: 10px;
+    border-bottom: 2px solid var(--border);
+}
+td {
+    padding: 12px 10px;
+    border-bottom: 1px solid var(--border);
+}
+tr:nth-child(even) {
+    background: var(--row-alt);
+}
+.score-cell {
+    text-align: center;
+    font-weight: 700;
+    font-family: monospace;
+}
+.score-active {
+    background: rgba(124, 58, 237, 0.12);
+}
+.col-aa {
+    color: var(--gold);
+    font-weight: 900;
+}
+.loading-state {
+    text-align: center;
+    padding: 100px;
+    color: var(--text-dim);
 }
 </style>
 </head>
@@ -74,35 +133,41 @@ tr:nth-child(even) { background: var(--row-alt); }
 
 <div class="sticky-top">
     <div class="header-top">
-        <div class="breadcrumb" id="meet-title">GYMETRA > <span>CARGANDO...</span></div>
-        <div onclick="toggleTheme()" style="cursor:pointer">☀️</div>
+        <div class="breadcrumb" id="meet-title">GYMETRA</div>
+        <div onclick="toggleTheme()" style="cursor:pointer">🌓</div>
     </div>
-   
-    <div class="filter-row" id="event-filters" style="background: var(--surface); border-top: 1px solid var(--border);"></div>
-    <div class="search-area"><input id="search" placeholder="Search by gymnast, club, or level..."></div>
+
+    <div class="filter-row" id="session-filters"></div>
+    <div class="filter-row" id="level-filters"></div>
+    <div class="filter-row" id="age-filters"></div>
+    <div class="filter-row" id="event-filters"></div>
+
+    <div class="search-area">
+        <input id="search" placeholder="Search gymnast or club...">
+    </div>
 </div>
 
-<div class="table-wrapper" id="content-area">
+<div id="content-area">
     <table>
         <thead><tr id="table-head"></tr></thead>
         <tbody id="table-body"></tbody>
     </table>
 </div>
 
-<div id="loader" class="loading-state">Conectando con Supabase...</div>
+<div id="loader" class="loading-state">Connecting...</div>
 
 <script>
 const params = new URLSearchParams(window.location.search);
 const slug = params.get("slug");
 
-// --- CONFIGURACIÓN SUPABASE ---
 const sbUrl = "https://ulexxpaatpjtpgkancew.supabase.co/rest/v1/meets";
-const sbKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVsZXh4cGFhdHBqdHBna2FuY2V3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNTIyNDMsImV4cCI6MjA4OTYyODI0M30.gqKgykSN65QKxTWC7WwsjsUijrfNi0QviwyccZBrPkA";
+const sbKey = "YOUR_SUPABASE_KEY";
 
 let DATA = null;
-let curSession = null;
 let curSortEvent = null;
-let MODE = "simple"; // simple | competitive | demo
+let curSession = "all";
+let curLevel = "all";
+let curAge = "all";
 
 function toggleTheme() {
     const next = (localStorage.getItem("theme") || "dark") === "dark" ? "light" : "dark";
@@ -110,208 +175,148 @@ function toggleTheme() {
     document.documentElement.setAttribute("data-theme", next);
 }
 
-// 🧠 DETECCIÓN AUTOMÁTICA
-function detectMode() {
-    const sessionSet = new Set(DATA.events.map(e => e.session).filter(Boolean));
-    const hasMultipleSessions = sessionSet.size > 1;
-
-    const hasRealScores = DATA.events.some(e =>
-        e.results && e.results.length > 0 && e.results.some(r => Number(r.score) > 0)
-    );
-
-    if (!hasRealScores) {
-        MODE = "demo";
-    } else if (hasMultipleSessions) {
-        MODE = "competitive";
-    } else {
-        MODE = "simple";
-    }
-
-    console.log("🧠 MODE:", MODE);
-}
 async function loadResults() {
-    try {
-        const response = await fetch(`${sbUrl}?slug=eq.${slug}&select=data`, {
-            headers: {
-                apikey: sbKey,
-                Authorization: `Bearer ${sbKey}`
-            }
-        });
-
-        const result = await response.json();
-
-        if (result && result.length > 0) {
-            DATA = result[0].data;
-
-            detectMode();
-
-            document.getElementById("loader").style.display = "none";
-            document.getElementById("meet-title").innerHTML = DATA.meet.name;
-
-            updateEventChips();
-            render();
-
-        } else {
-            showError("No hay datos para este evento.");
+    const response = await fetch(`${sbUrl}?slug=eq.${slug}&select=data`, {
+        headers: {
+            apikey: sbKey,
+            Authorization: `Bearer ${sbKey}`
         }
+    });
 
-    } catch (err) {
-        console.error(err);
-        showError("Error de conexión con el servidor.");
-    }
+    const result = await response.json();
+
+    if (!result?.length) return;
+
+    DATA = result[0].data;
+    document.getElementById("loader").style.display = "none";
+    document.getElementById("meet-title").innerHTML = DATA.meet.name;
+
+    buildFilterChips();
+    render();
 }
 
-function updateEventChips() {
-    const eventCont = document.getElementById("event-filters");
-    eventCont.innerHTML = "";
+function buildChipRow(containerId, items, currentValue, setter) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = "";
 
-    // ✅ usar TODOS los eventos del meet
-    let evts = [...new Set(DATA.events.map(e => e.event))];
+    ["all", ...items].forEach(item => {
+        const chip = document.createElement("div");
+        chip.className = `chip ${item === currentValue ? "active" : ""}`;
+        chip.textContent = item === "all" ? "All" : item;
 
-    if (!curSortEvent || !evts.includes(curSortEvent)) {
-        curSortEvent = evts.find(e => e !== "allAround") || evts[0];
-    }
+        chip.onclick = () => {
+            setter(item);
+            buildFilterChips();
+            render();
+        };
 
-    evts.sort((a, b) => a === "allAround" ? -1 : 1)
-        .forEach(en => {
-            const div = document.createElement("div");
-            div.className = `chip ${en === curSortEvent ? "active" : ""}`;
-            div.innerText = en === "allAround" ? "AA" : en;
-
-            div.onclick = () => {
-                curSortEvent = en;
-                eventCont.querySelectorAll(".chip").forEach(c =>
-                    c.classList.remove("active")
-                );
-                div.classList.add("active");
-                render();
-            };
-
-            eventCont.appendChild(div);
-        });
-
+        container.appendChild(chip);
+    });
 }
 
-// 🧠 RENDER PRINCIPAL
+function buildFilterChips() {
+    const sessions = [...new Set(DATA.events.map(e => e.session).filter(Boolean))];
+    const levels = [...new Set(DATA.events.flatMap(e => e.results.map(r => r.athlete.level)).filter(Boolean))];
+    const ages = [...new Set(DATA.events.flatMap(e => e.results.map(r => r.athlete.ageCategory)).filter(Boolean))];
+    const events = [...new Set(DATA.events.map(e => e.event))];
+
+    if (!curSortEvent) curSortEvent = events[0];
+
+    buildChipRow("session-filters", sessions, curSession, v => curSession = v);
+    buildChipRow("level-filters", levels, curLevel, v => curLevel = v);
+    buildChipRow("age-filters", ages, curAge, v => curAge = v);
+    buildChipRow("event-filters", events, curSortEvent, v => curSortEvent = v);
+}
+
 function render() {
     const head = document.getElementById("table-head");
     const body = document.getElementById("table-body");
     const query = document.getElementById("search").value.toLowerCase();
 
+    let sessionEvents = DATA.events.filter(e =>
+        curSession === "all" || e.session === curSession || e.session === "AA"
+    );
 
+    const eventNames = [...new Set(sessionEvents.map(e => e.event))];
 
-   let sessionEvents = DATA.events;
+    head.innerHTML =
+        `<th>Rank</th>
+         <th>Gymnast</th>
+         <th>Team</th>` +
+        eventNames.map(en => `<th>${en === "allAround" ? "AA" : en}</th>`).join("") +
+        `<th>Insights</th>`;
 
-   let eventNames = [...new Set(sessionEvents.map(e => e.event))]
-    .sort((a, b) => a === "allAround" ? -1 : 1);
-
-head.innerHTML =
-    `<th class="col-rank">Rank</th>
-     <th class="col-name">Gymnast</th>
-     <th class="col-team">Team</th>` +
-
-    eventNames.map(en =>
-        `<th class="col-score ${en === curSortEvent ? "mobile-priority" : ""}" style="text-align:center">
-            ${en === "allAround" ? "AA" : en}
-        </th>`
-    ).join('') +
-
-    `<th>Insights</th>`;
     const athletes = {};
 
     sessionEvents.forEach(evt => {
         evt.results.forEach(res => {
-         const a = res.athlete;
-const id = a.athleteId || (a.firstName + a.lastName);
+            const a = res.athlete;
+            const id = a.id || `${a.firstName}${a.lastName}`;
 
-if (!athletes[id]) {
-    const insightKey = String(
-        a.federationID ||
-        `${a.firstName}|${a.lastName}|${a.birthDate || ""}`
-    )
-    .trim()
-    .toLowerCase();
+            if (!athletes[id]) {
+                athletes[id] = {
+                    insightKey: `${a.firstName}|${a.lastName}`.toLowerCase(),
+                    name: `${a.firstName} ${a.lastName}`,
+                    team: a.club || "—",
+                    level: a.level || "",
+                    ageDivision: a.ageCategory || "",
+                    scores: {}
+                };
+            }
 
-  athletes[id] = {
-    insightKey,
-    name: `${a.firstName} ${a.lastName}`,
-    team: a.club || "—",
-
-    // ✅ NUEVO (safe)
-   ageDivision: a.ageCategory || "",
-session: evt.session === "AA" ? "" : (evt.session || ""),
-
-    scores: {},
-    total: 0
-};
-
-}
-            const s = Number(res.score) || 0;
-            athletes[id].scores[evt.event] = s;
-
-           
+            athletes[id].scores[evt.event] = Number(res.score) || 0;
         });
     });
 
-   
-
     const list = Object.values(athletes)
-        .filter(a => (a.name + a.team).toLowerCase().includes(query))
+        .filter(a => {
+            const matchesSearch = (a.name + a.team).toLowerCase().includes(query);
+            const matchesLevel = curLevel === "all" || a.level === curLevel;
+            const matchesAge = curAge === "all" || a.ageDivision === curAge;
+            return matchesSearch && matchesLevel && matchesAge;
+        })
         .sort((a, b) => (b.scores[curSortEvent] || 0) - (a.scores[curSortEvent] || 0));
 
     body.innerHTML = "";
-list.forEach((a, i) => {
-    const tr = document.createElement("tr");
 
-
-let html =
-    `<td class="col-rank">${i + 1}</td>` +
-    `<td class="col-name">
-        <b>${a.name}</b><br>
-        <small style="color:var(--text-dim)">
-            ${[a.ageDivision, a.session].filter(Boolean).join(" • ")}
-        </small>
-    </td>` +
-    `<td class="col-team" style="color:var(--text-dim)">${a.team}</td>`;
-
-    // scores
-    eventNames.forEach(en => {
-        const val = (a.scores[en] || 0).toFixed(3);
-
-        html += `
-            <td class="score-cell col-score ${en === curSortEvent ? 'score-active mobile-priority' : ''} ${en === 'allAround' ? 'col-aa' : ''}">
-                ${val}
-            </td>
+    list.forEach((a, i) => {
+        let row = `
+            <tr>
+                <td>${i + 1}</td>
+                <td>
+                    <b>${a.name}</b><br>
+                    <small style="color:var(--text-dim)">
+                        ${a.level} • ${a.ageDivision}
+                    </small>
+                </td>
+                <td>${a.team}</td>
         `;
+
+        eventNames.forEach(en => {
+            row += `
+                <td class="score-cell ${en === curSortEvent ? "score-active" : ""} ${en === "allAround" ? "col-aa" : ""}">
+                    ${(a.scores[en] || 0).toFixed(3)}
+                </td>
+            `;
+        });
+
+        row += `
+            <td>
+                <button onclick="openInsights('${encodeURIComponent(a.insightKey)}')">📈</button>
+            </td>
+            </tr>
+        `;
+
+        body.innerHTML += row;
     });
-
-    // one single insights button
-    html += `
-        <td>
-          <button onclick="openInsights('${encodeURIComponent(a.insightKey)}')">📈</button>
-        </td>
-    `;
-
-    tr.innerHTML = html;
-    body.appendChild(tr);
-});
 }
-  
 
-function showError(msg) {
-    document.getElementById("loader").innerHTML = `
-        <h1>Sin resultados</h1>
-        <p>${msg}</p>
-        <a href="index.html" style="color:var(--accent); text-decoration:none;">← Volver</a>
-    `;
+function openInsights(key) {
+    window.location.href = `/coach-insights.html?athlete=${key}`;
 }
 
 document.getElementById("search").oninput = render;
-
 loadResults();
-function openInsights(athleteKey) {
-    window.location.href = `/coach-insights.html?athlete=${athleteKey}`;
-}
 </script>
 </body>
 </html>
