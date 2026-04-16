@@ -262,9 +262,9 @@ async function loadResults() {
 function getSessionOptions() {
     const sessions = [...new Set(
         DATA.events
-            .map(e => e.session)
-            .filter(Boolean)
-            .filter(s => s !== "AA")
+        .map(e => (e.session || "").trim())
+.filter(s => s.length > 0)
+.filter(s => s !== "AA")
     )];
 
     return ["all", ...sessions];
