@@ -2,241 +2,386 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="/fa.png?v=6" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/fa.png?v=6">
-
 <title>Gymetra Meets</title>
+
 <script>
 const savedTheme = localStorage.getItem("theme") || "light";
 document.documentElement.setAttribute("data-theme", savedTheme);
 </script>
 
 <style>
-:root {
-    --bg: #000;
-    --row-bg: rgba(28,28,30,0.6);
-    --border: rgba(255,255,255,0.08);
-    --text: #fff;
-    --sub: #8e8e93;
-    --accent: #8b5cf6;
-    --ticker-bg: #111;
+:root{
+  --bg:#000;
+  --bg-2:#0a0a0c;
+  --row-bg:rgba(22,22,26,.7);
+  --row-bg-solid:#141417;
+  --border:rgba(255,255,255,.08);
+  --border-strong:rgba(255,255,255,.14);
+  --text:#fff;
+  --sub:#8e8e93;
+  --sub-2:#6b6b70;
+  --accent:#8b5cf6;
+  --accent-2:#5E5CE6;
+  --accent-soft:rgba(139,92,246,.18);
+  --ticker-bg:rgba(15,15,18,.85);
+  --live:#ff3b30;
+  --gold:#FFD60A;
+  --shadow:0 20px 50px rgba(0,0,0,.55);
 }
-[data-theme="light"] {
-    --bg: #f2f2f7;
-    --row-bg: #ffffff;
-    --border: #e5e5ea;
-    --text: #000;
-    --sub: #636366;
-    --accent: #7c3aed;
-    --ticker-bg: #e5e5ea;
-}
-
-body {
-    margin: 0;
-    padding-top: 40px; /* Espacio para el ticker */
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
-    background: var(--bg);
-    color: var(--text);
-}
-
-/* --- ESTILO DEL TICKER (SPORT EFFECT) --- */
-.ticker-wrap {
-    width: 100%;
-    overflow: hidden;
-    background: var(--ticker-bg);
-    border-bottom: 1px solid var(--border);
-    height: 35px;
-    display: flex;
-    align-items: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 9999;
+[data-theme="light"]{
+  --bg:#f2f2f7;
+  --bg-2:#e9e9ef;
+  --row-bg:rgba(255,255,255,.75);
+  --row-bg-solid:#ffffff;
+  --border:rgba(0,0,0,.08);
+  --border-strong:rgba(0,0,0,.12);
+  --text:#0b0b0f;
+  --sub:#636366;
+  --sub-2:#8e8e93;
+  --accent:#7c3aed;
+  --accent-2:#5E5CE6;
+  --accent-soft:rgba(124,58,237,.10);
+  --ticker-bg:rgba(255,255,255,.8);
+  --live:#ff3b30;
+  --gold:#b8860b;
+  --shadow:0 20px 50px rgba(10,10,20,.08);
 }
 
-.ticker {
-    display: flex;
-    white-space: nowrap;
-    animation: ticker 40s linear infinite;
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  padding-top:42px;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Inter,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  letter-spacing:-0.01em;
+  min-height:100vh;
+  overflow-x:hidden;
 }
 
-.ticker:hover { animation-play-state: paused; } /* Se pausa al poner el mouse */
+/* aurora bg */
+body::before,body::after{
+  content:"";position:fixed;inset:-20%;z-index:-2;pointer-events:none;
+  filter:blur(90px);opacity:.55;
+}
+body::before{
+  background:
+    radial-gradient(38% 32% at 80% 8%, rgba(139,92,246,.45), transparent 70%),
+    radial-gradient(30% 28% at 10% 90%, rgba(94,92,230,.35), transparent 70%);
+  animation:float1 22s ease-in-out infinite alternate;
+}
+body::after{
+  background:
+    radial-gradient(28% 25% at 30% 20%, rgba(255,214,10,.15), transparent 70%),
+    radial-gradient(25% 25% at 90% 70%, rgba(255,55,95,.18), transparent 70%);
+  animation:float2 26s ease-in-out infinite alternate;
+}
+[data-theme="light"] body::before,
+[data-theme="light"] body::after{opacity:.35}
+@keyframes float1{to{transform:translate3d(-3%,2%,0) scale(1.08)}}
+@keyframes float2{to{transform:translate3d(4%,-3%,0) scale(1.12)}}
 
-@keyframes ticker {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(-100%); }
+.grid-overlay{
+  position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(127,127,127,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(127,127,127,.05) 1px, transparent 1px);
+  background-size:40px 40px;
+  mask-image:radial-gradient(ellipse at center, #000 30%, transparent 80%);
 }
 
-.ticker__item {
-    display: inline-block;
-    padding: 0 40px;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    color: var(--text);
+/* ticker */
+.ticker-wrap{
+  width:100%;overflow:hidden;
+  background:var(--ticker-bg);
+  backdrop-filter:blur(20px) saturate(160%);
+  -webkit-backdrop-filter:blur(20px) saturate(160%);
+  border-bottom:1px solid var(--border-strong);
+  height:38px;
+  display:flex;align-items:center;
+  position:fixed;top:0;left:0;z-index:9999;
+  box-shadow:0 8px 24px rgba(0,0,0,.25);
+}
+.ticker-wrap::before,
+.ticker-wrap::after{
+  content:"";position:absolute;top:0;bottom:0;width:60px;z-index:2;pointer-events:none;
+}
+.ticker-wrap::before{left:0;background:linear-gradient(90deg,var(--ticker-bg),transparent)}
+.ticker-wrap::after{right:0;background:linear-gradient(270deg,var(--ticker-bg),transparent)}
+
+.ticker{display:flex;white-space:nowrap;animation:ticker 45s linear infinite}
+.ticker:hover{animation-play-state:paused}
+@keyframes ticker{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
+
+.ticker__item{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:0 28px;
+  font-size:12px;font-weight:700;letter-spacing:.06em;
+  color:var(--text);text-transform:uppercase;
+  border-right:1px solid var(--border);
+  height:38px;
+}
+.ticker__item span{
+  color:var(--accent);
+  font-family:"SF Mono",ui-monospace,Menlo,monospace;
+  font-size:13px;font-weight:700;letter-spacing:.02em;
+}
+.live-dot{
+  height:7px;width:7px;background:var(--live);border-radius:50%;
+  display:inline-block;margin-right:6px;
+  box-shadow:0 0 10px var(--live), 0 0 20px rgba(255,59,48,.6);
+  animation:blink 1.1s infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* header (hero) */
+.hero{
+  text-align:center;
+  padding:44px 20px 8px;
+  position:relative;
+  animation:fadeUp .7s cubic-bezier(.2,.7,.2,1) both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+.brand{
+  display:inline-flex;align-items:center;gap:10px;
+  margin-bottom:14px;color:var(--sub);
+  font-weight:600;letter-spacing:.08em;font-size:11px;text-transform:uppercase;
+}
+.brand-dot{
+  width:22px;height:22px;border-radius:7px;
+  background:conic-gradient(from 220deg,var(--accent),var(--accent-2),#ff6fd8,var(--accent));
+  box-shadow:0 4px 14px rgba(139,92,246,.45), inset 0 0 0 1px rgba(255,255,255,.2);
+  position:relative;
+}
+.brand-dot::after{content:"";position:absolute;inset:4px;border-radius:4px;background:var(--bg);opacity:.7}
+
+.hero h1{
+  font-size:clamp(38px,6vw,58px);
+  font-weight:700;
+  margin:0;
+  letter-spacing:-0.035em;
+  line-height:1.02;
+  background:linear-gradient(180deg,var(--text) 0%,var(--sub) 140%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hero p{
+  color:var(--sub);
+  margin:8px 0 0;
+  font-size:15px;
 }
 
-.ticker__item span {
-    color: var(--accent);
-    margin-left: 8px;
-    font-family: monospace;
-    font-size: 14px;
+/* theme toggle */
+.theme-btn{
+  position:absolute;top:50%;right:20px;transform:translateY(-50%);
+  display:inline-grid;place-items:center;
+  width:38px;height:38px;border-radius:11px;cursor:pointer;
+  background:var(--row-bg);
+  border:1px solid var(--border);
+  color:var(--text);
+  transition:transform .2s, border-color .2s, background .2s;
+  backdrop-filter:blur(10px);
+}
+.theme-btn:hover{transform:translateY(calc(-50% - 1px));border-color:var(--accent)}
+.theme-btn svg{width:18px;height:18px}
+[data-theme="dark"] .sun{display:none}
+[data-theme="light"] .moon{display:none}
+
+/* search */
+.controls{
+  position:relative;
+  padding:18px 20px 22px;
+  max-width:720px;
+  margin:0 auto;
+}
+.controls svg.search-ico{
+  position:absolute;left:38px;top:50%;transform:translateY(-50%);
+  width:18px;height:18px;color:var(--sub-2);pointer-events:none;
+}
+input#search{
+  width:100%;
+  padding:15px 16px 15px 48px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:var(--row-bg);
+  color:var(--text);
+  font-size:15.5px;
+  outline:none;
+  font-family:inherit;letter-spacing:-0.01em;
+  backdrop-filter:blur(12px);
+  transition:border-color .25s, box-shadow .25s;
+}
+input#search::placeholder{color:var(--sub-2)}
+input#search:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 4px var(--accent-soft);
 }
 
-.live-dot {
-    height: 8px;
-    width: 8px;
-    background-color: #ff3b30;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 5px;
-    animation: blink 1s infinite;
+/* list */
+.list{
+  max-width:720px;
+  margin:0 auto;
+  padding:0 16px 80px;
+  display:grid;gap:10px;
+}
+.row{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 16px;
+  background:var(--row-bg);
+  border:1px solid var(--border);
+  border-radius:16px;
+  cursor:pointer;
+  transition:transform .2s, border-color .2s, background .2s, box-shadow .25s;
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  animation:fadeUp .45s ease both;
+  position:relative;overflow:hidden;
+}
+.row::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.06),transparent 40%);
+  opacity:0;transition:opacity .25s;
+}
+[data-theme="dark"] .row::before{display:block}
+.row:hover{
+  transform:translateY(-2px);
+  border-color:var(--border-strong);
+  background:var(--row-bg-solid);
+  box-shadow:var(--shadow);
+}
+.row:hover::before{opacity:1}
+
+/* date badge */
+.date-badge{
+  flex:0 0 auto;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  width:48px;height:52px;border-radius:12px;
+  background:linear-gradient(180deg,rgba(139,92,246,.18),rgba(94,92,230,.10));
+  border:1px solid rgba(139,92,246,.35);
+  color:var(--text);
+  font-family:"SF Mono",ui-monospace,Menlo,monospace;
+}
+[data-theme="light"] .date-badge{
+  background:linear-gradient(180deg,rgba(124,58,237,.10),rgba(94,92,230,.05));
+  border-color:rgba(124,58,237,.28);
+}
+.date-badge .mo{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.date-badge .day{font-size:18px;font-weight:800;line-height:1;margin-top:2px}
+.date-badge.empty{
+  background:var(--row-bg-solid);border-color:var(--border);
+  color:var(--sub-2);
+}
+.date-badge.empty .mo{color:var(--sub-2)}
+
+.row-content{
+  display:flex;flex-direction:column;gap:4px;min-width:0;flex:1;
+}
+.name{
+  font-weight:600;font-size:15.5px;letter-spacing:-0.01em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.meta-line{
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+  color:var(--sub);font-size:12.5px;
+}
+.meta{color:var(--sub);white-space:nowrap}
+.dot{color:var(--sub-2);opacity:.7}
+.meta-line svg{width:12px;height:12px;opacity:.8;margin-right:2px;flex-shrink:0}
+
+.arrow{
+  color:var(--sub-2);font-size:22px;
+  width:28px;height:28px;display:grid;place-items:center;border-radius:8px;
+  transition:transform .25s, color .25s, background .25s;
+  flex-shrink:0;
+}
+.row:hover .arrow{transform:translateX(3px);color:var(--accent);background:var(--accent-soft)}
+
+/* skeleton */
+.loading-shimmer{padding:4px 0;display:grid;gap:10px}
+.skeleton-row{
+  height:74px;border-radius:16px;
+  background:var(--row-bg);
+  border:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.skeleton-row::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(127,127,127,.15),transparent);
+  animation:shimmer 1.5s infinite;
+}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.shimmer-hint{color:var(--sub);font-size:13px;text-align:center;margin-top:10px}
+
+/* empty */
+.empty{
+  text-align:center;padding:60px 30px;color:var(--sub);
+  background:var(--row-bg);
+  border:1px dashed var(--border-strong);
+  border-radius:18px;
+  backdrop-filter:blur(10px);
 }
 
-@keyframes blink {
-    0% { opacity: 1; }
-    50% { opacity: 0.3; }
-    100% { opacity: 1; }
+/* scrollbar */
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:#26262a;border-radius:8px}
+[data-theme="light"] ::-webkit-scrollbar-thumb{background:#c7c7cc}
+
+@media (max-width:520px){
+  .hero{padding-top:30px}
+  .hero h1{font-size:36px}
+  .theme-btn{top:auto;bottom:-8px;right:14px;transform:none;width:34px;height:34px}
+  .theme-btn:hover{transform:translateY(-1px)}
+  .controls{padding-top:16px}
+  .date-badge{width:44px;height:48px}
+  .name{font-size:15px}
 }
-
-/* --- ESTILOS ORIGINALES Y MEJORAS --- */
-.hero {
-    text-align: center;
-    padding: 40px 20px 10px;
-}
-
-.hero h1 {
-    font-size: 38px;
-    font-weight: 800;
-    margin: 0;
-    letter-spacing: -1px;
-}
-
-.hero p {
-    color: var(--sub);
-    margin-top: 4px;
-    font-size: 15px;
-}
-
-.controls {
-    display: flex;
-    justify-content: center;
-    padding: 10px 20px 25px;
-    max-width: 700px;
-    margin: 0 auto;
-}
-
-input {
-    width: 100%;
-    padding: 16px;
-    border-radius: 14px;
-    border: 1px solid var(--border);
-    background: var(--row-bg);
-    color: var(--text);
-    font-size: 16px;
-    outline: none;
-    transition: border 0.3s;
-}
-
-input:focus {
-    border-color: var(--accent);
-}
-
-.list {
-    max-width: 700px;
-    margin: 0 auto;
-    padding-bottom: 80px;
-}
-
-.row {
-    display: flex;
-    align-items: center;
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.row:hover { background: var(--border); }
-
-.row-content {
-    display: flex;
-    flex: 1;
-    gap: 10px;
-    align-items: center;
-    overflow: hidden;
-}
-
-.name { font-weight: 600; white-space: nowrap; }
-.dot { color: var(--sub); opacity: 0.5; }
-.meta { color: var(--sub); font-size: 13px; white-space: nowrap; }
-.arrow { color: var(--sub); margin-left: 10px; font-size: 20px; opacity: 0.5; }
-
-/* --- MEJORAS AL LOADING (SKELETON) --- */
-.loading-shimmer {
-    padding: 20px;
-    text-align: center;
-}
-
-.skeleton-row {
-    height: 60px;
-    margin-bottom: 10px;
-    background: var(--row-bg);
-    border-radius: 12px;
-    position: relative;
-    overflow: hidden;
-}
-
-.skeleton-row::after {
-    content: "";
-    position: absolute;
-    top: 0; right: 0; bottom: 0; left: 0;
-    background: linear-gradient(90deg, transparent, var(--border), transparent);
-    animation: shimmer 1.5s infinite;
-}
-
-@keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-}
-
-.empty { text-align: center; padding: 60px; color: var(--sub); }
 </style>
 </head>
 
 <body>
+<div class="grid-overlay"></div>
 
 <div class="ticker-wrap">
-    <div class="ticker">
-        <div class="ticker__item"><span class="live-dot"></span>SARAH JENKINS <span>9.875</span></div>
-        <div class="ticker__item"><span class="live-dot"></span>MARCUS RIVERA <span>14.100</span></div>
-        <div class="ticker__item">UPCOMING: FLORIDA CUP <span>MAR 28</span></div>
-        <div class="ticker__item"><span class="live-dot"></span>EMMA WATSON <span>9.950</span></div>
-        <div class="ticker__item"><span class="live-dot"></span>CHRIS EVANS <span>13.450</span></div>
-        <div class="ticker__item">TOP SCORE: L. LOPEZ <span>10.000</span></div>
-        <div class="ticker__item"><span class="live-dot"></span>SARAH JENKINS <span>9.875</span></div>
-        <div class="ticker__item"><span class="live-dot"></span>MARCUS RIVERA <span>14.100</span></div>
-    </div>
+  <div class="ticker">
+    <div class="ticker__item"><span class="live-dot"></span>SARAH JENKINS <span>9.875</span></div>
+    <div class="ticker__item"><span class="live-dot"></span>MARCUS RIVERA <span>14.100</span></div>
+    <div class="ticker__item">UPCOMING · FLORIDA CUP <span>MAR 28</span></div>
+    <div class="ticker__item"><span class="live-dot"></span>EMMA WATSON <span>9.950</span></div>
+    <div class="ticker__item"><span class="live-dot"></span>CHRIS EVANS <span>13.450</span></div>
+    <div class="ticker__item">TOP SCORE · L. LOPEZ <span>10.000</span></div>
+    <div class="ticker__item"><span class="live-dot"></span>SARAH JENKINS <span>9.875</span></div>
+    <div class="ticker__item"><span class="live-dot"></span>MARCUS RIVERA <span>14.100</span></div>
+  </div>
 </div>
 
 <div class="hero">
-    <h1>Gymetra</h1>
-    <p>Live scoring & meet results</p>
+  <div class="brand"><div class="brand-dot"></div>Gymetra</div>
+  <h1>Meets</h1>
+  <p>Live scoring &amp; meet results</p>
+
+  <div class="theme-btn" onclick="toggleTheme()" title="Toggle theme">
+    <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+  </div>
 </div>
 
 <div class="controls">
-    <input id="search" placeholder="Search meet, club, or location" autocomplete="off">
+  <svg class="search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+  <input id="search" placeholder="Search meet, club, or location" autocomplete="off" spellcheck="false">
 </div>
 
 <div class="list" id="list">
-    <div class="loading-shimmer">
-        <div class="skeleton-row"></div>
-        <div class="skeleton-row"></div>
-        <div class="skeleton-row"></div>
-        <p style="color: var(--sub); font-size: 14px;">Fetching live data...</p>
-    </div>
+  <div class="loading-shimmer">
+    <div class="skeleton-row"></div>
+    <div class="skeleton-row"></div>
+    <div class="skeleton-row"></div>
+    <p class="shimmer-hint">Fetching live data…</p>
+  </div>
 </div>
 
 <script>
@@ -246,81 +391,111 @@ const SUPABASE_BASE_URL = "https://ulexxpaatpjtpgkancew.supabase.co";
 const SUPABASE_URL = `${SUPABASE_BASE_URL}/rest/v1/meets`;
 const SUPABASE_KEY = "sb_publishable_rF-UPEX2zhC5cZztSFeGaQ_-7bjyloC";
 
-async function loadAllMeets() {
-    const list = document.getElementById("list");
-    try {
-        const response = await fetch(SUPABASE_URL, {
-            headers: {
-                apikey: SUPABASE_KEY,
-                Authorization: `Bearer ${SUPABASE_KEY}`
-            }
-        });
-        
-        if (!response.ok) throw new Error("Connection Error");
-        const data = await response.json();
-        
-        ALL_MEETS = data.map(item => {
-            const d = item.data || {};
-            const meetInfo = d.meet || {};
-            return {
-                slug: item.slug,
-                name: meetInfo.name || d.name || item.slug, 
-                host: meetInfo.hostGym || meetInfo.club || d.host || "", 
-                location: meetInfo.location || d.location || "",
-                date: meetInfo.startDate || d.date || ""
-            };
-        });
-
-        render();
-    } catch (error) {
-        console.error("Error:", error);
-        list.innerHTML = `<div class="empty">Unable to connect to server</div>`;
-    }
+function toggleTheme(){
+  const current = document.documentElement.getAttribute("data-theme") || "light";
+  const next = current === "dark" ? "light" : "dark";
+  localStorage.setItem("theme", next);
+  document.documentElement.setAttribute("data-theme", next);
 }
 
-function formatDate(d) {
-    if (!d) return "";
-    return new Date(d).toLocaleDateString("en-US", {
-        month: "short", day: "numeric"
+async function loadAllMeets(){
+  const list = document.getElementById("list");
+  try{
+    const response = await fetch(SUPABASE_URL,{
+      headers:{ apikey:SUPABASE_KEY, Authorization:`Bearer ${SUPABASE_KEY}` }
     });
+    if(!response.ok) throw new Error("Connection Error");
+    const data = await response.json();
+
+    ALL_MEETS = data.map(item => {
+      const d = item.data || {};
+      const meetInfo = d.meet || {};
+      return {
+        slug:item.slug,
+        name:meetInfo.name || d.name || item.slug,
+        host:meetInfo.hostGym || meetInfo.club || d.host || "",
+        location:meetInfo.location || d.location || "",
+        date:meetInfo.startDate || d.date || ""
+      };
+    });
+    render();
+  } catch(error){
+    console.error("Error:", error);
+    list.innerHTML = `<div class="empty">Unable to connect to server</div>`;
+  }
 }
 
-function render() {
-    const search = document.getElementById("search").value.toLowerCase();
-    const list = document.getElementById("list");
-    list.innerHTML = "";
+function formatDate(d){
+  if(!d) return "";
+  return new Date(d).toLocaleDateString("en-US",{month:"short",day:"numeric"});
+}
+function dateParts(d){
+  if(!d) return null;
+  const dt = new Date(d);
+  if(isNaN(dt)) return null;
+  return {
+    mo:dt.toLocaleDateString("en-US",{month:"short"}).toUpperCase(),
+    day:dt.getDate()
+  };
+}
+function escapeHtml(str){
+  return String(str)
+    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+}
 
-    const filtered = ALL_MEETS.filter(m =>
-        (m.name + m.location + m.host).toLowerCase().includes(search)
-    );
+function render(){
+  const search = document.getElementById("search").value.toLowerCase();
+  const list = document.getElementById("list");
+  list.innerHTML = "";
 
-    if (filtered.length === 0) {
-        list.innerHTML = `<div class="empty">No active meets found</div>`;
-        return;
-    }
+  const filtered = ALL_MEETS.filter(m =>
+    (m.name + m.location + m.host).toLowerCase().includes(search)
+  );
 
-    filtered.forEach(m => {
-        const div = document.createElement("div");
-        div.className = "row";
-        div.innerHTML = `
-            <div class="row-content">
-                <span class="name">${m.name}</span>
-                ${m.host ? `<span class="dot">•</span><span class="meta">${m.host}</span>` : ""}
-                ${m.location ? `<span class="dot">•</span><span class="meta">${m.location}</span>` : ""}
-                ${m.date ? `<span class="dot">•</span><span class="meta">${formatDate(m.date)}</span>` : ""}
-            </div>
-            <div class="arrow">›</div>
-        `;
-        div.onclick = () => { 
-    window.location.href = `view.html?slug=${m.slug}&v=6`; 
-};
-        list.appendChild(div);
-    });
+  if(filtered.length === 0){
+    list.innerHTML = `<div class="empty">No active meets found</div>`;
+    return;
+  }
+
+  filtered.forEach((m, i) => {
+    const div = document.createElement("div");
+    div.className = "row";
+    div.style.animationDelay = `${Math.min(i*30, 300)}ms`;
+
+    const dp = dateParts(m.date);
+    const dateHTML = dp
+      ? `<div class="date-badge"><div class="mo">${dp.mo}</div><div class="day">${dp.day}</div></div>`
+      : `<div class="date-badge empty"><div class="mo">—</div><div class="day">·</div></div>`;
+
+    const host = m.host ? `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h.01M13 9h.01M9 13h.01M13 13h.01M9 17h.01M13 17h.01"/></svg>
+      <span class="meta">${escapeHtml(m.host)}</span>` : "";
+
+    const loc = m.location ? `
+      ${host ? '<span class="dot">•</span>' : ""}
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+      <span class="meta">${escapeHtml(m.location)}</span>` : "";
+
+    const dateText = m.date ? `
+      ${(host || loc) ? '<span class="dot">•</span>' : ""}
+      <span class="meta">${formatDate(m.date)}</span>` : "";
+
+    div.innerHTML = `
+      ${dateHTML}
+      <div class="row-content">
+        <span class="name">${escapeHtml(m.name)}</span>
+        <div class="meta-line">${host}${loc}${dateText}</div>
+      </div>
+      <div class="arrow">›</div>
+    `;
+    div.onclick = () => { window.location.href = `view.html?slug=${m.slug}&v=6`; };
+    list.appendChild(div);
+  });
 }
 
 document.getElementById("search").oninput = render;
 loadAllMeets();
 </script>
-
 </body>
 </html>
