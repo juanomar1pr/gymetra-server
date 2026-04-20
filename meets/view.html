@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="/fa.png?v=6" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/fa.png?v=6">
-
 <title>Gymetra | Live Results</title>
 
 <script>
@@ -14,200 +13,410 @@ document.documentElement.setAttribute("data-theme", savedTheme);
 </script>
 
 <style>
-:root {
-    --bg: #000;
-    --surface: #111;
-    --text: #fff;
-    --text-dim: #8e8e93;
-    --accent: #7c3aed;
-    --border: #2c2c2e;
-    --gold: #FFD700;
-    --row-alt: #161618;
+:root{
+  --bg:#000;
+  --bg-2:#0a0a0c;
+  --surface:rgba(20,20,24,.72);
+  --surface-solid:#141417;
+  --text:#fff;
+  --text-dim:#8e8e93;
+  --text-faint:#6b6b70;
+  --accent:#7c3aed;
+  --accent-2:#5E5CE6;
+  --accent-soft:rgba(124,58,237,.18);
+  --border:rgba(255,255,255,.08);
+  --border-strong:rgba(255,255,255,.14);
+  --gold:#FFD60A;
+  --silver:#c7c7cc;
+  --bronze:#CD7F32;
+  --row-alt:rgba(255,255,255,.02);
+  --row-hover:rgba(255,255,255,.04);
+  --shadow:0 20px 50px rgba(0,0,0,.55);
 }
-[data-theme="light"] {
-    --bg: #f2f2f7;
-    --surface: #fff;
-    --text: #000;
-    --text-dim: #636366;
-    --accent: #7c3aed;
-    --border: #d1d1d6;
-    --gold: #c6a300;
-    --row-alt: #f9f9f9;
-}
-body {
-    font-family: -apple-system, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    margin: 0;
-    font-size: 13px;
-}
-.sticky-top {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background: var(--bg);
-    border-bottom: 1px solid var(--border);
-}
-.header-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 15px;
-}
-.breadcrumb {
-    font-weight: 800;
-    font-size: 18px;
-    color: var(--text);
-    text-transform: uppercase;
-}
-.filter-row {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding: 10px 15px;
-}
-.chip {
-    padding: 6px 14px;
-    border-radius: 999px;
-    background: var(--surface);
-    color: var(--text-dim);
-    border: 1px solid var(--border);
-    cursor: pointer;
-    white-space: nowrap;
-    font-weight: 700;
-    flex: 0 0 auto;
-}
-.chip.active {
-    background: var(--accent);
-    color: #fff;
-    border-color: var(--accent);
-}
-.search-area {
-    padding: 10px 15px;
-}
-input {
-    width: 100%;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 10px;
-    color: var(--text);
-    box-sizing: border-box;
-}
-.table-wrapper {
-    width: 100%;
-    overflow-x: auto;
-}
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-th {
-    background: var(--surface);
-    color: var(--text-dim);
-    padding: 14px 10px;
-    text-align: left;
-    font-size: 10px;
-    border-bottom: 2px solid var(--border);
-}
-td {
-    padding: 12px 10px;
-    border-bottom: 1px solid var(--border);
-}
-tr:nth-child(even) {
-    background: var(--row-alt);
-}
-.score-cell {
-    text-align: center;
-    font-weight: 700;
-    font-family: monospace;
-    width: 70px;
-}
-.score-active {
-    background: rgba(124, 58, 237, 0.12);
-    color: var(--text);
-}
-.col-aa {
-    color: var(--gold);
-    font-weight: 900;
-}
-.loading-state {
-    text-align: center;
-    padding: 100px;
-    color: var(--text-dim);
-}
-.insight-btn {
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 6px 9px;
-    color: var(--text);
-    cursor: pointer;
-}
-.insight-btn:hover {
-    border-color: var(--accent);
+[data-theme="light"]{
+  --bg:#f2f2f7;
+  --bg-2:#e9e9ef;
+  --surface:rgba(255,255,255,.7);
+  --surface-solid:#ffffff;
+  --text:#0b0b0f;
+  --text-dim:#636366;
+  --text-faint:#8e8e93;
+  --accent:#7c3aed;
+  --accent-2:#5E5CE6;
+  --accent-soft:rgba(124,58,237,.10);
+  --border:rgba(0,0,0,.08);
+  --border-strong:rgba(0,0,0,.12);
+  --gold:#b8860b;
+  --silver:#8e8e93;
+  --bronze:#a0522d;
+  --row-alt:rgba(0,0,0,.02);
+  --row-hover:rgba(0,0,0,.03);
+  --shadow:0 20px 50px rgba(10,10,20,.08);
 }
 
-@media (max-width: 700px) {
-    .col-team {
-        display: none;
-    }
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Inter,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  margin:0;
+  font-size:13.5px;
+  -webkit-font-smoothing:antialiased;
+  letter-spacing:-0.01em;
+  min-height:100vh;
+  overflow-x:hidden;
+}
 
-    .col-score.mobile-hidden {
-        display: none;
-    }
+/* aurora bg */
+body::before,body::after{
+  content:"";position:fixed;inset:-20%;z-index:-2;pointer-events:none;
+  filter:blur(90px);opacity:.55;
+}
+body::before{
+  background:
+    radial-gradient(38% 32% at 80% 8%, rgba(124,58,237,.45), transparent 70%),
+    radial-gradient(30% 28% at 10% 90%, rgba(94,92,230,.35), transparent 70%);
+  animation:float1 22s ease-in-out infinite alternate;
+}
+body::after{
+  background:
+    radial-gradient(28% 25% at 30% 20%, rgba(255,214,10,.18), transparent 70%),
+    radial-gradient(25% 25% at 90% 70%, rgba(10,132,255,.22), transparent 70%);
+  animation:float2 26s ease-in-out infinite alternate;
+}
+[data-theme="light"] body::before,
+[data-theme="light"] body::after{opacity:.35}
+@keyframes float1{to{transform:translate3d(-3%,2%,0) scale(1.08)}}
+@keyframes float2{to{transform:translate3d(4%,-3%,0) scale(1.12)}}
 
-    .col-rank {
-        width: 36px;
-        min-width: 36px;
-    }
+.grid-overlay{
+  position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(127,127,127,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(127,127,127,0.05) 1px, transparent 1px);
+  background-size:40px 40px;
+  mask-image:radial-gradient(ellipse at center, #000 30%, transparent 80%);
+}
 
-    .col-score.mobile-priority {
-        width: 72px;
-        min-width: 72px;
-        text-align: right;
-    }
+/* sticky glass header */
+.sticky-top{
+  position:sticky;top:0;z-index:1000;
+  background:var(--surface);
+  backdrop-filter:blur(22px) saturate(160%);
+  -webkit-backdrop-filter:blur(22px) saturate(160%);
+  border-bottom:1px solid var(--border-strong);
+}
+[data-theme="light"] .sticky-top{
+  background:rgba(255,255,255,.72);
+}
 
-    .col-name {
-        width: auto;
-    }
+.header-top{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:14px 18px 10px;gap:12px;
+}
+.breadcrumb{
+  display:flex;align-items:center;gap:10px;min-width:0;
+  font-weight:700;font-size:15px;letter-spacing:-0.01em;
+  text-transform:none;
+}
+.brand-dot{
+  width:26px;height:26px;border-radius:8px;flex-shrink:0;
+  background:conic-gradient(from 200deg,var(--accent),var(--accent-2),#ff6fd8,var(--accent));
+  box-shadow:0 6px 20px rgba(124,58,237,.45), inset 0 0 0 1px rgba(255,255,255,.2);
+  position:relative;
+}
+.brand-dot::after{
+  content:"";position:absolute;inset:5px;border-radius:4px;
+  background:var(--bg);opacity:.7;
+}
+.breadcrumb .bc-path{color:var(--text-dim);font-weight:600;font-size:12px;letter-spacing:.05em;text-transform:uppercase}
+.breadcrumb .bc-meet{
+  font-weight:700;font-size:16px;letter-spacing:-0.02em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:50vw;
+  background:linear-gradient(180deg,var(--text),var(--text-dim));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
 
-    .score-cell {
-        font-size: 16px;
-        font-weight: 800;
-        white-space: nowrap;
-    }
+.theme-btn{
+  display:inline-grid;place-items:center;
+  width:36px;height:36px;border-radius:10px;cursor:pointer;
+  background:var(--surface);
+  border:1px solid var(--border);
+  color:var(--text);
+  transition:transform .2s, border-color .2s, background .2s;
+  flex-shrink:0;
+}
+.theme-btn:hover{transform:translateY(-1px);border-color:var(--accent)}
+.theme-btn svg{width:18px;height:18px}
+[data-theme="dark"] .sun{display:none}
+[data-theme="light"] .moon{display:none}
 
-    td, th {
-        padding: 14px 8px;
-    }
+/* filters */
+.filter-row{
+  display:flex;gap:8px;overflow-x:auto;padding:8px 18px;
+  scrollbar-width:none;
+  mask-image:linear-gradient(90deg,transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%);
+}
+.filter-row::-webkit-scrollbar{display:none}
+.filter-row.secondary{
+  border-top:1px solid var(--border);
+  background:linear-gradient(180deg,transparent,rgba(127,127,127,.04));
+}
+.chip{
+  padding:7px 14px;border-radius:999px;
+  background:var(--surface);
+  color:var(--text-dim);
+  border:1px solid var(--border);
+  cursor:pointer;white-space:nowrap;
+  font-weight:600;font-size:12.5px;letter-spacing:-0.01em;
+  flex:0 0 auto;
+  transition:all .2s ease;
+  backdrop-filter:blur(10px);
+}
+.chip:hover{color:var(--text);transform:translateY(-1px)}
+.chip.active{
+  background:linear-gradient(180deg,var(--accent),var(--accent-2));
+  color:#fff;border-color:transparent;
+  box-shadow:0 6px 18px rgba(124,58,237,.35), inset 0 0 0 1px rgba(255,255,255,.18);
+}
+
+/* search */
+.search-area{padding:10px 18px 14px;position:relative}
+.search-area svg{
+  position:absolute;left:30px;top:50%;transform:translateY(-50%);
+  width:16px;height:16px;color:var(--text-faint);pointer-events:none;
+}
+input#search{
+  width:100%;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:11px 14px 11px 38px;
+  color:var(--text);
+  font-size:14px;
+  outline:none;
+  font-family:inherit;letter-spacing:-0.01em;
+  transition:border-color .2s, box-shadow .2s;
+  backdrop-filter:blur(10px);
+}
+input#search::placeholder{color:var(--text-faint)}
+input#search:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 4px var(--accent-soft);
+}
+
+/* table */
+.table-wrapper{
+  width:100%;overflow-x:auto;
+  padding:10px 12px 80px;
+  animation:fadeUp .5s ease both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  background:var(--surface);
+  border:1px solid var(--border-strong);
+  border-radius:18px;
+  overflow:hidden;
+  backdrop-filter:blur(16px) saturate(140%);
+  -webkit-backdrop-filter:blur(16px) saturate(140%);
+  box-shadow:var(--shadow);
+  font-variant-numeric:tabular-nums;
+}
+thead th{
+  position:sticky;top:0;
+  background:var(--surface-solid);
+  color:var(--text-dim);
+  padding:12px 12px;
+  text-align:left;
+  font-size:10.5px;
+  font-weight:700;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+  border-bottom:1px solid var(--border-strong);
+}
+[data-theme="dark"] thead th{background:#17171a}
+
+td{
+  padding:12px 12px;
+  border-bottom:1px solid var(--border);
+  vertical-align:middle;
+}
+tbody tr{transition:background .18s ease}
+tbody tr:nth-child(even){background:var(--row-alt)}
+tbody tr:hover{background:var(--row-hover)}
+tbody tr:last-child td{border-bottom:none}
+
+/* rank badges */
+.col-rank{width:54px;min-width:54px}
+.rank-badge{
+  display:inline-grid;place-items:center;
+  width:30px;height:30px;border-radius:10px;
+  font-weight:700;font-size:13px;
+  background:var(--surface-solid);
+  border:1px solid var(--border);
+  color:var(--text-dim);
+}
+.rank-badge.gold{
+  background:linear-gradient(135deg,#FFD60A,#ffab00);
+  color:#3b2a00;border-color:transparent;
+  box-shadow:0 6px 16px rgba(255,214,10,.28);
+}
+.rank-badge.silver{
+  background:linear-gradient(135deg,#e5e5ea,#a1a1a6);
+  color:#2a2a2e;border-color:transparent;
+  box-shadow:0 6px 16px rgba(199,199,204,.22);
+}
+.rank-badge.bronze{
+  background:linear-gradient(135deg,#e0a070,#8a4b1a);
+  color:#fff;border-color:transparent;
+  box-shadow:0 6px 16px rgba(205,127,50,.28);
+}
+
+.col-name b{font-weight:600;letter-spacing:-0.01em}
+.col-name small{color:var(--text-dim);font-size:11.5px}
+.col-team{color:var(--text-dim)}
+
+.score-cell{
+  text-align:center;
+  font-weight:700;
+  font-family:"SF Mono",ui-monospace,Menlo,monospace;
+  width:72px;
+}
+.score-active{
+  background:var(--accent-soft);
+  color:var(--text);
+  position:relative;
+}
+.score-active::after{
+  content:"";position:absolute;inset:6px;border-radius:8px;
+  box-shadow:inset 0 0 0 1px rgba(124,58,237,.35);
+  pointer-events:none;
+}
+.col-aa{
+  background:linear-gradient(180deg,var(--gold),#ffab00);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  font-weight:800;
+}
+.col-aa.score-active{
+  background:var(--accent-soft);
+  -webkit-text-fill-color:initial;color:var(--gold);
+}
+
+.insight-btn{
+  display:inline-grid;place-items:center;
+  width:34px;height:34px;border-radius:10px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  color:var(--text);
+  cursor:pointer;
+  transition:all .2s ease;
+}
+.insight-btn:hover{
+  border-color:var(--accent);
+  background:var(--accent-soft);
+  transform:translateY(-1px);
+}
+.insight-btn svg{width:16px;height:16px}
+
+/* loader skeleton */
+.loading-state{
+  padding:30px 20px 80px;
+  color:var(--text-dim);
+}
+.skeleton-row{
+  display:flex;align-items:center;gap:12px;
+  padding:14px;border-radius:12px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  margin-bottom:10px;
+}
+.skel-bar{
+  height:12px;border-radius:6px;
+  background:linear-gradient(90deg,rgba(127,127,127,.10),rgba(127,127,127,.22),rgba(127,127,127,.10));
+  background-size:200% 100%;
+  animation:shimmer 1.4s linear infinite;
+}
+@keyframes shimmer{from{background-position:200% 0}to{background-position:-200% 0}}
+
+.empty-card{
+  max-width:420px;margin:60px auto;text-align:center;
+  padding:32px 24px;border-radius:18px;
+  background:var(--surface);border:1px solid var(--border-strong);
+  backdrop-filter:blur(16px);
+  box-shadow:var(--shadow);
+}
+.empty-card h1{margin:0 0 8px;font-size:22px;letter-spacing:-0.02em}
+.empty-card p{color:var(--text-dim);margin:0 0 18px}
+.empty-card a{
+  display:inline-block;padding:10px 16px;border-radius:10px;
+  background:var(--accent);color:#fff;text-decoration:none;font-weight:600;
+}
+
+/* scrollbar */
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:#26262a;border-radius:8px}
+[data-theme="light"] ::-webkit-scrollbar-thumb{background:#c7c7cc}
+
+@media (max-width:700px){
+  .breadcrumb .bc-path{display:none}
+  .breadcrumb .bc-meet{max-width:60vw;font-size:15px}
+  .col-team{display:none}
+  .col-score.mobile-hidden{display:none}
+  .col-rank{width:44px;min-width:44px}
+  .col-score.mobile-priority{
+    width:78px;min-width:78px;text-align:right;
+  }
+  .col-name{width:auto}
+  .score-cell{font-size:15.5px;font-weight:800;white-space:nowrap}
+  td,th{padding:12px 9px}
+  thead th{font-size:10px}
+  table{border-radius:14px}
 }
 </style>
 </head>
 <body>
+<div class="grid-overlay"></div>
 
 <div class="sticky-top">
-    <div class="header-top">
-        <div class="breadcrumb" id="meet-title">GYMETRA > CARGANDO...</div>
-        <div onclick="toggleTheme()" style="cursor:pointer">🌓</div>
+  <div class="header-top">
+    <div class="breadcrumb">
+      <div class="brand-dot"></div>
+      <span class="bc-path">Gymetra ›</span>
+      <span class="bc-meet" id="meet-title">Cargando…</span>
     </div>
-
-    <div class="filter-row" id="session-filters"></div>
-    <div class="filter-row" id="event-filters" style="background: var(--surface); border-top: 1px solid var(--border);"></div>
-
-    <div class="search-area">
-        <input id="search" placeholder="Search by gymnast, club, or level...">
+    <div class="theme-btn" onclick="toggleTheme()" title="Toggle theme">
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
     </div>
+  </div>
+
+  <div class="filter-row" id="session-filters"></div>
+  <div class="filter-row secondary" id="event-filters"></div>
+
+  <div class="search-area">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+    <input id="search" placeholder="Search by gymnast, club, or level…" autocomplete="off" spellcheck="false">
+  </div>
 </div>
 
 <div class="table-wrapper" id="content-area">
-    <table>
-        <thead><tr id="table-head"></tr></thead>
-        <tbody id="table-body"></tbody>
-    </table>
+  <table>
+    <thead><tr id="table-head"></tr></thead>
+    <tbody id="table-body"></tbody>
+  </table>
 </div>
 
-<div id="loader" class="loading-state">Conectando con Supabase...</div>
+<div id="loader" class="loading-state">
+  <div class="skeleton-row"><div class="skel-bar" style="width:28px;height:28px;border-radius:8px"></div><div style="flex:1"><div class="skel-bar" style="width:55%"></div><div class="skel-bar" style="width:30%;margin-top:6px;height:9px"></div></div><div class="skel-bar" style="width:60px"></div></div>
+  <div class="skeleton-row"><div class="skel-bar" style="width:28px;height:28px;border-radius:8px"></div><div style="flex:1"><div class="skel-bar" style="width:45%"></div><div class="skel-bar" style="width:25%;margin-top:6px;height:9px"></div></div><div class="skel-bar" style="width:60px"></div></div>
+  <div class="skeleton-row"><div class="skel-bar" style="width:28px;height:28px;border-radius:8px"></div><div style="flex:1"><div class="skel-bar" style="width:60%"></div><div class="skel-bar" style="width:35%;margin-top:6px;height:9px"></div></div><div class="skel-bar" style="width:60px"></div></div>
+  <div class="skeleton-row"><div class="skel-bar" style="width:28px;height:28px;border-radius:8px"></div><div style="flex:1"><div class="skel-bar" style="width:50%"></div><div class="skel-bar" style="width:28%;margin-top:6px;height:9px"></div></div><div class="skel-bar" style="width:60px"></div></div>
+</div>
 
 <script>
 const params = new URLSearchParams(window.location.search);
@@ -220,233 +429,216 @@ let DATA = null;
 let curSession = "all";
 let curSortEvent = "allAround";
 
-function toggleTheme() {
-    const next = (localStorage.getItem("theme") || "dark") === "dark" ? "light" : "dark";
-    localStorage.setItem("theme", next);
-    document.documentElement.setAttribute("data-theme", next);
+function toggleTheme(){
+  const next = (localStorage.getItem("theme") || "dark") === "dark" ? "light" : "dark";
+  localStorage.setItem("theme", next);
+  document.documentElement.setAttribute("data-theme", next);
 }
 
-async function loadResults() {
-    try {
-        const response = await fetch(`${sbUrl}?slug=eq.${slug}&select=data`, {
-            headers: {
-                apikey: sbKey,
-                Authorization: `Bearer ${sbKey}`
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error(`Supabase error ${response.status}`);
-        }
-
-        const result = await response.json();
-
-        if (result && result.length > 0) {
-            DATA = result[0].data;
-
-            document.getElementById("loader").style.display = "none";
-            document.getElementById("meet-title").innerHTML = DATA.meet?.name || "GYMETRA";
-
-            buildSessionFilters();
-            buildEventFilters();
-            render();
-        } else {
-            showError("No hay datos para este evento.");
-        }
-    } catch (err) {
-        console.error(err);
-        showError("Error de conexión con el servidor.");
+async function loadResults(){
+  try{
+    const response = await fetch(`${sbUrl}?slug=eq.${slug}&select=data`,{
+      headers:{ apikey:sbKey, Authorization:`Bearer ${sbKey}` }
+    });
+    if(!response.ok) throw new Error(`Supabase error ${response.status}`);
+    const result = await response.json();
+    if(result && result.length > 0){
+      DATA = result[0].data;
+      document.getElementById("loader").style.display = "none";
+      document.getElementById("meet-title").textContent = DATA.meet?.name || "Gymetra";
+      buildSessionFilters();
+      buildEventFilters();
+      render();
+    } else {
+      showError("No hay datos para este evento.");
     }
+  } catch(err){
+    console.error(err);
+    showError("Error de conexión con el servidor.");
+  }
 }
 
-function getSessionOptions() {
-    const sessions = [...new Set(
-        DATA.events
-        .map(e => (e.session || "").trim())
-.filter(s => s.length > 0)
-.filter(s => s !== "AA")
-    )];
-
-    return ["all", ...sessions];
+function getSessionOptions(){
+  const sessions = [...new Set(
+    DATA.events
+      .map(e => (e.session || "").trim())
+      .filter(s => s.length > 0)
+      .filter(s => s !== "AA")
+  )];
+  return ["all", ...sessions];
 }
 
-function buildSessionFilters() {
-    const container = document.getElementById("session-filters");
-    container.innerHTML = "";
+function buildSessionFilters(){
+  const container = document.getElementById("session-filters");
+  container.innerHTML = "";
+  getSessionOptions().forEach(sessionName => {
+    const chip = document.createElement("div");
+    chip.className = `chip ${sessionName === curSession ? "active" : ""}`;
+    chip.textContent = sessionName === "all" ? "All" : sessionName;
+    chip.onclick = () => {
+      curSession = sessionName;
+      buildSessionFilters();
+      buildEventFilters();
+      render();
+    };
+    container.appendChild(chip);
+  });
+}
 
-    getSessionOptions().forEach(sessionName => {
-        const chip = document.createElement("div");
-        chip.className = `chip ${sessionName === curSession ? "active" : ""}`;
-        chip.textContent = sessionName === "all" ? "All" : sessionName;
+function getVisibleEvents(){
+  const sessionEvents = DATA.events.filter(e => {
+    if(e.event === "allAround") return true;
+    if(curSession === "all") return true;
+    return e.session === curSession;
+  });
+  return [...new Set(sessionEvents.map(e => e.event))]
+    .sort((a,b) => a === "allAround" ? -1 : b === "allAround" ? 1 : 0);
+}
 
-        chip.onclick = () => {
-            curSession = sessionName;
-            buildSessionFilters();
-            render();
+function buildEventFilters(){
+  const container = document.getElementById("event-filters");
+  container.innerHTML = "";
+  const events = getVisibleEvents();
+  if(!events.includes(curSortEvent)){
+    curSortEvent = events.includes("allAround") ? "allAround" : events[0];
+  }
+  events.forEach(eventName => {
+    const chip = document.createElement("div");
+    chip.className = `chip ${eventName === curSortEvent ? "active" : ""}`;
+    chip.textContent = eventName === "allAround" ? "AA" : eventName;
+    chip.onclick = () => {
+      curSortEvent = eventName;
+      buildEventFilters();
+      render();
+    };
+    container.appendChild(chip);
+  });
+}
+
+function rankBadgeHTML(i){
+  const n = i + 1;
+  const cls = n === 1 ? "gold" : n === 2 ? "silver" : n === 3 ? "bronze" : "";
+  return `<span class="rank-badge ${cls}">${n}</span>`;
+}
+
+function render(){
+  const head = document.getElementById("table-head");
+  const body = document.getElementById("table-body");
+  const query = document.getElementById("search").value.toLowerCase();
+
+  const sessionEvents = DATA.events.filter(e => {
+    if(e.event === "allAround") return true;
+    if(curSession === "all") return true;
+    return e.session === curSession;
+  });
+
+  const eventNames = [...new Set(sessionEvents.map(e => e.event))]
+    .sort((a,b) => a === "allAround" ? -1 : b === "allAround" ? 1 : 0);
+
+  head.innerHTML =
+    `<th class="col-rank">#</th>
+     <th class="col-name">Gymnast</th>
+     <th class="col-team">Team</th>` +
+    eventNames.map(en => {
+      const mobileClass = en === curSortEvent ? "mobile-priority" : "mobile-hidden";
+      return `<th class="col-score ${mobileClass}" style="text-align:center">
+        ${en === "allAround" ? "AA" : en}
+      </th>`;
+    }).join("") +
+    `<th style="text-align:center;width:50px">Insights</th>`;
+
+  const athletes = {};
+  sessionEvents.forEach(evt => {
+    evt.results.forEach(res => {
+      const a = res.athlete || {};
+      const id = a.id || a.athleteId || `${a.firstName || ""}${a.lastName || ""}`;
+      if(!athletes[id]){
+        const insightKey = String(
+          a.federationID ||
+          `${a.firstName || ""}|${a.lastName || ""}|${a.birthDate || ""}`
+        ).trim().toLowerCase();
+        athletes[id] = {
+          insightKey,
+          name:`${a.firstName || ""} ${a.lastName || ""}`.trim(),
+          team:a.club || "—",
+          level:a.level || "",
+          ageDivision:a.ageCategory || "",
+          scores:{}
         };
-
-        container.appendChild(chip);
+      }
+      athletes[id].scores[evt.event] = Number(res.score) || 0;
     });
-}
+  });
 
-function getVisibleEvents() {
-    const sessionEvents = DATA.events.filter(e => {
-        if (e.event === "allAround") return true;
-        if (curSession === "all") return true;
-        return e.session === curSession;
-    });
+  const list = Object.values(athletes)
+    .filter(a => {
+      const searchable = (a.name + " " + a.team + " " + a.level + " " + a.ageDivision).toLowerCase();
+      return searchable.includes(query);
+    })
+    .sort((a,b) => (b.scores[curSortEvent] || 0) - (a.scores[curSortEvent] || 0));
 
-    return [...new Set(sessionEvents.map(e => e.event))]
-        .sort((a, b) => a === "allAround" ? -1 : b === "allAround" ? 1 : 0);
-}
+  body.innerHTML = "";
 
-function buildEventFilters() {
-    const container = document.getElementById("event-filters");
-    container.innerHTML = "";
+  if(!list.length){
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td colspan="${3 + eventNames.length + 1}" style="text-align:center;padding:40px;color:var(--text-dim)">No results match your search.</td>`;
+    body.appendChild(tr);
+    return;
+  }
 
-    const events = getVisibleEvents();
+  list.forEach((a,i) => {
+    const tr = document.createElement("tr");
+    let html =
+      `<td class="col-rank">${rankBadgeHTML(i)}</td>` +
+      `<td class="col-name">
+          <b>${escapeHtml(a.name)}</b><br>
+          <small>${escapeHtml([a.level, a.ageDivision].filter(Boolean).join(" • "))}</small>
+       </td>` +
+      `<td class="col-team">${escapeHtml(a.team)}</td>`;
 
-    if (!events.includes(curSortEvent)) {
-        curSortEvent = events.includes("allAround") ? "allAround" : events[0];
-    }
-
-    events.forEach(eventName => {
-        const chip = document.createElement("div");
-        chip.className = `chip ${eventName === curSortEvent ? "active" : ""}`;
-        chip.textContent = eventName === "allAround" ? "AA" : eventName;
-
-        chip.onclick = () => {
-            curSortEvent = eventName;
-            buildEventFilters();
-            render();
-        };
-
-        container.appendChild(chip);
-    });
-}
-
-function render() {
-    const head = document.getElementById("table-head");
-    const body = document.getElementById("table-body");
-    const query = document.getElementById("search").value.toLowerCase();
-
-    const sessionEvents = DATA.events.filter(e => {
-        if (e.event === "allAround") return true;
-        if (curSession === "all") return true;
-        return e.session === curSession;
+    eventNames.forEach(en => {
+      const mobileClass = en === curSortEvent ? "mobile-priority" : "mobile-hidden";
+      const val = (a.scores[en] || 0).toFixed(3);
+      html += `
+        <td class="score-cell col-score ${mobileClass} ${en === curSortEvent ? "score-active" : ""} ${en === "allAround" ? "col-aa" : ""}">
+          ${val}
+        </td>
+      `;
     });
 
-    const eventNames = [...new Set(sessionEvents.map(e => e.event))]
-        .sort((a, b) => a === "allAround" ? -1 : b === "allAround" ? 1 : 0);
-
-    head.innerHTML =
-        `<th class="col-rank">Rank</th>
-         <th class="col-name">Gymnast</th>
-         <th class="col-team">Team</th>` +
-        eventNames.map(en => {
-            const mobileClass = en === curSortEvent ? "mobile-priority" : "mobile-hidden";
-            return `<th class="col-score ${mobileClass}" style="text-align:center">
-                ${en === "allAround" ? "AA" : en}
-            </th>`;
-        }).join("") +
-        `<th>Insights</th>`;
-
-    const athletes = {};
-
-    sessionEvents.forEach(evt => {
-        evt.results.forEach(res => {
-            const a = res.athlete || {};
-            const id = a.id || a.athleteId || `${a.firstName || ""}${a.lastName || ""}`;
-
-            if (!athletes[id]) {
-                const insightKey = String(
-                    a.federationID ||
-                    `${a.firstName || ""}|${a.lastName || ""}|${a.birthDate || ""}`
-                ).trim().toLowerCase();
-
-                athletes[id] = {
-                    insightKey,
-                    name: `${a.firstName || ""} ${a.lastName || ""}`.trim(),
-                    team: a.club || "—",
-                    level: a.level || "",
-                    ageDivision: a.ageCategory || "",
-                    scores: {}
-                };
-            }
-
-            athletes[id].scores[evt.event] = Number(res.score) || 0;
-        });
-    });
-
-    const list = Object.values(athletes)
-        .filter(a => {
-            const searchable = (
-                a.name + " " +
-                a.team + " " +
-                a.level + " " +
-                a.ageDivision
-            ).toLowerCase();
-
-            return searchable.includes(query);
-        })
-        .sort((a, b) => (b.scores[curSortEvent] || 0) - (a.scores[curSortEvent] || 0));
-
-    body.innerHTML = "";
-
-    list.forEach((a, i) => {
-        const tr = document.createElement("tr");
-
-        let html =
-            `<td class="col-rank">${i + 1}</td>` +
-            `<td class="col-name">
-                <b>${escapeHtml(a.name)}</b><br>
-                <small style="color:var(--text-dim)">
-                    ${escapeHtml([a.level, a.ageDivision].filter(Boolean).join(" • "))}
-                </small>
-            </td>` +
-            `<td class="col-team" style="color:var(--text-dim)">${escapeHtml(a.team)}</td>`;
-
-        eventNames.forEach(en => {
-            const mobileClass = en === curSortEvent ? "mobile-priority" : "mobile-hidden";
-            const val = (a.scores[en] || 0).toFixed(3);
-
-            html += `
-                <td class="score-cell col-score ${mobileClass} ${en === curSortEvent ? "score-active" : ""} ${en === "allAround" ? "col-aa" : ""}">
-                    ${val}
-                </td>
-            `;
-        });
-
-        html += `
-            <td>
-                <button class="insight-btn" onclick="openInsights('${encodeURIComponent(a.insightKey)}')">📈</button>
-            </td>
-        `;
-
-        tr.innerHTML = html;
-        body.appendChild(tr);
-    });
-}
-
-function openInsights(key) {
-    window.location.href = `/coach-insights.html?athlete=${key}`;
-}
-
-function showError(msg) {
-    document.getElementById("loader").innerHTML = `
-        <h1>Sin resultados</h1>
-        <p>${msg}</p>
-        <a href="index.html" style="color:var(--accent); text-decoration:none;">← Volver</a>
+    html += `
+      <td style="text-align:center">
+        <button class="insight-btn" title="View insights" onclick="openInsights('${encodeURIComponent(a.insightKey)}')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 14 4-4 3 3 5-6"/></svg>
+        </button>
+      </td>
     `;
+    tr.innerHTML = html;
+    body.appendChild(tr);
+  });
 }
 
-function escapeHtml(str) {
-    return String(str)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+function openInsights(key){
+  window.location.href = `/coach-insights.html?athlete=${key}`;
+}
+
+function showError(msg){
+  document.getElementById("loader").innerHTML = `
+    <div class="empty-card">
+      <h1>Sin resultados</h1>
+      <p>${msg}</p>
+      <a href="index.html">← Volver</a>
+    </div>
+  `;
+}
+
+function escapeHtml(str){
+  return String(str)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 }
 
 document.getElementById("search").addEventListener("input", render);
