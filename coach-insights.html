@@ -120,8 +120,24 @@ body::after{
   position:relative;
 }
 .brand-dot::after{
-  content:"";position:absolute;inset:6px;border-radius:6px;
-  background:rgba(0,0,0,.55);backdrop-filter:blur(4px);
+
+  content:"";
+
+  position:absolute;
+
+  inset:6px;
+
+  border-radius:6px;
+
+  background:rgba(0,0,0,.55);
+
+  backdrop-filter:blur(4px);
+
+}
+  [data-theme="light"] .brand-dot::after{
+
+  background:rgba(0,0,0,.65);
+
 }
 .brand-name{font-weight:600;color:var(--sub);letter-spacing:.04em;text-transform:uppercase;font-size:12px}
 
