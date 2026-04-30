@@ -156,6 +156,21 @@
         text-decoration: underline;
     }
 
+    .top-nav-link {
+        font-size: 14px;
+        font-weight: 600;
+        color: #0071e3;
+        text-decoration: none;
+        padding: 8px 14px;
+        border: 1px solid #d2d2d7;
+        border-radius: 999px;
+        transition: all 0.2s ease;
+    }
+
+    .top-nav-link:hover {
+        background: #f5f5f7;
+    }
+
     .gym-image {
         width: 90%;
         max-width: 600px;
@@ -202,24 +217,13 @@
 </head>
 <body>
 
-
-
 <div class="content-wrapper">
     <header class="hero">
-      <div style="display:flex; justify-content:flex-end; margin-bottom:20px;">
-    <a href="/" style="
-        font-size:14px;
-        font-weight:600;
-        color:#0071e3;
-        text-decoration:none;
-        padding:8px 14px;
-        border:1px solid #d2d2d7;
-        border-radius:999px;
-        transition:all 0.2s ease;
-    ">
-        English
-    </a>
-</div>
+        <div style="display:flex; justify-content:flex-end; gap:12px; margin-bottom:20px;">
+            <a href="/meets/" class="top-nav-link">Ver competencias</a>
+            <a href="/" class="top-nav-link">English</a>
+        </div>
+
         <img src="../images/a.png" alt="Gymetra Logo">
 
         <h1>Esto es Gymetra.</h1>
@@ -229,13 +233,9 @@
         </p>
 
         <div class="cta-group">
-            
-    <a href="https://apps.apple.com/us/app/gymetra/id6759612212?itscg=30200&itsct=apps_box_badge&mttnsubad=6759612212" style="display: inline-block;">
-    <img src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/white/es-es?releaseDate=1777334400" alt="Download on the App Store" style="width: 245px; height: 82px; vertical-align: middle; object-fit: contain;" />
-    </a>
-    
-      
-            <a href="/meets/" class="link-apple">Ver competencias</a>
+            <a href="https://apps.apple.com/us/app/gymetra/id6759612212?itscg=30200&itsct=apps_box_badge&mttnsubad=6759612212" style="display: inline-block;">
+                <img src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/white/es-es?releaseDate=1777334400" alt="Download on the App Store" style="width: 245px; height: 82px; vertical-align: middle; object-fit: contain;" />
+            </a>
         </div>
     </header>
 
@@ -272,7 +272,6 @@
     </section>
 
     <section class="closing">
-
         <h2>Creado para toda la comunidad de gimnasia.</h2>
         <ul class="closing-list">
             <li>Desde grandes eventos…</li>
