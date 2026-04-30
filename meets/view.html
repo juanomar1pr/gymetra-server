@@ -430,9 +430,19 @@ let curSession = "all";
 let curSortEvent = "allAround";
 
 function toggleTheme(){
-  const next = (localStorage.getItem("theme") || "dark") === "dark" ? "light" : "dark";
+
+  const current = document.documentElement.getAttribute("data-theme") || "dark";
+
+  const next = current === "dark" ? "light" : "dark";
+
   localStorage.setItem("theme", next);
+
+  // 👇 fuerza repaint inmediato (fix)
+
   document.documentElement.setAttribute("data-theme", next);
+
+  document.body.offsetHeight; // <-- ESTA línea arregla el refresh
+
 }
 
 async function loadResults(){
