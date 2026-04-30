@@ -504,5 +504,19 @@ function render(){
 document.getElementById("search").oninput = render;
 loadAllMeets();
 </script>
+  <script>
+function applyTheme(){
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  document.documentElement.setAttribute("data-theme", savedTheme);
+}
+
+// 👇 se ejecuta SIEMPRE al entrar
+applyTheme();
+
+// 👇 sincroniza si cambia en otra página
+window.addEventListener("storage", (e) => {
+  if (e.key === "theme") applyTheme();
+});
+</script>
 </body>
 </html>
