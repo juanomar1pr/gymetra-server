@@ -8,6 +8,23 @@
 <link rel="apple-touch-icon" href="fa.png?v=7">
 <title>Gymetra Performance</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+
+function applyTheme(){
+
+  const savedTheme = localStorage.getItem("theme") || "dark";
+
+  document.documentElement.setAttribute("data-theme", savedTheme);
+
+}
+
+applyTheme();
+
+// 🔥 importante para back/forward
+
+window.addEventListener("pageshow", applyTheme);
+
+</script>
 <style>
 :root{
   --bg:#000;
@@ -280,6 +297,82 @@ input#search:focus{
 ::-webkit-scrollbar{width:10px;height:10px}
 ::-webkit-scrollbar-thumb{background:#26262a;border-radius:8px}
 ::-webkit-scrollbar-thumb:hover{background:#35353a}
+  /* =========================
+   LIGHT MODE (override)
+   ========================= */
+[data-theme="light"]{
+  --bg:#f2f2f7;
+  --card:#ffffff;
+  --card-2:#f9f9fb;
+  --text:#0b0b0f;
+  --sub:#636366;
+  --sub-2:#8e8e93;
+  --border:rgba(0,0,0,0.08);
+  --border-strong:rgba(0,0,0,0.12);
+}
+
+/* background */
+[data-theme="light"] body{
+  background:var(--bg);
+}
+
+/* aurora más suave */
+[data-theme="light"] body::before,
+[data-theme="light"] body::after{
+  opacity:.25;
+}
+
+/* grid */
+[data-theme="light"] .grid-overlay{
+  background-image:
+    linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
+}
+
+/* cards */
+[data-theme="light"] .kpi,
+[data-theme="light"] .chart-card,
+[data-theme="light"] .athlete-row{
+  background:rgba(255,255,255,0.8);
+  backdrop-filter:blur(14px);
+}
+
+/* search */
+[data-theme="light"] input#search{
+  background:rgba(255,255,255,0.9);
+  color:#000;
+}
+
+/* chips */
+[data-theme="light"] .chip{
+  background:rgba(0,0,0,0.04);
+}
+
+[data-theme="light"] .chip.on{
+  background:rgba(0,0,0,0.08);
+  color:#000;
+}
+
+/* segmented */
+[data-theme="light"] .segmented{
+  background:rgba(0,0,0,0.05);
+}
+
+[data-theme="light"] .segmented button{
+  color:#555;
+}
+
+[data-theme="light"] .segmented button.active{
+  color:#000;
+  background:rgba(0,0,0,0.08);
+}
+
+/* text gradient fix */
+[data-theme="light"] h1{
+  background:linear-gradient(180deg,#000 0%, #666 140%);
+  -webkit-background-clip:text;
+  color:transparent;
+}
 </style>
 </head>
 <body>
