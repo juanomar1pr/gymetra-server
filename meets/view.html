@@ -428,21 +428,18 @@ const sbKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJl
 let DATA = null;
 let curSession = "all";
 let curSortEvent = "allAround";
-
 function toggleTheme(){
-
-  const current = document.documentElement.getAttribute("data-theme") || "dark";
-
-  const next = current === "dark" ? "light" : "dark";
+  const root = document.documentElement;
+  const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
 
   localStorage.setItem("theme", next);
 
-  // 👇 fuerza repaint inmediato (fix)
+  root.style.transition = "none"; // evita glitch
+  root.setAttribute("data-theme", next);
 
-  document.documentElement.setAttribute("data-theme", next);
-
-  document.body.offsetHeight; // <-- ESTA línea arregla el refresh
-
+  requestAnimationFrame(() => {
+    root.style.transition = "";
+  });
 }
 
 async function loadResults(){
