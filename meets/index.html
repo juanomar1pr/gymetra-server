@@ -392,10 +392,17 @@ const SUPABASE_URL = `${SUPABASE_BASE_URL}/rest/v1/meets`;
 const SUPABASE_KEY = "sb_publishable_rF-UPEX2zhC5cZztSFeGaQ_-7bjyloC";
 
 function toggleTheme(){
-  const current = document.documentElement.getAttribute("data-theme") || "light";
-  const next = current === "dark" ? "light" : "dark";
+  const root = document.documentElement;
+  const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+
   localStorage.setItem("theme", next);
-  document.documentElement.setAttribute("data-theme", next);
+
+  root.style.transition = "none"; // evita glitch
+  root.setAttribute("data-theme", next);
+
+  requestAnimationFrame(() => {
+    root.style.transition = "";
+  });
 }
 
 async function loadAllMeets(){
