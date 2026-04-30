@@ -35,7 +35,20 @@
         text-align: center;
         border-bottom: 1px solid #f5f5f7;
     }
+.top-nav-link {
+        font-size: 14px;
+        font-weight: 600;
+        color: #0071e3;
+        text-decoration: none;
+        padding: 8px 14px;
+        border: 1px solid #d2d2d7;
+        border-radius: 999px;
+        transition: all 0.2s ease;
+    }
 
+    .top-nav-link:hover {
+        background: #f5f5f7;
+    }
     .hero img {
         width: 140px;
         margin-bottom: 40px;
@@ -202,27 +215,20 @@
         .section-p { font-size: 20px; }
         .closing h2 { font-size: 42px; }
     }
+    
 </style>
 </head>
 <body>
-
+  
 <div class="content-wrapper">
     <header class="hero">
-      <div style="display:flex; justify-content:flex-end; margin-bottom:20px;">
-    <a href="/es/" style="
-        font-size:14px;
-        font-weight:600;
-        color:#0071e3;
-        text-decoration:none;
-        padding:8px 14px;
-        border:1px solid #d2d2d7;
-        border-radius:999px;
-        transition:all 0.2s ease;
-    ">
-        Español
-    </a>
-          <br>
-             <a href="/meets/" class="link-apple">View Meets</a>
+        
+     <div style="display:flex; justify-content:flex-end; gap:12px; margin-bottom:20px;">
+            <a href="/meets/" class="top-nav-link">View Meets</a>
+            <a href="/es/" class="top-nav-link">Español</a>
+        </div>
+        
+          
 </div>
         <img src="/images/a.png" alt="Gymetra Logo">
 
